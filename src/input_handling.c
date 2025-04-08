@@ -151,6 +151,8 @@ int	main(int argc, char **argv, char **envp)
 			break;
 		}
 		shell->node = ast;
+		if (!set_command_path(shell->node, shell))
+			execute_pipeline(shell);
 		//printf ("cmd = %s\n", shell->node->cmd);
 		//print_ast(ast, 1);
 
@@ -158,7 +160,7 @@ int	main(int argc, char **argv, char **envp)
 		//set_command_path(shell->node, shell);
 
 		//print_ast(ast, 1);
-		print_tokens(shell->tokens);
+		//print_tokens(shell->tokens);
 		//printf("\n");
 
 		//execute_pipeline(shell);

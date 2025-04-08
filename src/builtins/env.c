@@ -60,6 +60,7 @@ void	export_default_variables(t_shell *shell)
 	shell->export = NULL;
 	while(shell->env[i] != NULL)
 	{
+		printf("test1\n");
 		if(ft_strncmp(shell->env[i], "PATH=", 5) == 0)
 			set_key_value(&key, &value, shell->env[i], "PATH");
 		if(ft_strncmp(shell->env[i], "HOME=", 5) == 0)
@@ -106,13 +107,24 @@ int ft_setenv(const char *key, const char *value, char ***envp)
         return (1);
     }
     i = 0;
-    while (*envp[i]) // Copy old environment
+	while ((*envp)[i])
     {
-        new_env[i] = (*envp)[i];
+        new_env[i] = strdup((*envp)[i]);  // Use strdup to allocate and copy strings
+        if (!new_env[i])  // Check if strdup failed
+        {
+            // Cleanup in case of failure
+            for (int j = 0; j < i; j++)
+                free(new_env[j]);
+            free(new_env);
+            free(new_entry);
+            return (1);
+        }
         i++;
     }
     new_env[i++] = new_entry;  // Add the new key=value pair
     new_env[i] = NULL;
+	for (i = 0; (*envp)[i]; i++)
+        free((*envp)[i]);
     free(*envp);
     *envp = new_env;
     return (0);

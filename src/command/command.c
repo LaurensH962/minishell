@@ -34,7 +34,7 @@ void    execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd)
     pid = fork();
     if(pid == -1)
     {
-        cleanup_shell(shell);
+        //cleanup_shell(shell);
         perror("minishell: pipe");
         exit(1);
     }
@@ -45,7 +45,7 @@ void    execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd)
         exit (0);
         if (check_if_builtin(node))
             execute_builtin(node, shell);
-        check_command_access(node, shell);
+        check_command_access(node);
         execve(node->cmd_path, node->args, shell->export);
         perror("minishell: execve");
 		cleanup_shell(shell);
@@ -53,15 +53,19 @@ void    execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd)
     }
     waitpid(pid, &status, 0);
     if (WIFEXITED(status))
-        shell->status_last_command = WEXITSTATUS(status);
+    {
+        if(ft_strcmp(node->args[0], "exit") == 0)
+        {
+            //cleanup_shell(shell);
+            shell->status_last_command = WEXITSTATUS(status);
+            exit(shell->status_last_command);
+        }
+    }
     else if (WIFSIGNALED(status) && check_if_builtin(node) == 0)
     {
         shell->status_last_command = 128 + WTERMSIG(status);
         printf("%s: terminated by signal %d\n", node->cmd, WTERMSIG(status));
     }
-    /*else
-        shell->status_last_command = 123456789;*/
-
 }
 
 void     handle_redirections(t_ast *node, int in_fd, int out_fd, t_shell *shell)
@@ -85,11 +89,11 @@ void     handle_redirections(t_ast *node, int in_fd, int out_fd, t_shell *shell)
     while(redir)
     {
         if (redir->type == NODE_REDIRECT_IN)
-            handle_inputfile(&fd_read, node, shell);
+            handle_inputfile(&fd_read, node);
         if (redir->type == NODE_REDIRECT_OUT)
-            handle_outputfile(&fd_write, node, shell);
+            handle_outputfile(&fd_write, node);
         if (redir->type == NODE_APPEND)
-            handle_outputfile(&fd_write, node, shell);
+            handle_outputfile(&fd_write, node);
         if (redir->type == NODE_HEREDOC)
             handle_heredoc(heredoc_pipe, node, shell);
         redir = redir->next;

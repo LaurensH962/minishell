@@ -147,7 +147,7 @@ static void remove_variable(char ***env, const char *var)
 
 	if (!env || !*env)
         return ;
-	while ((*env)[i] != NULL) 
+	while ((*env)[i] != NULL)
 	{
 		if (ft_strncmp((*env)[i], var, ft_strlen(var)) == 0 && (*env)[i][ft_strlen(var)] == '=')
 		{

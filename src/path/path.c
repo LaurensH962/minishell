@@ -51,7 +51,7 @@ static char	*find_command_path(char *cmd, char **paths, int *fail_flag)
 		full_path = join_path(paths[i], cmd);
 		if (!full_path)
 		{
-			perror("minishell: Memory allocation failed2");
+			perror("minishell: Memory allocation failed");
 			*fail_flag = 1;
 			return (NULL);
 		}
@@ -75,7 +75,7 @@ static char	*get_command_path(char *cmd, char **envp, int *fail_flag)
 	paths = ft_split(path_env, ':');
 	if (!paths)
 	{
-		perror("minishell: Memory allocation failed1");
+		perror("minishell: Memory allocation failed");
 		*fail_flag = 1;
 		return (NULL);
 	}
@@ -89,20 +89,29 @@ static char	*get_command_path(char *cmd, char **envp, int *fail_flag)
 	return (full_path);
 }
 
-void	set_command_path(t_ast *node, t_shell *shell)
+int	set_command_path(t_ast *node, t_shell *shell)
 {
 	int		fail_flag;
+	int		path;
 
+	fail_flag = 0;
 	if (node == NULL)
-		return ;
+		return (0);
 	if (!node->cmd && node->type != NODE_PIPE)
-		return ;
-	set_command_path(node->right, shell);
-	set_command_path(node->left, shell);
-	if (node->type == NODE_COMMAND)
+		return (0);
+	if (set_command_path(node->right, shell))
+		return (1);
+	if (set_command_path(node->left, shell))
+		return (1);
+	if ((current_path(node->cmd) || command_is_path(node->cmd)))
+		path = 1;
+	else
+		path = 0;
+	if (node->type == NODE_COMMAND && node->cmd != NULL && !path)
 	{
 		node->cmd_path = get_command_path(node->cmd, shell->env, &fail_flag);
 		if (fail_flag == 1)
-			cleanup_shell(shell);
+			return (1);
 	}
+	return (0);
 }

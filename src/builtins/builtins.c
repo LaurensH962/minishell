@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int ft_echo(char **args, t_shell *shell)
+int ft_echo(char **args)
 {
 	int i;
 	int newline;
@@ -22,21 +22,27 @@ int ft_echo(char **args, t_shell *shell)
 	}
 	if (newline)
 		printf("\n");
-	cleanup_shell(shell);
 	return (0);
 }
 
 
-int	ft_cd(t_shell *shell, t_ast *node) //doesnt work
+int	ft_cd(t_shell *shell, t_ast *node)
 {
 	char	*oldpwd;
 	char	*newpwd;
 
+	oldpwd = NULL;
 	if(node->args[2] != NULL)
+	{
 		report_error("cd", "to many arguments");
+		return (1);
+	}
 	if(node->args[1] == NULL)
+	{
 		report_error("cd", "missing arguments");
-	if (chdir(node->args[1]) != 0) 
+		return (1);
+	}
+	if (chdir(node->args[1]) != 0)
 	{
 		perror("minishell: cd");
 		return (1);
@@ -47,7 +53,7 @@ int	ft_cd(t_shell *shell, t_ast *node) //doesnt work
         if (strncmp(shell->env[i], "PWD=", 4) == 0)
         {
             oldpwd = strdup(shell->env[i] + 4); // Skip the "PWD=" part
-            break;
+            break ;
         }
         i++;
     }
@@ -55,13 +61,17 @@ int	ft_cd(t_shell *shell, t_ast *node) //doesnt work
 	if (!newpwd)
     {
         perror("minishell: getcwd");
+		if (oldpwd)
+			free(oldpwd);
         return (1);
     }
 	if (oldpwd)
+	{
         ft_setenv("OLDPWD", oldpwd, &shell->env);
+		free(oldpwd);
+	}
     ft_setenv("PWD", newpwd, &shell->env);
     free(newpwd);
-	cleanup_shell(shell);
     return (0);
 }
 /*int ft_cd(char *path)
@@ -101,29 +111,35 @@ int	ft_cd(t_shell *shell, t_ast *node) //doesnt work
 	return (0);
 }*/
 
-void ft_exit(char **args, t_shell *shell) //needs to exit minishell // doesnt work with more than 1 argument // needs to be execute in the parent process
+void ft_exit(char **args)
 {
 	int status;
 
 	status = 0;
-	if (args == NULL || !args[1] || args[2])
+	if (args[1] == NULL)
 	{
-		cleanup_shell(shell);
+		//cleanup_shell(shell);
 		exit(status);
 	}
-	if(is_number(args[1]))
+	if (args[1])
 	{
-		status = ft_atoi(args[1]);
-		if (status < 0)
-			status = 255;
-		cleanup_shell(shell);
-		exit(status);
-	}
-	else
-	{
-		cleanup_shell(shell);
-		printf("minishell: exit: %s: numeric argument required\n", args[1]);
-		exit(255);
+		if (args[2] != NULL)
+		{
+			printf("minishell: exit: too many arguments\n");
+			exit (1);
+		}
+		if(is_number(args[1]))
+		{
+			status = ft_atoi(args[1]);
+			if (status < 0 || status > 255)
+				status = (status % 256 + 256) % 256;
+			exit(status);
+		}
+		else
+		{
+			printf("minishell: exit: %s: numeric argument required\n", args[1]);
+			exit(2);
+		}
 	}
 }
 
