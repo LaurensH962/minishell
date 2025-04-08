@@ -11,6 +11,7 @@ t_token	*get_next_token(t_token **tokens)
 	return (current);
 }
 
+//test
 t_ast	*parse_redirection(t_token **tokens, t_ast *command,
 		t_token *redirection_token, t_token *filename_token)
 {
