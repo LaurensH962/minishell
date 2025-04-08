@@ -1,6 +1,8 @@
 
 #include "minishell.h"
 
+// test 42
+
 void	execute_ast(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 {
     int pipe_fd[2];
