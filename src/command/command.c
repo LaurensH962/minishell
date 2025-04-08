@@ -22,6 +22,8 @@ void	execute_ast(t_shell *shell, t_ast *node, int in_fd, int out_fd)
         execute_command(shell, node, in_fd, out_fd);
 }
 
+//test
+
 void    execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 {
     pid_t pid;
