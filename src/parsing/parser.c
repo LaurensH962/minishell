@@ -11,7 +11,6 @@ t_token	*get_next_token(t_token **tokens)
 	return (current);
 }
 
-//test
 t_ast	*parse_redirection(t_token **tokens, t_ast *command,
 		t_token *redirection_token, t_token *filename_token)
 {
@@ -43,13 +42,6 @@ t_ast	*parse_redirection(t_token **tokens, t_ast *command,
 	return (command);
 }
 
-/*	command_node->type = NODE_COMMAND;
-	command_node->cmd = NULL;
-	command_node->args = NULL;
-	command_node->redirections = NULL;
-	command_node->left = NULL;
-	command_node->right = NULL;
-	command_node = parse_redirection(tokens, command_node);*/
 t_ast	*parse_command(t_token **tokens, t_token *token, int arg_count,
 		int args_capacity)
 {
