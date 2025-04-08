@@ -6,7 +6,7 @@
 /*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:58:55 by lhaas             #+#    #+#             */
-/*   Updated: 2025/04/08 12:25:16 by lhaas            ###   ########.fr       */
+/*   Updated: 2025/04/08 17:00:32 by lhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,15 +93,45 @@ typedef struct s_lexer
 	int					was_expanded;
 }						t_lexer;
 
-t_ast					*parse(t_token *tokens);
+// expansion
 
+void					lexer_expander(t_lexer *lexer, char **token_value);
+t_token					*split_expanded_value(t_token *head, char *token_value,
+							char *word);
+char					*expand_variable(const char *input, size_t *pos,
+							t_lexer *lexer);
+char					*get_env_value(char **env, const char *var_name);
+
+// expansion_utils
+char					*handle_special_cases(const char *input, size_t *pos,
+							t_lexer *lexer);
+bool					extract_var_name(const char *input, size_t *start,
+							char *var_name);
+char					*lookup_and_expand(char *var_name, t_lexer *lexer);
+
+// create tokens
+t_token					*create_delim_token(t_lexer *lexer);
 t_token					*new_token(t_token_type type, char *value);
 void					add_token(t_token **head, t_token *new);
-void					free_structs(t_shell *shell);
-void					print_tokens(t_token *tokens);
+t_token					*lexer_try_delim_token(t_lexer *lexer, char quote_char);
+t_token					*lexer_process_token_value(t_lexer *lexer,
+							char *token_value);
+
+// lexer
 t_token					*lexer_next_token(t_lexer *lexer, t_token *temp_token,
 							char quote_char, char *token_value);
 t_token					*lexer(char *line, t_shell *shell);
+
+// lexer_utils
+bool					lexer_skip_whitespaces(t_lexer *lexer, char quote_char);
+void					lexer_quotes(char *quote_char, t_lexer *lexer, int *pos,
+							char **token_value);
+char					*get_env_value(char **env, const char *var_name);
+
+t_ast					*parse(t_token *tokens);
+
+void					free_structs(t_shell *shell);
+void					print_tokens(t_token *tokens);
 
 // utils
 int						is_delimiter(char c);
@@ -110,7 +140,6 @@ char					*ft_strjoin_minishell(char const *s1, char const *s2,
 							t_lexer *lexer);
 
 // commmand + pipes
-
 void					execute_pipeline(t_shell *shell);
 void					handle_heredoc(int *heredoc_pipe, t_ast *node,
 							t_shell *shell);
