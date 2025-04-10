@@ -30,8 +30,11 @@ int	ft_cd(t_shell *shell, t_ast *node)
 {
 	char	*oldpwd;
 	char	*newpwd;
+	char	*home;
+	int i = 0;
 
 	oldpwd = NULL;
+	home = NULL;
 	if(node->args[2] != NULL)
 	{
 		report_error("cd", "to many arguments");
@@ -39,15 +42,30 @@ int	ft_cd(t_shell *shell, t_ast *node)
 	}
 	if(node->args[1] == NULL)
 	{
-		report_error("cd", "missing arguments");
-		return (1);
+    	while (shell->env[i])
+		{
+			if (strncmp(shell->env[i], "HOME=", 5) == 0)
+			{
+				home = strdup(shell->env[i] + 5); // Skip "PWD="
+				if (!home)
+				{
+					perror("minishell: malloc");
+					return (1);
+				}
+				break;
+			}
+			i++;
+		}
+		chdir(home);
+		free(home);
+		return (0);
 	}
 	if (chdir(node->args[1]) != 0)
 	{
 		perror("minishell: cd");
 		return (1);
 	}
-	int i = 0;
+	i = 0;
 	while (shell->env[i])
     {
         if (strncmp(shell->env[i], "PWD=", 4) == 0)
@@ -74,6 +92,7 @@ int	ft_cd(t_shell *shell, t_ast *node)
     free(newpwd);
     return (0);
 }
+
 /*int ft_cd(char *path)
 {
 	char *home;
@@ -160,4 +179,87 @@ int ft_pwd(void)
 		return (1);
 	}
 	return (0);
+}
+
+void	set_pwd(t_shell *shell)
+{
+	int		i;
+	int		j;
+	char	*home;
+
+	j = 0;
+	i = 0;
+	while (shell->env[i])
+	{
+		if (strncmp(shell->env[i], "HOME=", 5) == 0)
+		{
+			home = strdup(shell->env[i] + 5); // Skip "HOME="
+			if (!home)
+			{
+				perror("minishell: malloc");
+				return ;
+			}
+			while(shell->env[j])
+			{
+				if(strncmp(shell->env[j], "PWD=", 4) == 0)
+				{
+					free(shell->env[j]);
+					shell->env[j] = ft_strjoin("PWD=", home);
+					if (!shell->env[j])
+					{
+						perror("minishell: malloc");
+						free(home);
+						return ;
+					}
+					break ;
+				}
+				j++;
+			}
+			free(home);
+			break ;
+		}
+		i++;
+	}
+}
+
+void	set_oldpwd(t_shell *shell)
+{
+	int		i;
+	int		j;
+	char	*home;
+
+	j = 0;
+	i = 0;
+	while (shell->env[i])
+	{
+		if (strncmp(shell->env[i], "HOME=", 5) == 0)
+		{
+			home = strdup(shell->env[i] + 5); // Skip "HOME="
+			if (home)
+			{
+				perror("minishell: malloc");
+				return ;
+			}
+			while(shell->env[j])
+			{
+				if(strncmp(shell->env[j], "OLDPWD=", 4) == 0)
+				{
+					free(shell->env[j]);
+					shell->env[j] = ft_strjoin("OLDPWD=", home);
+					if (!shell->env[j])
+					{
+						perror("minishell: malloc");
+						free(home);
+						return ;
+					}
+					break ;
+				}
+				j++;
+			}
+			//if not found because unset, would I need to append it ?
+			free(home);
+			break ;
+		}
+		i++;
+	}
 }

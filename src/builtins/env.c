@@ -13,10 +13,7 @@ int		copy_environ(char **envp, char ***env)
 		return (1);
 	*env = malloc(sizeof(char *) * (count + 1));
 	if (*env == NULL)
-	{
-		perror("minishell: malloc");
-		return (1);
-	}
+		return(perror_return_malloc());
 	i = 0;
 	while(i < count)
 	{

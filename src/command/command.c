@@ -31,40 +31,50 @@ void    execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd)
     pid_t pid;
     int status;
 
-    pid = fork();
-    if(pid == -1)
+    if(check_if_env_builtin(node))
+        shell->status_last_command = execute_builtin_env(node, shell);
+    else
     {
-        //cleanup_shell(shell);
-        perror("minishell: pipe");
-        exit(1);
-    }
-    if (pid == 0)
-    {
-        handle_redirections(node, in_fd, out_fd, shell);
-        if (node->cmd == NULL)
-        exit (0);
-        if (check_if_builtin(node))
-            execute_builtin(node, shell);
-        check_command_access(node);
-        execve(node->cmd_path, node->args, shell->export);
-        perror("minishell: execve");
-		cleanup_shell(shell);
-		exit(1);
-    }
-    waitpid(pid, &status, 0);
-    if (WIFEXITED(status))
-    {
-        if(ft_strcmp(node->args[0], "exit") == 0)
+        pid = fork();
+        if(pid == -1)
         {
             //cleanup_shell(shell);
-            shell->status_last_command = WEXITSTATUS(status);
-            exit(shell->status_last_command);
+            perror("minishell: pipe");
+            exit(1);
         }
-    }
-    else if (WIFSIGNALED(status) && check_if_builtin(node) == 0)
-    {
-        shell->status_last_command = 128 + WTERMSIG(status);
-        printf("%s: terminated by signal %d\n", node->cmd, WTERMSIG(status));
+        if (pid == 0)
+        {
+            handle_redirections(node, in_fd, out_fd, shell);
+            if (node->cmd == NULL)
+                exit (0);
+            if (check_if_builtin(node))
+                execute_builtin(node, shell);
+            check_command_access(node);
+            execve(node->cmd_path, node->args, shell->export);
+            perror("minishell: execve");
+            cleanup_shell(shell);
+            exit(1);
+        }
+        waitpid(pid, &status, 0);
+        if (WIFEXITED(status))
+        {
+            if (node->args != NULL)
+            {
+                if(ft_strcmp(node->args[0], "exit") == 0)
+                {
+                    //cleanup_shell(shell);
+                    shell->status_last_command = WEXITSTATUS(status);
+                    cleanup_shell(shell);
+                    exit(shell->status_last_command);
+                }
+            }
+            shell->status_last_command = WEXITSTATUS(status);
+        }
+        else if (WIFSIGNALED(status) && check_if_builtin(node) == 0)
+        {
+            shell->status_last_command = 128 + WTERMSIG(status);
+            printf("%s: terminated by signal %d\n", node->cmd, WTERMSIG(status));
+        }
     }
 }
 

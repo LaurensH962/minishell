@@ -182,6 +182,9 @@ int						ft_echo(char **args);
 int						ft_cd(t_shell *shell, t_ast *node);
 void					ft_exit(char **args);
 int						ft_pwd(void);
+int						execute_builtin_env(t_ast *node, t_shell *shell);
+int 					check_if_env_builtin(t_ast *node);
+int						perror_malloc_return(void);
 
 // printing
 void					print_tokens(t_token *tokens);

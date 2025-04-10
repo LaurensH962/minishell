@@ -22,3 +22,9 @@ int is_number(const char *str)
 	}
 	return (1);
 }
+
+int	perror_malloc_return(void)
+{
+	perror("minishell: malloc");
+	return (1);
+}
