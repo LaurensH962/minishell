@@ -92,7 +92,6 @@ int	ft_cd(t_shell *shell, t_ast *node)
     free(newpwd);
     return (0);
 }
-
 /*int ft_cd(char *path)
 {
 	char *home;
@@ -136,10 +135,7 @@ void ft_exit(char **args)
 
 	status = 0;
 	if (args[1] == NULL)
-	{
-		//cleanup_shell(shell);
 		exit(status);
-	}
 	if (args[1])
 	{
 		if (args[2] != NULL)

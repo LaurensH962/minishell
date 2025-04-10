@@ -144,7 +144,6 @@ static void remove_variable(char ***env, const char *var)
 	int j;
 
 	i = 0;
-
 	if (!env || !*env)
         return ;
 	while ((*env)[i] != NULL)
@@ -195,5 +194,8 @@ int ft_env(t_shell *shell)
     }
 	return (0);
 }
+
+
+
 
 
