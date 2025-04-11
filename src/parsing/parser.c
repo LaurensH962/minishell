@@ -1,45 +1,20 @@
 #include "minishell.h"
 
-t_token	*get_next_token(t_token **tokens)
+static t_ast	*init_command(t_ast *command_node, t_token **tokens)
 {
-	t_token	*current;
-
-	if (*tokens == NULL)
-		return (NULL);
-	current = *tokens;
-	*tokens = (*tokens)->next;
-	return (current);
+	command_node->type = NODE_COMMAND;
+	command_node->cmd_path = NULL;
+	return (parse_redirection(tokens, command_node, NULL, NULL));
 }
 
-t_ast	*parse_redirection(t_token **tokens, t_ast *command,
-		t_token *redirection_token, t_token *filename_token)
+static char	**resize_args(char **args, int *args_capacity)
 {
-	t_redirect	*redir;
-	t_redirect	**redir_ptr;
+	int	old_capacity;
 
-	redir_ptr = &command->redirections;
-	while (*tokens && is_redirect((*tokens)->type))
-	{
-		redirection_token = get_next_token(tokens);
-		filename_token = get_next_token(tokens);
-		if (!filename_token || filename_token->type != TOKEN_WORD)
-			return (NULL);
-		redir = ft_calloc(1, sizeof(t_redirect));
-		redir->file = ft_strdup(filename_token->value);
-		redir->next = NULL;
-		if (redirection_token->type == TOKEN_REDIRECT_OUT)
-			redir->type = NODE_REDIRECT_OUT;
-		else if (redirection_token->type == TOKEN_REDIRECT_IN)
-			redir->type = NODE_REDIRECT_IN;
-		else if (redirection_token->type == TOKEN_APPEND)
-			redir->type = NODE_APPEND;
-		else if (redirection_token->type == TOKEN_HEREDOC)
-			redir->type = NODE_HEREDOC;
-		while (*redir_ptr)
-			redir_ptr = &(*redir_ptr)->next;
-		*redir_ptr = redir;
-	}
-	return (command);
+	old_capacity = *args_capacity;
+	*args_capacity *= 2;
+	return (ft_realloc(args, sizeof(char *) * old_capacity, sizeof(char *)
+			* (*args_capacity)));
 }
 
 t_ast	*parse_command(t_token **tokens, t_token *token, int arg_count,
@@ -49,9 +24,7 @@ t_ast	*parse_command(t_token **tokens, t_token *token, int arg_count,
 	char	**args;
 
 	command_node = ft_calloc(1, sizeof(t_ast));
-	command_node->type = NODE_COMMAND;
-	command_node->cmd_path = NULL;
-	command_node = parse_redirection(tokens, command_node, NULL, NULL);
+	command_node = init_command(command_node, tokens);
 	if (*tokens == NULL || (*tokens)->type != TOKEN_WORD || !command_node)
 		return (command_node);
 	token = get_next_token(tokens);
@@ -65,11 +38,7 @@ t_ast	*parse_command(t_token **tokens, t_token *token, int arg_count,
 		if (*tokens == NULL || (*tokens)->type != TOKEN_WORD)
 			break ;
 		if (arg_count >= args_capacity - 1)
-		{
-			args_capacity *= 2;
-			args = ft_realloc(args, sizeof(char *) * args_capacity / 2,
-					sizeof(char *) * args_capacity);
-		}
+			args = resize_args(args, &args_capacity);
 		token = get_next_token(tokens);
 		args[arg_count++] = ft_strdup(token->value);
 	}
@@ -114,6 +83,6 @@ t_ast	*parse(t_token *tokens)
 
 	tree = parse_pipeline(&tokens, NULL, NULL, NULL);
 	if (!tree)
-		return(NULL);
+		return (NULL);
 	return (parse_redirection(&tokens, tree, NULL, NULL));
 }

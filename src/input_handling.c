@@ -98,10 +98,12 @@ int	main(int argc, char **argv, char **envp)
 	char	*line;
 	t_ast	*ast;
 	t_shell *shell;
+	char 	*syntax_error;
 
 
 	argc = 0;
 	argv = NULL;
+	syntax_error = NULL;
 	//save_original_terminal();
 	setup_signal_handlers();
 	//suppress_output();
@@ -139,22 +141,25 @@ int	main(int argc, char **argv, char **envp)
 		}
 		add_history(line);
 		shell->tokens = lexer(line, shell);
-		if (!shell->tokens)
+		syntax_error = syntax_checker(shell->tokens);
+		if (syntax_error != NULL)
 		{
+			printf("%s\n", syntax_error);
+			free (syntax_error);
 			free_structs(shell);
 			free(shell);
 			free(line);
 			continue ;
 		}
+		//print_tokens(shell->tokens);
 		ast = parse(shell->tokens);
 		if (!ast)
 		{
 			free_structs(shell);
 			free(line);
-			break;
+			continue;
 		}
 		shell->node = ast;
-		print_tokens(shell->tokens);
 		if (!set_command_path(shell->node, shell))
 			execute_pipeline(shell);
 		//printf ("cmd = %s\n", shell->node->cmd);

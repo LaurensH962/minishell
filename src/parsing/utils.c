@@ -49,4 +49,3 @@ void	free_structs(t_shell *shell)
 	/* if (shell->node)
 		cleanup_ast(shell->node); */
 }
-
