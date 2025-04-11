@@ -6,7 +6,7 @@
 /*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:58:55 by lhaas             #+#    #+#             */
-/*   Updated: 2025/04/11 14:02:03 by lhaas            ###   ########.fr       */
+/*   Updated: 2025/04/11 14:55:57 by lhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,7 @@ t_ast					*parse_redirection(t_token **tokens, t_ast *command,
 void					fill_redir_type(t_redirect *redir,
 							t_token *redirection_token);
 t_token					*get_next_token(t_token **tokens);
+char					*syntax_checker(t_token *tokens);
 
 void					free_structs(t_shell *shell);
 void					print_tokens(t_token *tokens);
