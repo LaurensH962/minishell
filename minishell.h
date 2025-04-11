@@ -6,7 +6,7 @@
 /*   By: ablodorn <ablodorn@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:58:55 by lhaas             #+#    #+#             */
-/*   Updated: 2025/04/11 12:12:03 by ablodorn         ###   ########.fr       */
+/*   Updated: 2025/04/11 14:55:57 by lhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,15 @@ void					lexer_quotes(char *quote_char, t_lexer *lexer, int *pos,
 							char **token_value);
 char					*get_env_value(char **env, const char *var_name);
 
+// parser
 t_ast					*parse(t_token *tokens);
+t_ast					*parse_redirection(t_token **tokens, t_ast *command,
+							t_token *redirection_token,
+							t_token *filename_token);
+void					fill_redir_type(t_redirect *redir,
+							t_token *redirection_token);
+t_token					*get_next_token(t_token **tokens);
+char					*syntax_checker(t_token *tokens);
 
 void					free_structs(t_shell *shell);
 void					print_tokens(t_token *tokens);
@@ -183,7 +191,7 @@ int						ft_cd(t_shell *shell, t_ast *node);
 void					ft_exit(char **args);
 int						ft_pwd(void);
 int						execute_builtin_env(t_ast *node, t_shell *shell);
-int 					check_if_env_builtin(t_ast *node);
+int						check_if_env_builtin(t_ast *node);
 int						perror_malloc_return(void);
 void					set_pwd(t_shell *shell);
 void					set_oldpwd(t_shell *shell);
