@@ -144,6 +144,7 @@ int	main(int argc, char **argv, char **envp)
 		if (syntax_error != NULL)
 		{
 			printf("%s\n", syntax_error);
+			free (syntax_error);
 			free_structs(shell);
 			free(shell);
 			free(line);
