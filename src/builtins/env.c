@@ -13,7 +13,7 @@ int		copy_environ(char **envp, char ***env)
 		return (1);
 	*env = malloc(sizeof(char *) * (count + 1));
 	if (*env == NULL)
-		return(perror_return_malloc());
+		return(perror_malloc_return());
 	i = 0;
 	while(i < count)
 	{

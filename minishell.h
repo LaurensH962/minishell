@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
+/*   By: ablodorn <ablodorn@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:58:55 by lhaas             #+#    #+#             */
-/*   Updated: 2025/04/08 17:00:32 by lhaas            ###   ########.fr       */
+/*   Updated: 2025/04/11 12:12:03 by ablodorn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,6 +185,8 @@ int						ft_pwd(void);
 int						execute_builtin_env(t_ast *node, t_shell *shell);
 int 					check_if_env_builtin(t_ast *node);
 int						perror_malloc_return(void);
+void					set_pwd(t_shell *shell);
+void					set_oldpwd(t_shell *shell);
 
 // printing
 void					print_tokens(t_token *tokens);
