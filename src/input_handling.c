@@ -153,7 +153,7 @@ int	main(int argc, char **argv, char **envp)
 			break;
 		}
 		shell->node = ast;
-		print_tokens(shell->tokens);
+		//print_tokens(shell->tokens);
 		if (!set_command_path(shell->node, shell))
 			execute_pipeline(shell);
 		//printf ("cmd = %s\n", shell->node->cmd);
