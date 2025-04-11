@@ -28,3 +28,9 @@ int	perror_malloc_return(void)
 	perror("minishell: malloc");
 	return (1);
 }
+
+int	perror_cd_return(void)
+{
+	perror("minishell: cd");
+	return (1);
+}
