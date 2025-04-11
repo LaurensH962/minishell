@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
+/*   By: ablodorn <ablodorn@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:58:55 by lhaas             #+#    #+#             */
 /*   Updated: 2025/04/11 14:55:57 by lhaas            ###   ########.fr       */
