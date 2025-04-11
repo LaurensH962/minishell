@@ -23,7 +23,7 @@ void cleanup_ast(t_ast *node)
     cleanup_ast(node->left);   // Recursively clean up left child
     cleanup_ast(node->right);  // Recursively clean up right child
     cleanup_redirect(node->redirections); // Clean up redirections
-    free(node->cmd);           // Free command string
+    free(node->cmd);          // Free command string
     free(node->cmd_path);      // Free command path string
     if (node->args)
     {
@@ -33,6 +33,7 @@ void cleanup_ast(t_ast *node)
         free(node->args);        // Free the argument array itself
     }
     free(node);                  // Finally, free the node itself
+    node = NULL;
 }
 
 void cleanup_shell(t_shell *shell)
@@ -41,7 +42,7 @@ void cleanup_shell(t_shell *shell)
 
     if (shell == NULL)
         return;
-    cleanup_ast(shell->node);    // Clean up AST nodes
+    free_structs(shell);    // Clean up AST nodes
     if (shell->env)
     {
         i = 0;
@@ -56,6 +57,7 @@ void cleanup_shell(t_shell *shell)
             free(shell->export[i++]);
         free(shell->export);          // Free environment array
     }
+    free(shell);
 }
 
 /*void free_array(char **array, int len)

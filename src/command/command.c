@@ -5,7 +5,7 @@ static void     handle_redirections(t_ast *node, int in_fd, int out_fd, t_shell 
 {
     int fd_read;
     int fd_write;
-    //int heredoc_pipe[2];
+    int heredoc_pipe[2];
     t_redirect *redir;
 
     redir = node->redirections;
@@ -27,21 +27,24 @@ static void     handle_redirections(t_ast *node, int in_fd, int out_fd, t_shell 
             handle_outputfile(&fd_write, node);
         if (redir->type == NODE_APPEND)
             handle_outputfile(&fd_write, node);
-        //if (redir->type == NODE_HEREDOC)
-            //handle_heredoc(heredoc_pipe, node, shell);
+        if (redir->type == NODE_HEREDOC)
+            handle_heredoc(heredoc_pipe, node, shell);
         redir = redir->next;
     }
 }
 
 static void	set_exitstatus(t_shell *shell, t_ast *node, int status)
 {
+    int copy_last_command;
+
 	if (node->args != NULL)
 	{
 		if(ft_strcmp(node->args[0], "exit") == 0)
 		{
 			shell->status_last_command = WEXITSTATUS(status);
+            copy_last_command = shell->status_last_command;
 			cleanup_shell(shell);
-			exit(shell->status_last_command);
+			exit(copy_last_command);
 		}
 	}
 	shell->status_last_command = WEXITSTATUS(status);
@@ -73,7 +76,7 @@ static void   execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd
             check_command_access(node);
             execve(node->cmd_path, node->args, shell->export);
             perror("minishell: execve");
-            cleanup_shell(shell);
+            //cleanup_shell(shell);
             exit(1);
         }
         waitpid(pid, &status, 0);
@@ -95,7 +98,7 @@ static void	execute_ast(t_shell *shell, t_ast *node, int in_fd, int out_fd)
     {
         if (pipe(pipe_fd) == -1)
         {
-            cleanup_shell(shell);
+            //cleanup_shell(shell);
             perror("minishell: pipe");
             exit(1);
         }

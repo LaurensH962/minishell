@@ -1,17 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ablodorn <ablodorn@student.hive.fi>        +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/05 13:58:55 by lhaas             #+#    #+#             */
-/*   Updated: 2025/04/11 15:10:52 by ablodorn         ###   ########.fr       */
-=======
-/*   Updated: 2025/04/11 14:55:57 by lhaas            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -157,15 +143,7 @@ void					handle_inputfile(int *fd_read, t_ast *node);
 void					handle_outputfile(int *fd_write, t_ast *node);
 void					execute_builtin(t_ast *node, t_shell *shell);
 int						check_if_builtin(t_ast *node);
-void					handle_redirections(t_ast *node, int in_fd, int out_fd,
-							t_shell *shell);
-void					execute_command(t_shell *shell, t_ast *node, int in_fd,
-							int out_fd);
-void					execute_ast(t_shell *shell, t_ast *node, int in_fd,
-							int out_fd);
-// char	*get_command_path(char *cmd, char **envp, int *fail_flag);
 int						set_command_path(t_ast *node, t_shell *shell);
-// void					handle_path(t_shell *shell, t_ast *node);
 
 // access
 

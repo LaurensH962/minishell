@@ -3,15 +3,15 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+         #
+#    By: ablodorn <ablodorn@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/28 16:36:18 by lhaas             #+#    #+#              #
-#    Updated: 2025/04/07 14:02:55 by lhaas            ###   ########.fr        #
+#    Updated: 2025/04/11 15:58:16 by ablodorn         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME := minishell
-CFLAGS := -Wall -Wextra -Werror -g
+CFLAGS := -Wall -Wextra -Werror -g 
 LDFLAGS := -lreadline
 LIBFT := libft
 
