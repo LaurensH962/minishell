@@ -110,8 +110,9 @@ int	main(int argc, char **argv, char **envp)
 	shell = ft_calloc(1, sizeof(t_shell));
 	if (copy_environ(envp, &shell->env))
 		exit (1);
-	set_pwd(shell);
-	set_oldpwd(shell);
+	//set_pwd(shell);
+	//set_oldpwd(shell);
+	//set_default_home(shell);
 	while (1)
 	{
 		//export_default_variables(shell);

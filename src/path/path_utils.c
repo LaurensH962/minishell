@@ -26,12 +26,3 @@ int	command_is_path(char *argv)
 	else
 		return (0);
 }
-
-/*void	handle_path(t_shell *shell, t_ast *node)
-{
-
-	if (current_path(node->cmd) || command_is_path(node->cmd))
-		return ;
-	else
-		set_command_path(node, shell);
-}*/
