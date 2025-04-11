@@ -53,13 +53,13 @@ void	handle_sigint(int sig)
 	rl_redisplay();
 }
 
-void	handle_exit(int sig)
-{
-	(void)sig;
-	//restore_terminal();
-	printf("\nexit\n");
-	exit(0);
-}
+// void	handle_exit(int sig)
+// {
+// 	(void)sig;
+// 	//restore_terminal();
+// 	printf("\nexit\n");
+// 	exit(0);
+// }
 
 /* 2 different signal handlers. 1 for Ctrl-C (SIGINT): sa_int and one to
 ignore Ctrl-\ (SIG_QUIT). define the handler for when SIGINT is received
@@ -73,7 +73,7 @@ void	setup_signal_handlers(void)
 {
 	struct sigaction	sa_int;
 	struct sigaction	sa_quit;
-	struct sigaction	sa_exit;
+	//struct sigaction	sa_exit;
 
 	sa_int.sa_handler = handle_sigint;
 	sigemptyset(&sa_int.sa_mask);
@@ -83,11 +83,11 @@ void	setup_signal_handlers(void)
 	sigemptyset(&sa_quit.sa_mask);
 	sa_quit.sa_flags = 0;
 	sigaction(SIGQUIT, &sa_quit, NULL);
-	sa_exit.sa_handler = handle_exit;
-	sigemptyset(&sa_exit.sa_mask);
-	sa_exit.sa_flags = 0;
-	sigaction(SIGHUP, &sa_exit, NULL);
-	sigaction(SIGTERM, &sa_exit, NULL);
+	//sa_exit.sa_handler = handle_exit;
+	//sigemptyset(&sa_exit.sa_mask);
+	//sa_exit.sa_flags = 0;
+	//sigaction(SIGHUP, &sa_exit, NULL);
+	//sigaction(SIGTERM, &sa_exit, NULL);
 }
 
 /* first sigal handling is initiated. then while(1) to recreate shell. minishell> will be displayed
@@ -133,9 +133,8 @@ int	main(int argc, char **argv, char **envp)
 		//line = readline("minishell: ");
 		if (!line)
 		{
-
 			//restore_terminal();
-			free_structs(shell);
+			//free_structs(shell);
 			printf("exit\n");
 			break ;
 		}
@@ -147,7 +146,7 @@ int	main(int argc, char **argv, char **envp)
 			printf("%s\n", syntax_error);
 			free (syntax_error);
 			free_structs(shell);
-			free(shell);
+			//free(shell);
 			free(line);
 			continue ;
 		}
@@ -172,13 +171,13 @@ int	main(int argc, char **argv, char **envp)
 		//printf("\n");
 
 		//execute_pipeline(shell);
-
 		free_structs(shell);
 		//free_array(shell->env);
 		//printf("%i\n", shell->status_last_command);
 		// printf("You entered: %s\n", line);
 		free(line);
 	}
+	cleanup_shell(shell);
 	//restore_terminal();
 	return (0);
 }
