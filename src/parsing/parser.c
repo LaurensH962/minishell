@@ -11,6 +11,18 @@ t_token	*get_next_token(t_token **tokens)
 	return (current);
 }
 
+void	fill_redirect_type(t_redirect *redir, t_token *redirection_token)
+{
+	if (redirection_token->type == TOKEN_REDIRECT_OUT)
+			redir->type = NODE_REDIRECT_OUT;
+		else if (redirection_token->type == TOKEN_REDIRECT_IN)
+			redir->type = NODE_REDIRECT_IN;
+		else if (redirection_token->type == TOKEN_APPEND)
+			redir->type = NODE_APPEND;
+		else if (redirection_token->type == TOKEN_HEREDOC)
+			redir->type = NODE_HEREDOC;
+}
+
 t_ast	*parse_redirection(t_token **tokens, t_ast *command,
 		t_token *redirection_token, t_token *filename_token)
 {
@@ -27,19 +39,22 @@ t_ast	*parse_redirection(t_token **tokens, t_ast *command,
 		redir = ft_calloc(1, sizeof(t_redirect));
 		redir->file = ft_strdup(filename_token->value);
 		redir->next = NULL;
-		if (redirection_token->type == TOKEN_REDIRECT_OUT)
-			redir->type = NODE_REDIRECT_OUT;
-		else if (redirection_token->type == TOKEN_REDIRECT_IN)
-			redir->type = NODE_REDIRECT_IN;
-		else if (redirection_token->type == TOKEN_APPEND)
-			redir->type = NODE_APPEND;
-		else if (redirection_token->type == TOKEN_HEREDOC)
-			redir->type = NODE_HEREDOC;
+		fill_redirect_type(redir, redirection_token);
 		while (*redir_ptr)
 			redir_ptr = &(*redir_ptr)->next;
 		*redir_ptr = redir;
 	}
 	return (command);
+}
+
+static t_ast	*init_command_node(t_token **tokens)
+{
+	t_ast	*command_node;
+
+	command_node = ft_calloc(1, sizeof(t_ast));
+	command_node->type = NODE_COMMAND;
+	command_node = parse_redirection(tokens, command_node, NULL, NULL);
+	return command_node;
 }
 
 t_ast	*parse_command(t_token **tokens, t_token *token, int arg_count,
@@ -48,10 +63,7 @@ t_ast	*parse_command(t_token **tokens, t_token *token, int arg_count,
 	t_ast	*command_node;
 	char	**args;
 
-	command_node = ft_calloc(1, sizeof(t_ast));
-	command_node->type = NODE_COMMAND;
-	command_node->cmd_path = NULL;
-	command_node = parse_redirection(tokens, command_node, NULL, NULL);
+	command_node = init_command_node(tokens);
 	if (*tokens == NULL || (*tokens)->type != TOKEN_WORD || !command_node)
 		return (command_node);
 	token = get_next_token(tokens);
