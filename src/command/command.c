@@ -60,6 +60,7 @@ static void   execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd
     else
     {
         pid = fork();
+        signal(SIGINT, SIG_IGN);
         if(pid == -1)
         {
             perror("minishell: pipe");
@@ -68,6 +69,8 @@ static void   execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd
         }
         if (pid == 0)
         {
+            signal(SIGINT, SIG_DFL);
+            signal(SIGQUIT, SIG_DFL);
             handle_redirections(node, in_fd, out_fd, shell);
             if (node->cmd == NULL)
                 exit (0);
@@ -76,17 +79,24 @@ static void   execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd
             check_command_access(node);
             execve(node->cmd_path, node->args, shell->export);
             perror("minishell: execve");
-            //cleanup_shell(shell);
             exit(1);
         }
         waitpid(pid, &status, 0);
         if (WIFEXITED(status))
             set_exitstatus(shell, node, status);
-        else if (WIFSIGNALED(status) && check_if_builtin(node) == 0)
+        else if (WIFSIGNALED(status) /*&& check_if_builtin(node) == 0*/)
         {
             shell->status_last_command = 128 + WTERMSIG(status);
-            printf("%s: terminated by signal %d\n", node->cmd, WTERMSIG(status));
+            //printf("%s: terminated by signal %d\n", node->cmd, WTERMSIG(status));
+            if (WTERMSIG(status) == SIGINT)
+            {
+                printf("\n");
+                rl_on_new_line();
+                rl_replace_line("", 0);
+                rl_redisplay();
+            }
         }
+        setup_signal_handlers();
     }
 }
 

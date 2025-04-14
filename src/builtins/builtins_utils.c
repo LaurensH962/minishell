@@ -34,3 +34,13 @@ int	perror_cd_return(void)
 	perror("minishell: cd");
 	return (1);
 }
+
+int	perror_malloc_free_return(char * key, char *value)
+{
+	perror("minishell: malloc");
+	free(key);
+	free(value);
+	return (1);
+}
+
+
