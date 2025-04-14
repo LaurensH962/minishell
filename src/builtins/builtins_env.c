@@ -194,7 +194,7 @@ int ft_env(t_shell *shell)
 
 
 
-int ft_setenv(const char *key, const char *value, char ***envp)
+/*int ft_setenv(const char *key, const char *value, char ***envp)
 {
     int i = 0;
     int key_len = ft_strlen(key);
@@ -244,5 +244,5 @@ int ft_setenv(const char *key, const char *value, char ***envp)
     free(*envp);
     *envp = new_env;
     return (0);
-}
+}*/
 

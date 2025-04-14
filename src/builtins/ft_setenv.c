@@ -2,27 +2,6 @@
 
 //Updates enviroment variables or creates them if they do not already exist
 
-int ft_setenv(const char *key, const char *value, char ***envp)
-{   
-    char *new_entry;
-
-    new_entry = ft_strjoin(key, value);
-    if (!new_entry)
-        return (1);
-    if (search_for_key(key, value, envp, new_entry))
-        return (0);
-    else
-    {
-        if (add_new_entry(envp, new_entry))
-        {
-            free(new_entry);
-            return (1);
-        }
-        return (0);
-    }
-    
-}
-
 static int search_for_key(const char *key, char ***envp, char *new_entry)
 {
     int i;
@@ -70,7 +49,28 @@ static int add_new_entry(char ***envp, char *new_entry)
     }
     new_env[i++] = new_entry;  // Add the new key=value pair
     new_env[i] = NULL;
-    free_array((*envp), (i - 1));
+    free_array((*envp), -1);
     *envp = new_env;
     return (0);
+}
+
+int ft_setenv(const char *key, const char *value, char ***envp)
+{   
+    char *new_entry;
+
+    new_entry = ft_strjoin(key, value);
+    if (!new_entry)
+        return (1);
+    if (search_for_key(key, value, envp, new_entry))
+        return (0);
+    else
+    {
+        if (add_new_entry(envp, new_entry))
+        {
+            free(new_entry);
+            return (1);
+        }
+        return (0);
+    }
+    
 }

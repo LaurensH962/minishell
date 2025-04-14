@@ -7,7 +7,7 @@ void free_array(char **array, int len)
 	i = 0;
     if (!array)
         return ;
-    while(array[i] && i < len)
+    while(array[i] && (len == -1 || i < len))
 		free(array[i++]);
     free(array);
 }
