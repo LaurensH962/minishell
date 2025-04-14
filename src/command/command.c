@@ -1,14 +1,8 @@
 
 #include "minishell.h"
 
-static void     handle_redirections(t_ast *node, int in_fd, int out_fd, t_shell *shell)
+static void redir_close(int in_fd, int out_fd)
 {
-    int fd_read;
-    int fd_write;
-    int heredoc_pipe[2];
-    t_redirect *redir;
-
-    redir = node->redirections;
     if (in_fd != STDIN_FILENO)
     {
         dup2(in_fd, STDIN_FILENO);
@@ -19,6 +13,17 @@ static void     handle_redirections(t_ast *node, int in_fd, int out_fd, t_shell 
         dup2(out_fd, STDOUT_FILENO);
         close(out_fd);
     }
+}
+
+static void     handle_redirections(t_ast *node, int in_fd, int out_fd, t_shell *shell)
+{
+    int fd_read;
+    int fd_write;
+    int heredoc_pipe[2];
+    t_redirect *redir;
+
+    redir = node->redirections;
+    redir_close(in_fd, out_fd);
     while(redir)
     {
         if (redir->type == NODE_REDIRECT_IN)
