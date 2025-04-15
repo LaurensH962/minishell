@@ -47,5 +47,5 @@ void	free_structs(t_shell *shell)
 		shell->tokens = temp;
 	}
 	if (shell->node)
-		cleanup_ast(shell->node);
+		cleanup_ast(&(shell->node));
 }

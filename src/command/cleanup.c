@@ -14,26 +14,26 @@ void cleanup_redirect(t_redirect *redirect)
     // No need to free `redirect` here, it's already freed during the loop
 }
 
-void cleanup_ast(t_ast *node)
+void cleanup_ast(t_ast **node)
 {
     int i;
 
-    if (node == NULL)
+    if ((*node) == NULL)
         return;
-    cleanup_ast(node->left);   // Recursively clean up left child
-    cleanup_ast(node->right);  // Recursively clean up right child
-    cleanup_redirect(node->redirections); // Clean up redirections
-    free(node->cmd);          // Free command string
-    free(node->cmd_path);      // Free command path string
-    if (node->args)
+    cleanup_ast(&(*node)->left);   // Recursively clean up left child
+    cleanup_ast(&(*node)->right);  // Recursively clean up right child
+    cleanup_redirect((*node)->redirections); // Clean up redirections
+    free((*node)->cmd);          // Free command string
+    free((*node)->cmd_path);      // Free command path string
+    if ((*node)->args)
     {
         i = 0;
-        while (node->args[i])   // Free arguments if they exist
-            free(node->args[i++]);
-        free(node->args);        // Free the argument array itself
+        while ((*node)->args[i])   // Free arguments if they exist
+            free((*node)->args[i++]);
+        free((*node)->args);        // Free the argument array itself
     }
-    free(node);                  // Finally, free the node itself
-    node = NULL;
+    free((*node));                  // Finally, free the node itself
+    (*node) = NULL;
 }
 
 void cleanup_shell(t_shell *shell)

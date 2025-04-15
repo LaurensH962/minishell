@@ -110,12 +110,12 @@ int	main(int argc, char **argv, char **envp)
 	shell = ft_calloc(1, sizeof(t_shell));
 	if (copy_environ(envp, &shell->env))
 		exit (1);
+	//export_default_variables(shell);
 	//set_pwd(shell);
 	//set_oldpwd(shell);
 	//set_default_home(shell);
 	while (1)
 	{
-		//export_default_variables(shell);
 		if (isatty(fileno(stdin)))
 			line = readline("minishell: ");
 		else
@@ -163,14 +163,9 @@ int	main(int argc, char **argv, char **envp)
 			execute_pipeline(shell);
 		//printf ("cmd = %s\n", shell->node->cmd);
 		//print_ast(ast, 1);
-
 		//handle_path(shell, shell->node);
-		//set_command_path(shell->node, shell);
-
 		//print_ast(ast, 1);
 		//printf("\n");
-
-		//execute_pipeline(shell);
 		free_structs(shell);
 		//free_array(shell->env);
 		//printf("%i\n", shell->status_last_command);

@@ -33,7 +33,12 @@ int		copy_environ(char **envp, char ***env)
 //Helper function for export_default_variables
 static void	set_key_value(char **key, char **value, char *env, char* key_value)
 {
-	*value = strdup(env + 4);
+	int key_length;
+
+	key_length = ft_strlen(key_value);
+	*value = ft_strdup(env + key_length);
+	if (!(*value))
+		perror("minishell: malloc");
 	*key =	key_value;
 }
 
@@ -54,10 +59,9 @@ void	export_default_variables(t_shell *shell)
 	i = 0;
 	value = NULL;
 	key = NULL;
-	shell->export = NULL;
+	//shell->export = NULL;
 	while(shell->env[i] != NULL)
 	{
-		printf("test1\n");
 		if(ft_strncmp(shell->env[i], "PATH=", 5) == 0)
 			set_key_value(&key, &value, shell->env[i], "PATH");
 		if(ft_strncmp(shell->env[i], "HOME=", 5) == 0)

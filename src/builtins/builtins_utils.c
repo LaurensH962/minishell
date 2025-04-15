@@ -7,7 +7,7 @@ void free_array(char **array, int len)
 	i = 0;
     if (!array)
         return ;
-    while(array[i] && i < len)
+    while(array[i] && (len == -1 || i < len))
 		free(array[i++]);
     free(array);
 }
@@ -34,3 +34,13 @@ int	perror_cd_return(void)
 	perror("minishell: cd");
 	return (1);
 }
+
+int	perror_malloc_free_return(char * key, char *value)
+{
+	perror("minishell: malloc");
+	free(key);
+	free(value);
+	return (1);
+}
+
+
