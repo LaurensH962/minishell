@@ -92,14 +92,10 @@ static void   execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd
         else if (WIFSIGNALED(status) /*&& check_if_builtin(node) == 0*/)
         {
             shell->status_last_command = 128 + WTERMSIG(status);
-            //printf("%s: terminated by signal %d\n", node->cmd, WTERMSIG(status));
             if (WTERMSIG(status) == SIGINT)
-            {
                 printf("\n");
-                rl_on_new_line();
-                rl_replace_line("", 0);
-                rl_redisplay();
-            }
+            if (WTERMSIG(status) == SIGQUIT)
+                printf("Quit (core dumped)\n");
         }
         setup_signal_handlers();
     }
