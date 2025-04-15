@@ -52,7 +52,9 @@ t_token	*lexer_next_token(t_lexer *lexer, t_token *temp_token, char quote_char,
 		if (token_value == NULL)
 			continue ;
 		temp_token = lexer_process_token_value(lexer, token_value);
+
 		return (free(token_value), temp_token);
+
 	}
 	return (new_token(TOKEN_EOF, NULL));
 }
@@ -75,6 +77,7 @@ t_token	*lexer(char *line, t_shell *shell)
 	current_token = NULL;
 	init_lexer(&tokens, &lexer, shell, line);
 	current_token = lexer_next_token(&lexer, NULL, '\0', NULL);
+	int i = 0;
 	while (current_token->type != TOKEN_EOF)
 	{
 		if (current_token->type == TOKEN_ERROR)
@@ -85,10 +88,13 @@ t_token	*lexer(char *line, t_shell *shell)
 			return (NULL);
 		}
 		add_token(&tokens, current_token);
+
 		current_token = lexer_next_token(&lexer, NULL, '\0', NULL);
+		i++;
 		if (!current_token)
 			return (NULL);
 	}
+
 	add_token(&tokens, current_token);
 	return (tokens);
 }

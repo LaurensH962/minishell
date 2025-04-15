@@ -39,6 +39,7 @@ void	free_structs(t_shell *shell)
 {
 	t_token	*temp;
 
+
 	while (shell->tokens)
 	{
 		temp = shell->tokens->next;
@@ -49,3 +50,4 @@ void	free_structs(t_shell *shell)
 	if (shell->node)
 		cleanup_ast(&(shell->node));
 }
+
