@@ -27,7 +27,10 @@ bool	extract_var_name(const char *input, size_t *start, char *var_name)
 		&& i < 255)
 		var_name[i++] = input[(*start)++];
 	if (i == 0 && input[*start] != '\'' && input[*start] != '"')
+	{
+		printf("im here\n");
 		return (false);
+	}
 	var_name[i] = '\0';
 	return (true);
 }

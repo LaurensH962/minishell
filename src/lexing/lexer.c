@@ -52,9 +52,7 @@ t_token	*lexer_next_token(t_lexer *lexer, t_token *temp_token, char quote_char,
 		if (token_value == NULL)
 			continue ;
 		temp_token = lexer_process_token_value(lexer, token_value);
-
 		return (free(token_value), temp_token);
-
 	}
 	return (new_token(TOKEN_EOF, NULL));
 }
