@@ -6,12 +6,12 @@
 #    By: ablodorn <ablodorn@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/28 16:36:18 by lhaas             #+#    #+#              #
-#    Updated: 2025/04/15 12:51:38 by ablodorn         ###   ########.fr        #
+#    Updated: 2025/04/15 15:15:21 by ablodorn         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME := minishell
-CFLAGS := -Wall -Wextra -Werror -g 
+CFLAGS := -Wall -Wextra -Werror -g
 LDFLAGS := -lreadline
 LIBFT := libft
 

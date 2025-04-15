@@ -44,3 +44,5 @@ void	check_command_access(t_ast *node)
 		exit (126);
 	}
 }
+
+/*-fsanitize=address*/

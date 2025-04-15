@@ -37,7 +37,7 @@ static int add_new_entry(char ***envp, char *new_entry)
     if (!new_env)
         return(perror_malloc_return());
     i = 0;
-	while ((*envp)[i])
+	while (*envp && (*envp)[i])
     {
         new_env[i] = strdup((*envp)[i]);  // Use strdup to allocate and copy strings
         if (!new_env[i])  // Check if strdup failed

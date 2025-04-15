@@ -30,8 +30,8 @@ int		copy_environ(char **envp, char ***env)
 	return (0);
 }
 
-//Helper function for export_default_variables
-static void	set_key_value(char **key, char **value, char *env, char* key_value)
+/*//Helper function for export_default_variables
+static void	set_key_value(char **key, char **value, char *env, char *key_value)
 {
 	int key_length;
 
@@ -59,7 +59,7 @@ void	export_default_variables(t_shell *shell)
 	i = 0;
 	value = NULL;
 	key = NULL;
-	//shell->export = NULL;
+	shell->export = NULL;
 	while(shell->env[i] != NULL)
 	{
 		if(ft_strncmp(shell->env[i], "PATH=", 5) == 0)
@@ -72,11 +72,14 @@ void	export_default_variables(t_shell *shell)
 			set_key_value(&key, &value, shell->env[i], "SHELL");
 		if(ft_strncmp(shell->env[i], "OLDPWD=", 7) == 0)
 			set_key_value(&key, &value, shell->env[i], "OLDPWD");
+		if(ft_strncmp(shell->env[i], "TERM=", 5) == 0)
+			set_key_value(&key, &value, shell->env[i], "TERM");
 		if(key && value)
+		{
 			set_variable(shell, key, value);
+			value = NULL;
+			key = NULL;
+		}
 		i++;
 	}
-}
-
-//Updates enviroment variables or creates them if they do not already exist
-
+}*/
