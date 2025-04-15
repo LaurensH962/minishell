@@ -18,7 +18,7 @@ void	execute_builtin(t_ast *node, t_shell *shell)
 	else if (ft_strcmp(node->cmd , "unset") == 0)
 		exit_value = ft_unset(shell, node->args);
 	else if (ft_strcmp(node->cmd ,"env") == 0)
-		exit_value = ft_env(shell);
+		exit_value = ft_env(shell, node);
 	exit(exit_value);
 }
 
