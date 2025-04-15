@@ -63,7 +63,7 @@ static int is_valid_identifier(const char *str)
     i = 1;
     while (str[i])
     {
-        if (!ft_isalnum(str[i]) && str[i] != '_')
+        if (!ft_isalnum(str[i]) && str[i] != '_' && str[i] != '=')
             return (0);
         i++;
     }
@@ -76,8 +76,6 @@ int ft_export(t_shell *shell, char **args)
 	char *equal;
 	char *key;
 	char *value;
-	int found;
-	int j;
 
 	i = 0;
     if (!args[1]) // No arguments: print exported variables
@@ -99,7 +97,7 @@ int ft_export(t_shell *shell, char **args)
             equal = ft_strchr(args[i], '=');
             if (equal) // VAR=VALUE case
             {
-                key = ft_substr(args[i], 0, equal - args[i]);
+                key = ft_substr(args[i], 0, (equal + 1) - args[i]);
                 value = strdup(equal + 1);
 				if (!value || !key)
 					return (perror_malloc_return());
@@ -110,27 +108,10 @@ int ft_export(t_shell *shell, char **args)
 				free(key);
 				free(value);
             }
-			else // Only VAR case (mark as exported if it exists in env)
+			else
             {
-                // Check if the variable exists in shell->env before exporting
-                found = 0;
-                j = 0;
-                while (shell->env[j] != NULL)
-                {
-                    if (ft_strncmp(shell->env[j], args[i], ft_strlen(args[i])) == 0 && shell->env[j][ft_strlen(args[i])] == '=')
-                    {
-                        found = 1;
-                        break;
-                    }
-                    j++;
-                }
-				if (found) // Only add to export if the variable exists in env
-				{
-					if (ft_setenv(args[i], NULL, &(shell->export)) != 0)
-						return (perror_malloc_return());
-				}
-                else
-                    printf("minishell: export: '%s': not found in environment\n", args[i]);
+            	if (ft_setenv(args[i], NULL, &(shell->export)) != 0)
+					return (perror_malloc_return());
             }
         }
         i++;

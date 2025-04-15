@@ -162,7 +162,7 @@ int						current_path(char *command);
 int						ft_setenv(const char *key, const char *value,
 							char ***envp);
 int						copy_environ(char **envp, char ***env);
-void					export_default_variables(t_shell *shell);
+//void					export_default_variables(t_shell *shell);
 
 // builtins
 

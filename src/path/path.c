@@ -107,6 +107,12 @@ int	set_command_path(t_ast *node, t_shell *shell)
 		path = 1;
 	else
 		path = 0;
+	if (node->type == NODE_COMMAND && node->cmd != NULL && path)
+	{
+		node->cmd_path = ft_strdup(node->cmd);
+		if(!node->cmd_path)
+			return(perror_malloc_return());
+	}
 	if (node->type == NODE_COMMAND && node->cmd != NULL && !path)
 	{
 		node->cmd_path = get_command_path(node->cmd, shell->env, &fail_flag);
