@@ -93,6 +93,21 @@ void	setup_signal_handlers(void)
 /* first sigal handling is initiated. then while(1) to recreate shell. minishell> will be displayed
 and stores result in line. then add line to history. if readline fails or ctrl-D(EOF),
 	exit the shell*/
+
+
+void	free_tokens(t_shell *shell)
+{
+	t_token	*temp;
+
+
+	while (shell->tokens)
+	{
+		temp = shell->tokens->next;
+		free(shell->tokens->value);
+		free(shell->tokens);
+		shell->tokens = temp;
+	}
+}
 int	main(int argc, char **argv, char **envp)
 {
 	char	*line;
@@ -151,12 +166,14 @@ int	main(int argc, char **argv, char **envp)
 		}
 		//print_tokens(shell->tokens);
 		ast = parse(shell->tokens);
+
 		if (!ast)
 		{
 			free_structs(shell);
 			free(line);
 			continue;
 		}
+		free_tokens(shell);
 		shell->node = ast;
 		if (!set_command_path(shell->node, shell))
 			execute_pipeline(shell);
@@ -165,7 +182,8 @@ int	main(int argc, char **argv, char **envp)
 		//handle_path(shell, shell->node);
 		//print_ast(ast, 1);
 		//printf("\n");
-		free_structs(shell);
+
+		cleanup_ast(&(shell->node));
 		//free_array(shell->env);
 		//printf("%i\n", shell->status_last_command);
 		// printf("You entered: %s\n", line);
