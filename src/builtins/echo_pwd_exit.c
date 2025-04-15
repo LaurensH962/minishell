@@ -5,8 +5,9 @@ static int	echo_n_check(char *str)
 	int i;
 
 	i = 0;
-	if (str[i++] == '-')
+	if (str[i] == '-' && str[i + 1] && str[i + 1] == 'n')
 	{
+		i++;
 		while(str[i] && str[i] == 'n')
 			i++;
 		if (str[i] && str[i] != 'n')

@@ -162,12 +162,17 @@ int ft_unset(t_shell *shell, char **vars) //needs arguments //does not remove va
 	return (0);
 }
 
-int ft_env(t_shell *shell)
+int ft_env(t_shell *shell, t_ast *node)
 {
     int i = 0;
 
 	if (shell->env == NULL)
 		return (1);
+	if (node->args[1] != NULL)
+	{
+		printf("minishell: env: %s: No such file or directory\n", node->args[1]);
+		return (1);
+	}
     while (shell->env[i] != NULL)
     {
         if (strchr(shell->env[i], '=') != NULL) // Only print variables with '='

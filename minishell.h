@@ -168,7 +168,7 @@ int						copy_environ(char **envp, char ***env);
 
 int						ft_export(t_shell *shell, char **args);
 int						ft_unset(t_shell *shell, char **vars);
-int						ft_env(t_shell *shell);
+int						ft_env(t_shell *shell, t_ast *node);
 int						is_number(const char *str);
 int						ft_echo(char **args);
 int						ft_cd(t_shell *shell, t_ast *node);
