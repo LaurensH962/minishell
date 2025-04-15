@@ -61,7 +61,7 @@ int ft_setenv(const char *key, const char *value, char ***envp)
     new_entry = ft_strjoin(key, value);
     if (!new_entry)
         return (1);
-    if (search_for_key(key, value, envp, new_entry))
+    if (search_for_key(key, envp, new_entry))
         return (0);
     else
     {

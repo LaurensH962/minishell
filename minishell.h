@@ -9,6 +9,10 @@
 # include <stdio.h>
 # include <string.h>
 # include <sys/wait.h>
+#include <termios.h>
+#include <readline/history.h>
+#include <readline/readline.h>
+#include <signal.h>
 
 // lexing
 typedef enum e_token_type
@@ -174,6 +178,8 @@ int						execute_builtin_env(t_ast *node, t_shell *shell);
 int						check_if_env_builtin(t_ast *node);
 int						perror_malloc_return(void);
 int						perror_cd_return(void);
+int						perror_malloc_free_return(char * key, char *value);
+void					setup_signal_handlers(void);
 //oid					set_pwd(t_shell *shell);
 //void					set_oldpwd(t_shell *shell);
 //void					set_default_home(t_shell *shell);
@@ -186,10 +192,8 @@ void					report_error(const char *filename, const char *err_msg);
 // cleanup
 
 void					cleanup_shell(t_shell *shell);
-void					cleanup_ast(t_ast *node);
+void					cleanup_ast(t_ast **node);
 void					free_array(char **array, int len);
 void					free_split(char **split);
 
 #endif
-
-

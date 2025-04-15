@@ -79,13 +79,17 @@ int ft_export(t_shell *shell, char **args)
 	int found;
 	int j;
 
-	i = 1;
+	i = 0;
     if (!args[1]) // No arguments: print exported variables
     {
         while(shell->export[i] != NULL)
+		{
 			printf("%s\n", shell->export[i]);
+			i++;
+		}
 		return (0);
     }
+	i = 1;
     while (args[i])
     {
         if (!is_valid_identifier(args[i]))
@@ -98,7 +102,7 @@ int ft_export(t_shell *shell, char **args)
                 key = ft_substr(args[i], 0, equal - args[i]);
                 value = strdup(equal + 1);
 				if (!value || !key)
-					return (perror_malloc_return(key, value));
+					return (perror_malloc_return());
                 if (ft_setenv(key, value, &(shell->export)))
 					return (perror_malloc_free_return(key, value));
                 if (ft_setenv(key, value, &(shell->env)))
