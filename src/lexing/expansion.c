@@ -24,7 +24,7 @@ void	lexer_expander(t_lexer *lexer, char **token_value)
 	if (after)
 		*token_value = after;
 	else
-		*token_value = NULL;
+		*token_value = ft_strdup("");
 	lexer->was_expanded = 1;
 }
 

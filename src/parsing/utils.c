@@ -21,7 +21,7 @@ char	*ft_strjoin_minishell(char const *s1, char const *s2, t_lexer *lexer)
 	if (!s1 && !s2)
 		return (NULL);
 	if (!s1)
-		return (ft_strdup(s2));
+		return (NULL);
 	if (!s2 && s1 && s1[0] == '\0')
 		return (NULL);
 	else if (!s2)
