@@ -50,6 +50,7 @@ typedef enum e_node_type
 typedef struct s_redirect
 {
 	t_node_type			type;
+	int					fd_heredoc;
 	char				*file;
 	struct s_redirect	*next;
 }						t_redirect;

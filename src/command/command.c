@@ -1,6 +1,65 @@
 
 #include "minishell.h"
 
+int	fill_heredoc(t_redirect *redir, char *name)
+{
+	char	*line;
+	char	tmp_path[64];
+	int		fd;
+
+	fd = open(name, O_CREAT | O_RDWR | O_EXCL, 0644);
+	if (fd != -1)
+		return (fd);
+	while (1)
+	{
+		line = readline("> ");
+		if (!line)
+			break ;
+		if (ft_strcmp(line, redir->file) == 0)
+		{
+			free(line);
+			break ;
+		}
+		ft_putstr_fd(line, fd);
+		ft_putstr_fd("\n", fd);
+		free(line);
+	}
+	unlink(tmp_path);
+	return (fd);
+}
+
+static void	scan_heredocs(t_ast *node)
+{
+	t_redirect	*redir;
+	char		temp_name[25];
+	char		*num_str;
+	static int	i;
+    
+    i = 0;
+
+	redir = node->redirections;
+	while (redir)
+	{
+		if (redir->type == NODE_HEREDOC)
+		{
+			i++;
+			ft_strlcpy(temp_name, "tempfile_", sizeof(temp_name));
+			num_str = ft_itoa(i);
+			if (num_str)
+			{
+				ft_strlcat(temp_name, num_str, sizeof(temp_name));
+				free(num_str);
+			}
+			redir->fd_heredoc = fill_heredoc(redir, temp_name);
+		}
+		redir = redir->next;
+	}
+	if (node->left)
+        scan_heredocs(node->left);
+	if (node->right)
+        scan_heredocs(node->right);
+}
+
 static void prescan_redirections(t_ast *node)
 {
     t_redirect *redir;
@@ -155,6 +214,7 @@ void execute_pipeline(t_shell *shell)
     in_fd = STDIN_FILENO;
     out_fd = STDOUT_FILENO;
     signal(SIGINT, SIG_IGN);
+    scan_heredocs(shell->node);
     prescan_redirections(shell->node);
     execute_ast(shell, shell->node, in_fd, out_fd);
     while(i < shell->pid_index)
