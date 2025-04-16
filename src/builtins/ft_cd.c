@@ -56,6 +56,11 @@ static int	cd_to_path(t_shell *shell, char *path)
 	char	*oldpwd;
 	char	*newpwd;
 
+	if(strcmp(path, "-") == 0)
+	{
+		if (chdir("..") != 0)
+		return(perror_cd_return());
+	}
 	if(chdir(path) != 0)
 		return(perror_cd_return());
 	oldpwd = get_oldpwd(shell);
@@ -78,7 +83,7 @@ int	ft_cd(t_shell *shell, t_ast *node)
 		report_error("cd", "to many arguments");
 		return (1);
 	}
-	if(node->args[1] == NULL)
+	if(node->args[1] == NULL || node->args[1][0] == '~')
 		return (cd_to_home(shell));
 	else
 		return (cd_to_path(shell, node->args[1]));
