@@ -180,7 +180,6 @@ int	main(int argc, char **argv, char **envp)
 		//handle_path(shell, shell->node);
 		//print_ast(ast, 1);
 		//printf("\n");
-
 		cleanup_ast(&(shell->node));
 		//free_array(shell->env);
 		//printf("%i\n", shell->status_last_command);

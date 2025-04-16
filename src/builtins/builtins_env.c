@@ -61,7 +61,7 @@ static int is_valid_identifier(const char *str)
     if (!str || !str[0] || (!ft_isalpha(str[0]) && str[0] != '_'))
         return (0);
     i = 1;
-    while (str[i])
+    while (str[i] && str[i] != '=')
     {
         if (!ft_isalnum(str[i]) && str[i] != '_' && str[i] != '=')
             return (0);
@@ -91,7 +91,11 @@ int ft_export(t_shell *shell, char **args)
     while (args[i])
     {
         if (!is_valid_identifier(args[i]))
-            printf("minishell: export: '%s': not a valid identifier\n", args[i]);
+		{
+            printf("minishell: export: '%s':", args[i]);
+			ft_putstr_fd(" not a valid identifier\n", 2);
+			return (1);
+		}
         else
         {
             equal = ft_strchr(args[i], '=');
