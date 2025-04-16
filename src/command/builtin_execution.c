@@ -22,7 +22,7 @@ void	execute_builtin(t_ast *node, t_shell *shell)
 	exit(exit_value);
 }
 
-int	execute_builtin_env(t_ast *node, t_shell *shell)
+/*int	execute_builtin_env(t_ast *node, t_shell *shell)
 {
 	int exit_value;
 
@@ -34,7 +34,7 @@ int	execute_builtin_env(t_ast *node, t_shell *shell)
 	else if (ft_strcmp(node->cmd , "unset") == 0)
 		exit_value = ft_unset(shell, node->args);
 	return (exit_value);
-}
+}*/
 
 
 int	check_if_builtin(t_ast *node)
@@ -57,7 +57,7 @@ int	check_if_builtin(t_ast *node)
 		return (0);
 }
 
-int check_if_env_builtin(t_ast *node)
+/*int check_if_env_builtin(t_ast *node)
 {
     if(node->args == NULL)
         return (0);
@@ -71,4 +71,4 @@ int check_if_env_builtin(t_ast *node)
         return (1);
     else
         return (0);
-}
+}*/

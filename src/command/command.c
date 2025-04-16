@@ -1,6 +1,35 @@
 
 #include "minishell.h"
 
+static void prescan_redirections(t_ast *node)
+{
+    t_redirect *redir;
+    int fd ;
+    int flags;
+
+    redir = node->redirections;
+    while (redir)
+    {
+        if (redir->type == NODE_REDIRECT_OUT || redir->type == NODE_APPEND)
+        {
+            if (redir->type == NODE_REDIRECT_OUT)
+                flags = O_CREAT | O_WRONLY | O_TRUNC;
+            else
+                flags = O_CREAT | O_WRONLY | O_APPEND;
+            fd = open(redir->file, flags, 0644);
+            if (fd != -1)
+                close(fd);
+            else
+                perror("minishell: prescan");
+        }
+        redir = redir->next;
+    }
+    if (node->left)
+        prescan_redirections(node->left);
+    if (node->right)
+        prescan_redirections(node->right);
+}
+
 static void redir_close(int in_fd, int out_fd)
 {
     if (in_fd != STDIN_FILENO)
@@ -38,7 +67,7 @@ static void     handle_redirections(t_ast *node, int in_fd, int out_fd, t_shell 
     }
 }
 
-static void	set_exitstatus(t_shell *shell, t_ast *node, int status)
+/*static void	set_exitstatus(t_shell *shell, t_ast *node, int status)
 {
     int copy_last_command;
 
@@ -53,19 +82,17 @@ static void	set_exitstatus(t_shell *shell, t_ast *node, int status)
 		}
 	}
 	shell->status_last_command = WEXITSTATUS(status);
-}
+}*/
 
 static void   execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 {
     pid_t pid;
-    int status;
 
-    if(check_if_env_builtin(node))
-        shell->status_last_command = execute_builtin_env(node, shell);
+    if(check_if_builtin(node) && shell->pipe_count == 0)
+        execute_builtin(node, shell);
     else
     {
         pid = fork();
-        signal(SIGINT, SIG_IGN);
         if(pid == -1)
         {
             perror("minishell: pipe");
@@ -86,18 +113,7 @@ static void   execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd
             perror("minishell: execve");
             exit(1);
         }
-        waitpid(pid, &status, 0);
-        if (WIFEXITED(status))
-            set_exitstatus(shell, node, status);
-        else if (WIFSIGNALED(status) /*&& check_if_builtin(node) == 0*/)
-        {
-            shell->status_last_command = 128 + WTERMSIG(status);
-            if (WTERMSIG(status) == SIGINT)
-                printf("\n");
-            if (WTERMSIG(status) == SIGQUIT)
-                printf("Quit (core dumped)\n");
-        }
-        setup_signal_handlers();
+        shell->pid[shell->pid_index++] = pid;
     }
 }
 
@@ -109,7 +125,6 @@ static void	execute_ast(t_shell *shell, t_ast *node, int in_fd, int out_fd)
     {
         if (pipe(pipe_fd) == -1)
         {
-            //cleanup_shell(shell);
             perror("minishell: pipe");
             exit(1);
         }
@@ -126,10 +141,37 @@ void execute_pipeline(t_shell *shell)
 {
     int in_fd;
     int out_fd;
+    int status;
+    int i;
 
+    i = 0;
+    shell->pipe_count = 0; //need actual count
+    shell->pid = malloc(sizeof(pid_t) * shell->pipe_count);
+    if (!shell->pid)
+    {
+	    perror("minishell: malloc failed");
+	    exit(1);
+    }
+    shell->pid_index = 0;
     in_fd = STDIN_FILENO;
     out_fd = STDOUT_FILENO;
+    signal(SIGINT, SIG_IGN);
+    prescan_redirections(shell->node);
     execute_ast(shell, shell->node, in_fd, out_fd);
-    /*if (shell->status_last_command == 123456789)
-        ft_putendl_fd("minishell: Error: failed to exit normally", 2);*/
+    while(i < shell->pid_index)
+    {
+        waitpid(shell->pid[i], &status, 0);
+        if (WIFEXITED(status))
+            shell->status_last_command = WEXITSTATUS(status);
+        else if (WIFSIGNALED(status) /*&& check_if_builtin(node) == 0*/)
+        {
+            shell->status_last_command = 128 + WTERMSIG(status);
+            if (WTERMSIG(status) == SIGINT)
+                printf("\n");
+            if (WTERMSIG(status) == SIGQUIT)
+                printf("Quit (core dumped)\n");
+        }
+        i++;
+    }
+    setup_signal_handlers();
 }
