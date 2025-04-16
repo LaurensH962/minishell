@@ -6,7 +6,7 @@ static t_token	*inner_loop(int *pos, char *quote_char, char **token_value,
 	while (lexer->input[*pos])
 	{
 		if ((lexer->input[*pos] == '"' || lexer->input[*pos] == '\'')
-			&& (*quote_char == lexer->input[*pos] || *quote_char == 0))
+				&& (*quote_char == lexer->input[*pos] || *quote_char == 0))
 		{
 			lexer_quotes(quote_char, lexer, pos, token_value);
 			continue ;
@@ -71,13 +71,14 @@ t_token	*lexer(char *line, t_shell *shell)
 	t_lexer	lexer;
 	t_token	*tokens;
 	t_token	*current_token;
+	int		i;
 
 	current_token = NULL;
 	init_lexer(&tokens, &lexer, shell, line);
 	current_token = lexer_next_token(&lexer, NULL, '\0', NULL);
 	if (current_token->type == TOKEN_PIPE)
 		shell->pipe_count++;
-	int i = 0;
+	i = 0;
 	while (current_token->type != TOKEN_EOF)
 	{
 		if (current_token->type == TOKEN_ERROR)
@@ -88,10 +89,9 @@ t_token	*lexer(char *line, t_shell *shell)
 			return (NULL);
 		}
 		add_token(&tokens, current_token);
-
 		current_token = lexer_next_token(&lexer, NULL, '\0', NULL);
 		if (current_token->type == TOKEN_PIPE)
-		shell->pipe_count++;
+			shell->pipe_count++;
 		i++;
 		if (!current_token)
 			return (NULL);

@@ -141,9 +141,7 @@ int	main(int argc, char **argv, char **envp)
 			line = ft_strtrim(linetemp, "\n");
 			free(linetemp);
 		}
-		/* char *str = ft_strdup(line);
-		free(line);
-		line = str; */
+
 		//line = readline("minishell: ");
 		if (!line)
 		{
