@@ -30,7 +30,7 @@ static int cd_to_home(t_shell *shell)
 	return (0);
 }
 
-static char	*get_oldpwd(t_shell *shell)
+static char	*set_oldpwd(t_shell *shell)
 {
 	int i;
 	char *oldpwd;
@@ -51,6 +51,34 @@ static char	*get_oldpwd(t_shell *shell)
 	return(oldpwd);
 }
 
+static char	*get_oldpwd(t_shell *shell)
+{
+	int i;
+	char *oldpwd;
+	int malloc;
+
+	i = 0;
+	malloc = 0;
+	oldpwd = NULL;
+	while (shell->env[i])
+	{
+		if (strncmp(shell->env[i], "OLDPWD=", 4) == 0)
+		{
+			oldpwd = strdup(shell->env[i] + 7);
+			if (!oldpwd)
+			{
+				perror("minishell: malloc");
+				malloc = 1;
+			}
+			break ;
+		}
+		i++;
+	}
+	if (!oldpwd && malloc == 0)
+		printf("minishell: cd: OLDPWD not set\n"); //report error ??
+	return(oldpwd);
+}
+
 static int	cd_to_path(t_shell *shell, char *path)
 {
 	char	*oldpwd;
@@ -58,19 +86,26 @@ static int	cd_to_path(t_shell *shell, char *path)
 
 	if(strcmp(path, "-") == 0)
 	{
-		if (chdir("..") != 0)
-		return(perror_cd_return());
+		oldpwd = get_oldpwd(shell);
+		if(oldpwd)
+		{
+			if (chdir(oldpwd) != 0)
+				return(perror_cd_return());
+		}
 	}
-	if(chdir(path) != 0)
-		return(perror_cd_return());
-	oldpwd = get_oldpwd(shell);
+	else
+	{
+		if(chdir(path) != 0)
+			return(perror_cd_return());
+	}
+	oldpwd = set_oldpwd(shell);
 	newpwd = getcwd(NULL, 0);
 	if (!newpwd)
 		perror("minishell: getcwd");
 	if (oldpwd)
-		ft_setenv("OLDPWD", oldpwd, &shell->env);
+		ft_setenv("OLDPWD=", oldpwd, &shell->env);
 	if (newpwd)
-		ft_setenv("PWD", newpwd, &shell->env);
+		ft_setenv("PWD=", newpwd, &shell->env);
 	free(oldpwd);
 	free(newpwd);
 	return (0);
@@ -80,7 +115,7 @@ int	ft_cd(t_shell *shell, t_ast *node)
 {
 	if(node->args[2] != NULL)
 	{
-		report_error("cd", "to many arguments");
+		report_error(NULL, "too many arguments");
 		return (1);
 	}
 	if(node->args[1] == NULL || node->args[1][0] == '~')

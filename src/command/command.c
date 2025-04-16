@@ -19,8 +19,6 @@ static void prescan_redirections(t_ast *node)
             fd = open(redir->file, flags, 0644);
             if (fd != -1)
                 close(fd);
-            else
-                perror("minishell: prescan");
         }
         redir = redir->next;
     }
@@ -30,7 +28,7 @@ static void prescan_redirections(t_ast *node)
         prescan_redirections(node->right);
 }
 
-static void redir_close(int in_fd, int out_fd)
+void redir_close(int in_fd, int out_fd)
 {
     if (in_fd != STDIN_FILENO)
     {
@@ -56,11 +54,11 @@ static void     handle_redirections(t_ast *node, int in_fd, int out_fd, t_shell 
     while(redir)
     {
         if (redir->type == NODE_REDIRECT_IN)
-            handle_inputfile(&fd_read, node);
+            handle_inputfile(&fd_read, redir);
         if (redir->type == NODE_REDIRECT_OUT)
-            handle_outputfile(&fd_write, node);
+            handle_outputfile(&fd_write, redir);
         if (redir->type == NODE_APPEND)
-            handle_outputfile(&fd_write, node);
+            handle_outputfile(&fd_write, redir);
         if (redir->type == NODE_HEREDOC)
             handle_heredoc(heredoc_pipe, node, shell);
         redir = redir->next;
@@ -89,7 +87,14 @@ static void   execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd
     pid_t pid;
 
     if(check_if_builtin(node) && shell->pipe_count == 0)
+    {
+        if(handle_redirections_builtin(node, in_fd, out_fd, shell))
+        {
+            shell->status_last_command = 1;
+            return ;
+        }
         shell->status_last_command = execute_builtin(node, shell);
+    }
     else
     {
         pid = fork();
@@ -149,6 +154,7 @@ void execute_pipeline(t_shell *shell)
     if (!shell->pid)
     {
 	    perror("minishell: malloc failed");
+        shell->status_last_command = 1;
         return ;
     }
     shell->pid_index = 0;
@@ -172,5 +178,6 @@ void execute_pipeline(t_shell *shell)
         }
         i++;
     }
+    free(shell->pid);
     setup_signal_handlers();
 }
