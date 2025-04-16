@@ -13,7 +13,7 @@ static int search_for_key(const char *key, char ***envp, char *new_entry)
 	{
 		while ((*envp)[i])
 		{
-			if (ft_strncmp((*envp)[i], key, key_len) == 0 && (*envp)[i][key_len] == '=')
+			if (ft_strncmp((*envp)[i], key, key_len) == 0 /*&& (*envp)[i][key_len] == '='*/)
 			{
 				free((*envp)[i]);
 				(*envp)[i] = new_entry;

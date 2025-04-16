@@ -147,8 +147,8 @@ char					*ft_strjoin_minishell(char const *s1, char const *s2,
 void					execute_pipeline(t_shell *shell);
 void					handle_heredoc(int *heredoc_pipe, t_ast *node,
 							t_shell *shell);
-void					handle_inputfile(int *fd_read, t_ast *node);
-void					handle_outputfile(int *fd_write, t_ast *node);
+void					handle_inputfile(int *fd_read, t_redirect *redirections);
+void					handle_outputfile(int *fd_write, t_redirect *redirections);
 int						execute_builtin(t_ast *node, t_shell *shell);
 void					execute_builtin_exit(t_ast *node, t_shell *shell);
 int						check_if_builtin(t_ast *node);
@@ -156,8 +156,8 @@ int						set_command_path(t_ast *node, t_shell *shell);
 
 // access
 
-void					check_file_access_read(char *filename);
-void					check_file_access_write(char *filename);
+int						check_file_access_write(char *filename, int i);
+int						check_file_access_read(char *filename, int i);
 void					check_command_access(t_ast *node);
 int						command_is_path(char *argv);
 int						current_path(char *command);
@@ -185,9 +185,11 @@ int						perror_malloc_return(void);
 int						perror_cd_return(void);
 int						perror_malloc_free_return(char * key, char *value);
 void					setup_signal_handlers(void);
-//oid					set_pwd(t_shell *shell);
-//void					set_oldpwd(t_shell *shell);
-//void					set_default_home(t_shell *shell);
+int						handle_redirections_builtin(t_ast *node, int in_fd, int out_fd, t_shell *shell);
+int						handle_outputfile_builtin(int *fd_write, t_redirect *redirections);
+int						handle_inputfile_builtin(int *fd_read, t_redirect *redirections);
+void 					redir_close(int in_fd, int out_fd);
+
 
 // printing
 void					print_tokens(t_token *tokens);
