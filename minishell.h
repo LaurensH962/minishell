@@ -148,7 +148,8 @@ void					handle_heredoc(int *heredoc_pipe, t_ast *node,
 							t_shell *shell);
 void					handle_inputfile(int *fd_read, t_ast *node);
 void					handle_outputfile(int *fd_write, t_ast *node);
-void					execute_builtin(t_ast *node, t_shell *shell);
+int						execute_builtin(t_ast *node, t_shell *shell);
+void					execute_builtin_exit(t_ast *node, t_shell *shell);
 int						check_if_builtin(t_ast *node);
 int						set_command_path(t_ast *node, t_shell *shell);
 
@@ -177,8 +178,8 @@ int						ft_echo(char **args);
 int						ft_cd(t_shell *shell, t_ast *node);
 void					ft_exit(char **args);
 int						ft_pwd(void);
-int						execute_builtin_env(t_ast *node, t_shell *shell);
-int						check_if_env_builtin(t_ast *node);
+//int						execute_builtin_env(t_ast *node, t_shell *shell);
+//int						check_if_env_builtin(t_ast *node);
 int						perror_malloc_return(void);
 int						perror_cd_return(void);
 int						perror_malloc_free_return(char * key, char *value);

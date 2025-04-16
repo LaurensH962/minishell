@@ -89,7 +89,7 @@ static void   execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd
     pid_t pid;
 
     if(check_if_builtin(node) && shell->pipe_count == 0)
-        execute_builtin(node, shell);
+        shell->status_last_command = execute_builtin(node, shell);
     else
     {
         pid = fork();
@@ -107,7 +107,7 @@ static void   execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd
             if (node->cmd == NULL)
                 exit (0);
             if (check_if_builtin(node))
-                execute_builtin(node, shell);
+                execute_builtin_exit(node, shell);
             check_command_access(node);
             execve(node->cmd_path, node->args, shell->export);
             perror("minishell: execve");
@@ -126,7 +126,7 @@ static void	execute_ast(t_shell *shell, t_ast *node, int in_fd, int out_fd)
         if (pipe(pipe_fd) == -1)
         {
             perror("minishell: pipe");
-            exit(1);
+            return ;
         }
         execute_ast(shell, node->left, in_fd, pipe_fd[1]);
         close(pipe_fd[1]);
@@ -149,7 +149,7 @@ void execute_pipeline(t_shell *shell)
     if (!shell->pid)
     {
 	    perror("minishell: malloc failed");
-	    exit(1);
+        return ;
     }
     shell->pid_index = 0;
     in_fd = STDIN_FILENO;
