@@ -145,8 +145,7 @@ void execute_pipeline(t_shell *shell)
     int i;
 
     i = 0;
-    shell->pipe_count = 0; //need actual count
-    shell->pid = malloc(sizeof(pid_t) * shell->pipe_count);
+    shell->pid = malloc(sizeof(pid_t) * (shell->pipe_count + 1));
     if (!shell->pid)
     {
 	    perror("minishell: malloc failed");

@@ -77,6 +77,8 @@ t_token	*lexer(char *line, t_shell *shell)
 	current_token = NULL;
 	init_lexer(&tokens, &lexer, shell, line);
 	current_token = lexer_next_token(&lexer, NULL, '\0', NULL);
+	if (current_token->type == TOKEN_PIPE)
+		shell->pipe_count++;
 	int i = 0;
 	while (current_token->type != TOKEN_EOF)
 	{
@@ -90,11 +92,12 @@ t_token	*lexer(char *line, t_shell *shell)
 		add_token(&tokens, current_token);
 
 		current_token = lexer_next_token(&lexer, NULL, '\0', NULL);
+		if (current_token->type == TOKEN_PIPE)
+		shell->pipe_count++;
 		i++;
 		if (!current_token)
 			return (NULL);
 	}
-
 	add_token(&tokens, current_token);
 	return (tokens);
 }
