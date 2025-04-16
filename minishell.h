@@ -70,6 +70,9 @@ typedef struct s_shell
 	char				**env;
 	char				**export;
 	t_ast				*node;
+	int					pipe_count;
+	pid_t				*pid;
+	int					pid_index;
 	int					status_last_command;
 	t_token				*tokens;
 
