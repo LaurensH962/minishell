@@ -10,7 +10,7 @@ char	*handle_special_cases(const char *input, size_t *pos, t_lexer *lexer)
 		*pos = start + 1;
 		return (ft_itoa(lexer->shell->status_last_command));
 	}
-	if (input[start] == '\0' || ft_isspace(input[start]))
+	if (input[start] == '\0' || ft_isspace(input[start]) || input[start] == '"' || input[start] == '\'')
 	{
 		(*pos)++;
 		return (ft_strdup("$"));
