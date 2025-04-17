@@ -66,11 +66,10 @@ int	handle_outputfile_builtin(int *fd_write, t_redirect *redirections)
 	return (0);
 }
 
-int     handle_redirections_builtin(t_ast *node, int in_fd, int out_fd, t_shell *shell)
+int     handle_redirections_builtin(t_ast *node, int in_fd, int out_fd)
 {
     int fd_read;
     int fd_write;
-    int heredoc_pipe[2];
     t_redirect *redir;
 
     redir = node->redirections;
@@ -84,7 +83,7 @@ int     handle_redirections_builtin(t_ast *node, int in_fd, int out_fd, t_shell 
         if (redir->type == NODE_APPEND)
     		return (handle_outputfile_builtin(&fd_write, redir));
         if (redir->type == NODE_HEREDOC)
-            handle_heredoc(heredoc_pipe, node, shell);
+			return (handle_heredoc_builtin(&redir->fd_heredoc));
         redir = redir->next;
     }
 	return (0);

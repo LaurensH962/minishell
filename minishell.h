@@ -5,14 +5,14 @@
 # include <errno.h>
 # include <fcntl.h>
 # include <limits.h>
+# include <readline/history.h>
+# include <readline/readline.h>
+# include <signal.h>
 # include <stdbool.h>
 # include <stdio.h>
 # include <string.h>
 # include <sys/wait.h>
-#include <termios.h>
-#include <readline/history.h>
-#include <readline/readline.h>
-#include <signal.h>
+# include <termios.h>
 
 // lexing
 typedef enum e_token_type
@@ -143,12 +143,15 @@ bool					is_redirect(t_token_type type);
 char					*ft_strjoin_minishell(char const *s1, char const *s2,
 							t_lexer *lexer);
 
+// heredoc
+void					handle_heredoc(int *fd_read);
+int						handle_heredoc_builtin(int *fd_read);
 // commmand + pipes
 void					execute_pipeline(t_shell *shell);
-void					handle_heredoc(int *heredoc_pipe, t_ast *node,
-							t_shell *shell);
-void					handle_inputfile(int *fd_read, t_redirect *redirections);
-void					handle_outputfile(int *fd_write, t_redirect *redirections);
+void					handle_inputfile(int *fd_read,
+							t_redirect *redirections);
+void					handle_outputfile(int *fd_write,
+							t_redirect *redirections);
 int						execute_builtin(t_ast *node, t_shell *shell);
 void					execute_builtin_exit(t_ast *node, t_shell *shell);
 int						check_if_builtin(t_ast *node);
@@ -167,7 +170,7 @@ int						current_path(char *command);
 int						ft_setenv(const char *key, const char *value,
 							char ***envp);
 int						copy_environ(char **envp, char ***env);
-//void					export_default_variables(t_shell *shell);
+// void					export_default_variables(t_shell *shell);
 
 // builtins
 
@@ -179,17 +182,19 @@ int						ft_echo(char **args);
 int						ft_cd(t_shell *shell, t_ast *node);
 void					ft_exit(char **args);
 int						ft_pwd(void);
-//int						execute_builtin_env(t_ast *node, t_shell *shell);
-//int						check_if_env_builtin(t_ast *node);
+// int						execute_builtin_env(t_ast *node, t_shell *shell);
+// int						check_if_env_builtin(t_ast *node);
 int						perror_malloc_return(void);
 int						perror_cd_return(void);
-int						perror_malloc_free_return(char * key, char *value);
+int						perror_malloc_free_return(char *key, char *value);
 void					setup_signal_handlers(void);
-int						handle_redirections_builtin(t_ast *node, int in_fd, int out_fd, t_shell *shell);
-int						handle_outputfile_builtin(int *fd_write, t_redirect *redirections);
-int						handle_inputfile_builtin(int *fd_read, t_redirect *redirections);
-void 					redir_close(int in_fd, int out_fd);
-
+int						handle_redirections_builtin(t_ast *node, int in_fd,
+							int out_fd);
+int						handle_outputfile_builtin(int *fd_write,
+							t_redirect *redirections);
+int						handle_inputfile_builtin(int *fd_read,
+							t_redirect *redirections);
+void					redir_close(int in_fd, int out_fd);
 
 // printing
 void					print_tokens(t_token *tokens);
