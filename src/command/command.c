@@ -4,11 +4,10 @@
 int	fill_heredoc(t_redirect *redir, char *name)
 {
 	char	*line;
-	char	tmp_path[64];
 	int		fd;
 
-	fd = open(name, O_CREAT | O_RDWR | O_EXCL, 0644);
-	if (fd != -1)
+	fd = open(name, O_CREAT | O_RDWR | O_EXCL, 0640);
+	if (fd == -1)
 		return (fd);
 	while (1)
 	{
@@ -24,7 +23,9 @@ int	fill_heredoc(t_redirect *redir, char *name)
 		ft_putstr_fd("\n", fd);
 		free(line);
 	}
-	unlink(tmp_path);
+    close(fd);
+    fd = open (name, O_RDWR, 0640);
+	unlink(name);
 	return (fd);
 }
 
@@ -101,11 +102,10 @@ void redir_close(int in_fd, int out_fd)
     }
 }
 
-static void     handle_redirections(t_ast *node, int in_fd, int out_fd, t_shell *shell)
+static void     handle_redirections(t_ast *node, int in_fd, int out_fd)
 {
     int fd_read;
     int fd_write;
-    int heredoc_pipe[2];
     t_redirect *redir;
 
     redir = node->redirections;
@@ -119,7 +119,7 @@ static void     handle_redirections(t_ast *node, int in_fd, int out_fd, t_shell 
         if (redir->type == NODE_APPEND)
             handle_outputfile(&fd_write, redir);
         if (redir->type == NODE_HEREDOC)
-            handle_heredoc(heredoc_pipe, node, shell);
+            handle_heredoc(&redir->fd_heredoc);
         redir = redir->next;
     }
 }
@@ -147,7 +147,7 @@ static void   execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd
 
     if(check_if_builtin(node) && shell->pipe_count == 0)
     {
-        if(handle_redirections_builtin(node, in_fd, out_fd, shell))
+        if(handle_redirections_builtin(node, in_fd, out_fd))
         {
             shell->status_last_command = 1;
             return ;
@@ -167,7 +167,7 @@ static void   execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd
         {
             signal(SIGINT, SIG_DFL);
             signal(SIGQUIT, SIG_DFL);
-            handle_redirections(node, in_fd, out_fd, shell);
+            handle_redirections(node, in_fd, out_fd);
             if (node->cmd == NULL)
                 exit (0);
             if (check_if_builtin(node))

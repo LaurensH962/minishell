@@ -42,7 +42,7 @@ void cleanup_shell(t_shell *shell)
 
     if (shell == NULL)
         return;
-    free_structs(shell);    // Clean up AST nodes
+    //free_structs(shell);    // Clean up AST nodes
     if (shell->env)
     {
         i = 0;
