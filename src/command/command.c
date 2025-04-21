@@ -124,24 +124,7 @@ static void     handle_redirections(t_ast *node, int in_fd, int out_fd)
     }
 }
 
-/*static void	set_exitstatus(t_shell *shell, t_ast *node, int status)
-{
-    int copy_last_command;
-
-	if (node->args != NULL)
-	{
-		if(ft_strcmp(node->args[0], "exit") == 0)
-		{
-			shell->status_last_command = WEXITSTATUS(status);
-            copy_last_command = shell->status_last_command;
-			cleanup_shell(shell);
-			exit(copy_last_command);
-		}
-	}
-	shell->status_last_command = WEXITSTATUS(status);
-}*/
-
-static void   execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd)
+/*static void   execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 {
     pid_t pid;
 
@@ -179,7 +162,7 @@ static void   execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd
         }
         shell->pid[shell->pid_index++] = pid;
     }
-}
+}*/
 
 static void	execute_ast(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 {
@@ -201,29 +184,13 @@ static void	execute_ast(t_shell *shell, t_ast *node, int in_fd, int out_fd)
         execute_command(shell, node, in_fd, out_fd);
 }
 
-void execute_pipeline(t_shell *shell)
+static void	wait_for_children(t_shell * shell)
 {
-    int in_fd;
-    int out_fd;
-    int status;
-    int i;
+	int i;
+	int status;
 
-    i = 0;
-    shell->pid = malloc(sizeof(pid_t) * (shell->pipe_count + 1));
-    if (!shell->pid)
-    {
-	    perror("minishell: malloc failed");
-        shell->status_last_command = 1;
-        return ;
-    }
-    shell->pid_index = 0;
-    in_fd = STDIN_FILENO;
-    out_fd = STDOUT_FILENO;
-    signal(SIGINT, SIG_IGN);
-    scan_heredocs(shell->node);
-    prescan_redirections(shell->node);
-    execute_ast(shell, shell->node, in_fd, out_fd);
-    while(i < shell->pid_index)
+	i = 0;
+	while(i < shell->pid_index)
     {
         waitpid(shell->pid[i], &status, 0);
         if (WIFEXITED(status))
@@ -238,6 +205,28 @@ void execute_pipeline(t_shell *shell)
         }
         i++;
     }
+}
+
+void execute_pipeline(t_shell *shell)
+{
+    int in_fd;
+    int out_fd;
+
+    shell->pid = malloc(sizeof(pid_t) * (shell->pipe_count + 1));
+    if (!shell->pid)
+    {
+	    perror("minishell: malloc failed");
+        shell->status_last_command = 1;
+        return ;
+    }
+    shell->pid_index = 0;
+    in_fd = STDIN_FILENO;
+    out_fd = STDOUT_FILENO;
+    signal(SIGINT, SIG_IGN);
+    scan_heredocs(shell->node);
+    prescan_redirections(shell->node);
+    execute_ast(shell, shell->node, in_fd, out_fd);
+    wait_for_children(shell);
     free(shell->pid);
     setup_signal_handlers();
 }
