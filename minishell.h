@@ -146,6 +146,7 @@ char					*ft_strjoin_minishell(char const *s1, char const *s2,
 // heredoc
 void					handle_heredoc(int *fd_read);
 int						handle_heredoc_builtin(int *fd_read);
+
 // commmand + pipes
 void					execute_pipeline(t_shell *shell);
 void					handle_inputfile(int *fd_read,
