@@ -156,6 +156,7 @@ int						execute_builtin(t_ast *node, t_shell *shell);
 void					execute_builtin_exit(t_ast *node, t_shell *shell);
 int						check_if_builtin(t_ast *node);
 int						set_command_path(t_ast *node, t_shell *shell);
+void   					execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd);
 
 // access
 
@@ -170,7 +171,6 @@ int						current_path(char *command);
 int						ft_setenv(const char *key, const char *value,
 							char ***envp);
 int						copy_environ(char **envp, char ***env);
-// void					export_default_variables(t_shell *shell);
 
 // builtins
 
@@ -182,8 +182,6 @@ int						ft_echo(char **args);
 int						ft_cd(t_shell *shell, t_ast *node);
 void					ft_exit(char **args);
 int						ft_pwd(void);
-// int						execute_builtin_env(t_ast *node, t_shell *shell);
-// int						check_if_env_builtin(t_ast *node);
 int						perror_malloc_return(void);
 int						perror_cd_return(void);
 int						perror_malloc_free_return(char *key, char *value);

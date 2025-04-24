@@ -24,7 +24,7 @@ void	handle_outputfile(int *fd_write, t_redirect *redirections)
 	if (*fd_write == -1)
 	{
 		perror("minishell: open output file failed");
-		close(*fd_write);
+		//close(*fd_write); not needed ???
 		exit(1);
 	}
 	dup2(*fd_write, STDOUT_FILENO);
@@ -39,7 +39,7 @@ int	handle_inputfile_builtin(int *fd_read, t_redirect *redirections)
 	if (*fd_read == -1)
 	{
 		perror("minishell: open");
-		close(*fd_read);
+		//close(*fd_read);
 		return(1);
 	}
 	dup2(*fd_read, STDIN_FILENO);
@@ -71,21 +71,24 @@ int     handle_redirections_builtin(t_ast *node, int in_fd, int out_fd)
     int fd_read;
     int fd_write;
     t_redirect *redir;
+	int result;
 
+	result = 0;
     redir = node->redirections;
     redir_close(in_fd, out_fd);
     while(redir)
     {
         if (redir->type == NODE_REDIRECT_IN)
-            return (handle_inputfile_builtin(&fd_read, redir));
+            result = handle_inputfile_builtin(&fd_read, redir);
         if (redir->type == NODE_REDIRECT_OUT)
-            return (handle_outputfile_builtin(&fd_write, redir));
+            result = handle_outputfile_builtin(&fd_write, redir);
         if (redir->type == NODE_APPEND)
-    		return (handle_outputfile_builtin(&fd_write, redir));
+    		result = handle_outputfile_builtin(&fd_write, redir);
         if (redir->type == NODE_HEREDOC)
-			return (handle_heredoc_builtin(&redir->fd_heredoc));
+			result = handle_heredoc_builtin(&redir->fd_heredoc);
+		if (result != 0)
+            return (1);
         redir = redir->next;
     }
 	return (0);
 }
-

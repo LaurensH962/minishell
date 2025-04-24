@@ -92,8 +92,9 @@ int ft_export(t_shell *shell, char **args)
     {
         if (!is_valid_identifier(args[i]))
 		{
-            printf("minishell: export: '%s':", args[i]);
-			ft_putstr_fd(" not a valid identifier\n", 2);
+            ft_putstr_fd("minishell: export: '", 2);
+			ft_putstr_fd(args[i], 2);
+			ft_putstr_fd("': not a valid identifier\n", 2);
 			return (1);
 		}
         else
