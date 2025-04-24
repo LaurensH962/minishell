@@ -1,17 +1,5 @@
 #include "minishell.h"
 
-void free_array(char **array, int len)
-{
-	int i;
-
-	i = 0;
-    if (!array)
-        return ;
-    while(array[i] && (len == -1 || i < len))
-		free(array[i++]);
-    free(array);
-}
-
 int is_number(const char *str)
 {
 	while(*str)

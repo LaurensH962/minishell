@@ -23,6 +23,28 @@ static int	handle_builtin_one_command(t_shell *shell, t_ast *node, int in_fd, in
 	return (0);
 }
 
+static void     handle_redirections(t_ast *node, int in_fd, int out_fd)
+{
+    int fd_read;
+    int fd_write;
+    t_redirect *redir;
+
+    redir = node->redirections;
+    redir_close(in_fd, out_fd);
+    while(redir)
+    {
+        if (redir->type == NODE_REDIRECT_IN)
+            handle_inputfile(&fd_read, redir);
+        if (redir->type == NODE_REDIRECT_OUT)
+            handle_outputfile(&fd_write, redir);
+        if (redir->type == NODE_APPEND)
+            handle_outputfile(&fd_write, redir);
+        if (redir->type == NODE_HEREDOC)
+            handle_heredoc(&redir->fd_heredoc);
+        redir = redir->next;
+    }
+}
+
 static void	create_child(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 {
 	pid_t pid;
@@ -51,10 +73,8 @@ static void	create_child(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 	shell->pid[shell->pid_index++] = pid;
 }
 
-static void   execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd)
+void   execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 {
-	pid_t pid;
-
 	if (handle_builtin_one_command(shell, node, in_fd, out_fd))
 		return ;
 	else

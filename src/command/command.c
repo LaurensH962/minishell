@@ -102,27 +102,6 @@ void redir_close(int in_fd, int out_fd)
     }
 }
 
-static void     handle_redirections(t_ast *node, int in_fd, int out_fd)
-{
-    int fd_read;
-    int fd_write;
-    t_redirect *redir;
-
-    redir = node->redirections;
-    redir_close(in_fd, out_fd);
-    while(redir)
-    {
-        if (redir->type == NODE_REDIRECT_IN)
-            handle_inputfile(&fd_read, redir);
-        if (redir->type == NODE_REDIRECT_OUT)
-            handle_outputfile(&fd_write, redir);
-        if (redir->type == NODE_APPEND)
-            handle_outputfile(&fd_write, redir);
-        if (redir->type == NODE_HEREDOC)
-            handle_heredoc(&redir->fd_heredoc);
-        redir = redir->next;
-    }
-}
 
 /*static void   execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 {
