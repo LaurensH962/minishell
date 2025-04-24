@@ -2,6 +2,8 @@
 
 int is_number(const char *str)
 {
+	if (*str == '-' || *str == '+')
+		str++;
 	while(*str)
 	{
 		if (!ft_isdigit(*str))

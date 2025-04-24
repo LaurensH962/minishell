@@ -1,7 +1,7 @@
 
 #include "minishell.h"
 
-int	fill_heredoc(t_redirect *redir, char *name)
+static int	fill_heredoc(t_redirect *redir, char *name)
 {
 	char	*line;
 	int		fd;
