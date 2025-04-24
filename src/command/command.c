@@ -156,11 +156,21 @@ static void	execute_ast(t_shell *shell, t_ast *node, int in_fd, int out_fd)
         }
         execute_ast(shell, node->left, in_fd, pipe_fd[1]);
         close(pipe_fd[1]);
+        if (in_fd != STDIN_FILENO)
+            close(in_fd); 
         execute_ast(shell, node->right, pipe_fd[0], out_fd);
         close(pipe_fd[0]);
+        if (out_fd != STDOUT_FILENO)
+            close(out_fd);
     }
     else if(node->type == NODE_COMMAND)
+    {
         execute_command(shell, node, in_fd, out_fd);
+        if (in_fd != STDIN_FILENO)
+            close(in_fd);
+        if (out_fd != STDOUT_FILENO)
+            close(out_fd);
+    }
 }
 
 static void	wait_for_children(t_shell * shell)
