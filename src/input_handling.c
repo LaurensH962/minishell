@@ -130,7 +130,7 @@ int	main(int argc, char **argv, char **envp)
 	//export_default_variables(shell);
 	while (1)
 	{
-		if (isatty(fileno(stdin)))
+		/*if (isatty(fileno(stdin)))
 			line = readline("minishell: ");
 		else
 		{
@@ -140,9 +140,9 @@ int	main(int argc, char **argv, char **envp)
 				break;
 			line = ft_strtrim(linetemp, "\n");
 			free(linetemp);
-		}
+		}*/
 
-		//line = readline("minishell: ");
+		line = readline("minishell: ");
 		if (!line)
 		{
 			//restore_terminal();

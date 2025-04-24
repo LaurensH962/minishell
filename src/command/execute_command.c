@@ -21,6 +21,8 @@ static int	handle_builtin_one_command(t_shell *shell, t_ast *node, int in_fd, in
 		close(backup_stdout);
 		return (1);
     }
+	close(backup_stdin);
+	close(backup_stdout);
 	return (0);
 }
 
@@ -62,6 +64,10 @@ static void	create_child(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
 		handle_redirections(node, in_fd, out_fd);
+		if (in_fd != STDIN_FILENO)
+			close(in_fd);
+		if (out_fd != STDOUT_FILENO)
+			close(out_fd);
 		if (node->cmd == NULL)
 			//CLEANUP NEEDED
 			exit(0);
@@ -82,7 +88,5 @@ void   execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 	if (handle_builtin_one_command(shell, node, in_fd, out_fd))
 		return ;
 	else
-	{
 		create_child(shell, node, in_fd, out_fd);
-	}
 }
