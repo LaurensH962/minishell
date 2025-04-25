@@ -43,8 +43,6 @@ int ft_echo(char **args)
 	return (0);
 }
 
-
-
 void ft_exit(char **args)
 {
 	int status;

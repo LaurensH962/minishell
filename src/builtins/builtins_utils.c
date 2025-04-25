@@ -25,12 +25,34 @@ int	perror_cd_return(void)
 	return (1);
 }
 
-int	perror_malloc_free_return(char * key, char *value)
+int perror_free_return(char *function_name, char *string)
+{
+	printf("minishell: %s: %s", function_name, string);
+	perror(" ");
+	free(string);
+	return (1);
+}
+
+int	perror_malloc_free_return(char *key, char *value)
 {
 	perror("minishell: malloc");
 	free(key);
 	free(value);
 	return (1);
+}
+
+int		cd_minus(t_shell *shell)
+{
+	char	*oldpwd;
+
+	oldpwd = get_oldpwd(shell);
+	if(oldpwd)
+	{
+		if (chdir(oldpwd) != 0)
+			return(perror_cd_return());
+	}
+	printf("%s\n", oldpwd);
+	return (0);
 }
 
 
