@@ -12,7 +12,12 @@
 # include <stdbool.h>
 # include <string.h>
 # include <sys/wait.h>
+# include <sys/ioctl.h> 
 # include <termios.h>
+# include <unistd.h>
+
+//Sigals
+extern volatile sig_atomic_t g_rl_interrupted;
 
 // lexing
 typedef enum e_token_type

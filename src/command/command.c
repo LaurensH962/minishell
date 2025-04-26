@@ -1,35 +1,69 @@
 
 #include "minishell.h"
 
-static int	fill_heredoc(t_redirect *redir, char *name)
+void handle_sigint_heredoc(int sig)
 {
-	char	*line;
-	int		fd;
-
-	fd = open(name, O_CREAT | O_RDWR | O_EXCL, 0640);
-	if (fd == -1)
-		return (fd);
-	while (1)
-	{
-		line = readline("> ");
-		if (!line)
-			break ;
-		if (ft_strcmp(line, redir->file) == 0)
-		{
-			free(line);
-			break ;
-		}
-		ft_putstr_fd(line, fd);
-		ft_putstr_fd("\n", fd);
-		free(line);
-	}
-    close(fd);
-    fd = open (name, O_RDWR, 0640);
-	unlink(name);
-	return (fd);
+    (void)sig;
+    write(1,"^C",2);
+    g_rl_interrupted = 2;
 }
 
-static void	scan_heredocs(t_ast *node)
+int heredoc_event_hook(void)
+{
+    if (g_rl_interrupted)
+    {
+        rl_done = 1;
+    }
+    return (0);
+}
+
+static int fill_heredoc(t_redirect *redir, char *name, t_shell *shell)
+{
+    struct sigaction old_sa;
+    struct sigaction new_sa;
+    char *line;
+    int fd;
+
+    new_sa.sa_handler = handle_sigint_heredoc;
+    sigemptyset(&new_sa.sa_mask);
+    new_sa.sa_flags = 0;
+    sigaction(SIGINT, &new_sa, &old_sa);
+    g_rl_interrupted = 0;
+    rl_event_hook = heredoc_event_hook;
+    fd = open(name, O_CREAT | O_RDWR | O_EXCL, 0640);
+    if (fd == -1)
+        return (fd);
+    while (1)
+    {
+        line = readline("> ");
+        if (!line || g_rl_interrupted)
+            break;
+        if (ft_strcmp(line, redir->file) == 0)
+        {
+            free(line);
+            break;
+        }
+        ft_putstr_fd(line, fd);
+        ft_putstr_fd("\n", fd);
+        free(line);
+    }
+
+    rl_event_hook = NULL;
+    close(fd);
+    sigaction(SIGINT, &old_sa, NULL);
+    if (g_rl_interrupted == 2)
+    {
+        shell->status_last_command = 2;
+        g_rl_interrupted = 0;
+        unlink(name);
+        return (-1);
+    }
+    fd = open(name, O_RDWR, 0640);
+    unlink(name);
+    return (fd);
+}
+
+static void	scan_heredocs(t_ast *node, t_shell *shell)
 {
 	t_redirect	*redir;
 	char		temp_name[25];
@@ -37,7 +71,6 @@ static void	scan_heredocs(t_ast *node)
 	static int	i;
     
     i = 0;
-
 	redir = node->redirections;
 	while (redir)
 	{
@@ -51,14 +84,14 @@ static void	scan_heredocs(t_ast *node)
 				ft_strlcat(temp_name, num_str, sizeof(temp_name));
 				free(num_str);
 			}
-			redir->fd_heredoc = fill_heredoc(redir, temp_name);
+			redir->fd_heredoc = fill_heredoc(redir, temp_name, shell);
 		}
 		redir = redir->next;
 	}
 	if (node->left)
-        scan_heredocs(node->left);
+        scan_heredocs(node->left, shell);
 	if (node->right)
-        scan_heredocs(node->right);
+        scan_heredocs(node->right, shell);
 }
 
 static void prescan_redirections(t_ast *node)
@@ -206,7 +239,7 @@ void execute_pipeline(t_shell *shell)
     in_fd = STDIN_FILENO;
     out_fd = STDOUT_FILENO;
     signal(SIGINT, SIG_IGN); //not sure if correctly placed
-    scan_heredocs(shell->node);
+    scan_heredocs(shell->node, shell);
     prescan_redirections(shell->node);
     execute_ast(shell, shell->node, in_fd, out_fd);
     wait_for_children(shell);
