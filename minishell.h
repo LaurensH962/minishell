@@ -178,22 +178,34 @@ int						copy_environ(char **envp, char ***env);
 int						ft_export(t_shell *shell, char **args);
 int						ft_unset(t_shell *shell, char **vars);
 int						ft_env(t_shell *shell, t_ast *node);
-int						is_number(const char *str);
 int						ft_echo(char **args);
 int						ft_cd(t_shell *shell, t_ast *node);
 void					ft_exit(char **args);
 int						ft_pwd(void);
+
+// builtin helpers
+
+int						cd_minus(t_shell *shell);
+int						is_number(const char *str);
+int						is_valid_identifier(const char *str);
 int						perror_malloc_return(void);
 int						perror_cd_return(void);
+int 					perror_free_return(char *function_name, char *string);
 int						perror_malloc_free_return(char *key, char *value);
+
+// signals
 void					setup_signal_handlers(void);
+
+//redirections
+
 int						handle_redirections_builtin(t_ast *node, int in_fd,
-							int out_fd);
+	int out_fd);
 int						handle_outputfile_builtin(int *fd_write,
-							t_redirect *redirections);
+	t_redirect *redirections);
 int						handle_inputfile_builtin(int *fd_read,
-							t_redirect *redirections);
+	t_redirect *redirections);
 void					redir_close(int in_fd, int out_fd);
+
 
 // printing
 void					print_tokens(t_token *tokens);

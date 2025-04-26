@@ -21,11 +21,7 @@ static int cd_to_home(t_shell *shell)
 	if (!home)
 		return (report_error("cd", "HOME not set"), 1);
 	if (chdir(home) != 0)
-	{
-		perror("minishell: cd");
-		free(home);
-		return (1);
-	}
+		return (perror_free_return("chdir", home));
 	free(home);
 	return (0);
 }
@@ -62,7 +58,7 @@ static char	*get_oldpwd(t_shell *shell)
 	oldpwd = NULL;
 	while (shell->env[i])
 	{
-		if (strncmp(shell->env[i], "OLDPWD=", 4) == 0)
+		if (strncmp(shell->env[i], "OLDPWD=", 7) == 0)
 		{
 			oldpwd = strdup(shell->env[i] + 7);
 			if (!oldpwd)
@@ -86,12 +82,8 @@ static int	cd_to_path(t_shell *shell, char *path)
 
 	if(strcmp(path, "-") == 0)
 	{
-		oldpwd = get_oldpwd(shell);
-		if(oldpwd)
-		{
-			if (chdir(oldpwd) != 0)
-				return(perror_cd_return());
-		}
+		if (cd_minus(shell))
+			return (1);
 	}
 	else
 	{
