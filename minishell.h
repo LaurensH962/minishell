@@ -5,11 +5,11 @@
 # include <errno.h>
 # include <fcntl.h>
 # include <limits.h>
+# include <stdio.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
 # include <stdbool.h>
-# include <stdio.h>
 # include <string.h>
 # include <sys/wait.h>
 # include <termios.h>
@@ -182,6 +182,7 @@ int						ft_echo(char **args);
 int						ft_cd(t_shell *shell, t_ast *node);
 void					ft_exit(char **args);
 int						ft_pwd(void);
+char	*get_oldpwd(t_shell *shell);
 
 // builtin helpers
 

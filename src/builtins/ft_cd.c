@@ -47,7 +47,7 @@ static char	*set_oldpwd(t_shell *shell)
 	return(oldpwd);
 }
 
-static char	*get_oldpwd(t_shell *shell)
+char	*get_oldpwd(t_shell *shell)
 {
 	int i;
 	char *oldpwd;

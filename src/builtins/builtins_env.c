@@ -16,7 +16,7 @@ int is_valid_identifier(const char *str)
     return (1);
 }
 
-int ft_export(t_shell *shell, char **args)
+/*int ft_export(t_shell *shell, char **args)
 {
     int i;
 	char *equal;
@@ -68,7 +68,7 @@ int ft_export(t_shell *shell, char **args)
         i++;
     }
 	return (0);
-}
+}*/
 
 // deletes enviroment variables from the environment array
 static void remove_variable(char ***env, const char *var)

@@ -21,8 +21,6 @@ static int	handle_builtin_one_command(t_shell *shell, t_ast *node, int in_fd, in
 		close(backup_stdout);
 		return (1);
     }
-	close(backup_stdin);
-	close(backup_stdout);
 	return (0);
 }
 
