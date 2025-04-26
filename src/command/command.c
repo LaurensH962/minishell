@@ -155,22 +155,16 @@ static void	execute_ast(t_shell *shell, t_ast *node, int in_fd, int out_fd)
             return ;
         }
         execute_ast(shell, node->left, in_fd, pipe_fd[1]);
-        close(pipe_fd[1]);
-        if (in_fd != STDIN_FILENO)
-            close(in_fd); 
+        close(pipe_fd[1]); 
         execute_ast(shell, node->right, pipe_fd[0], out_fd);
         close(pipe_fd[0]);
-        if (out_fd != STDOUT_FILENO)
-            close(out_fd);
     }
     else if(node->type == NODE_COMMAND)
-    {
         execute_command(shell, node, in_fd, out_fd);
-        if (in_fd != STDIN_FILENO)
-            close(in_fd);
-        if (out_fd != STDOUT_FILENO)
-            close(out_fd);
-    }
+    if (in_fd != STDIN_FILENO)
+        close(in_fd);
+    if (out_fd != STDOUT_FILENO)
+        close(out_fd);
 }
 
 static void	wait_for_children(t_shell * shell)
@@ -211,7 +205,7 @@ void execute_pipeline(t_shell *shell)
     shell->pid_index = 0;
     in_fd = STDIN_FILENO;
     out_fd = STDOUT_FILENO;
-    signal(SIGINT, SIG_IGN);
+    signal(SIGINT, SIG_IGN); //not sure if correctly placed
     scan_heredocs(shell->node);
     prescan_redirections(shell->node);
     execute_ast(shell, shell->node, in_fd, out_fd);

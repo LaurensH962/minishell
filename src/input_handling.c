@@ -116,8 +116,8 @@ int	main(int argc, char **argv, char **envp)
 	char 	*syntax_error;
 
 
-	argc = 0;
-	argv = NULL;
+	(void)argc;
+	(void)argv;
 	syntax_error = NULL;
 	//save_original_terminal();
 	setup_signal_handlers();
