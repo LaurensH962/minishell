@@ -13,6 +13,7 @@
 # include <string.h>
 # include <sys/wait.h>
 # include <termios.h>
+#include <sys/stat.h>
 
 // lexing
 typedef enum e_token_type
@@ -74,6 +75,8 @@ typedef struct s_shell
 	int					pipe_count;
 	pid_t				*pid;
 	int					pid_index;
+	int					**pipes;
+	int					pipe_index;
 	int					status_last_command;
 	t_token				*tokens;
 
@@ -166,6 +169,7 @@ int						check_file_access_read(char *filename, int i);
 void					check_command_access(t_ast *node);
 int						command_is_path(char *argv);
 int						current_path(char *command);
+int 					is_directory(char *filename);
 
 // env
 

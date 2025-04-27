@@ -1,7 +1,7 @@
 
 #include "minishell.h"
 
-static int	fill_heredoc(t_redirect *redir, char *name)
+/*static int	fill_heredoc(t_redirect *redir, char *name)
 {
 	char	*line;
 	int		fd;
@@ -59,8 +59,7 @@ static void	scan_heredocs(t_ast *node)
         scan_heredocs(node->left);
 	if (node->right)
         scan_heredocs(node->right);
-}
-
+}*/
 static void prescan_redirections(t_ast *node)
 {
     t_redirect *redir;
@@ -74,6 +73,7 @@ static void prescan_redirections(t_ast *node)
         {
             if (redir->type == NODE_REDIRECT_OUT)
                 flags = O_CREAT | O_WRONLY | O_TRUNC;
+            //else if (redir->type == NODE_REDIRECT_IN)
             else
                 flags = O_CREAT | O_WRONLY | O_APPEND;
             fd = open(redir->file, flags, 0644);
@@ -93,12 +93,12 @@ void redir_close(int in_fd, int out_fd)
     if (in_fd != STDIN_FILENO)
     {
         dup2(in_fd, STDIN_FILENO);
-        close(in_fd);
+        //close(in_fd);
     }
     if (out_fd != STDOUT_FILENO)
     {
         dup2(out_fd, STDOUT_FILENO);
-        close(out_fd);
+        //close(out_fd);
     }
 }
 
@@ -145,26 +145,21 @@ void redir_close(int in_fd, int out_fd)
 
 static void	execute_ast(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 {
-    int pipe_fd[2];
-
     if (node->type == NODE_PIPE)
     {
-        if (pipe(pipe_fd) == -1)
+        if (pipe(shell->pipes[shell->pipe_index]) == -1)
         {
             perror("minishell: pipe");
             return ;
         }
-        execute_ast(shell, node->left, in_fd, pipe_fd[1]);
-        close(pipe_fd[1]); 
-        execute_ast(shell, node->right, pipe_fd[0], out_fd);
-        close(pipe_fd[0]);
+        shell->pipe_index++;
+        execute_ast(shell, node->left, in_fd, shell->pipes[shell->pipe_index - 1][1]);
+        execute_ast(shell, node->right, shell->pipes[shell->pipe_index - 1][0], out_fd);
+        close(shell->pipes[shell->pipe_index - 1][1]); 
+        close(shell->pipes[shell->pipe_index - 1][0]);
     }
     else if(node->type == NODE_COMMAND)
         execute_command(shell, node, in_fd, out_fd);
-    if (in_fd != STDIN_FILENO)
-        close(in_fd);
-    if (out_fd != STDOUT_FILENO)
-        close(out_fd);
 }
 
 static void	wait_for_children(t_shell * shell)
@@ -206,7 +201,30 @@ void execute_pipeline(t_shell *shell)
     in_fd = STDIN_FILENO;
     out_fd = STDOUT_FILENO;
     signal(SIGINT, SIG_IGN); //not sure if correctly placed
-    scan_heredocs(shell->node);
+    //scan_heredocs(shell->node);
+    if (shell->pipe_count > 0)
+    {
+        shell->pipes = malloc(sizeof (int *) * shell->pipe_count);
+        if (!shell->pipes)
+        {
+            perror("minishell: malloc failed");
+            shell->status_last_command = 1;
+            return ;
+        }
+        shell->pipe_index = 0;
+        int i = 0;
+        while(i < shell->pipe_count)
+        {
+            shell->pipes[i] = malloc(sizeof(int) * 2);
+            if (!shell->pipes[i])
+            {
+                perror("minishell: malloc failed");
+                shell->status_last_command = 1;
+                return ;
+            }
+            i++;
+        }
+    }
     prescan_redirections(shell->node);
     execute_ast(shell, shell->node, in_fd, out_fd);
     wait_for_children(shell);

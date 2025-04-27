@@ -1,5 +1,15 @@
 #include "minishell.h"
 
+int is_directory(char *filename)
+{
+	struct stat statbuf;
+
+	if (stat(filename, &statbuf) != 0)
+		return (0);
+	else
+		return (1);
+}
+
 int	check_file_access_read(char *filename, int i)
 {
 	if (access(filename, F_OK) == -1)

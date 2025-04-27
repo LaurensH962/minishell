@@ -105,14 +105,16 @@ static int	cd_to_path(t_shell *shell, char *path)
 
 int	ft_cd(t_shell *shell, t_ast *node)
 {
-	if(node->args[2] != NULL)
+	if (node->args[1] != NULL)
 	{
-		report_error(node->args[2], "cd: too many arguments");
-		return (1);
+		if(node->args[2] != NULL)
+		{
+			report_error(node->args[2], "cd: too many arguments");
+			return (1);
+		}
 	}
 	if(node->args[1] == NULL || node->args[1][0] == '~')
 		return (cd_to_home(shell));
 	else
 		return (cd_to_path(shell, node->args[1]));
 }
-
