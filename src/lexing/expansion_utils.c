@@ -3,17 +3,25 @@
 char	*handle_special_cases(const char *input, size_t *pos, t_lexer *lexer)
 {
 	size_t	start;
+	char	*result;
 
 	start = *pos + 1;
 	if (input[start] == '?')
 	{
 		*pos = start + 1;
-		return (ft_itoa(lexer->shell->status_last_command));
+		result = ft_itoa(lexer->shell->status_last_command);
+		if (!result)
+			return (NULL);
+		return (result);
 	}
-	if (input[start] == '\0' || ft_isspace(input[start]) || input[start] == '"' || input[start] == '\'')
+	if (input[start] == '\0' || ft_isspace(input[start]) || input[start] == '"'
+		|| input[start] == '\'')
 	{
 		(*pos)++;
-		return (ft_strdup("$"));
+		result = ft_strdup("$");
+		if (!result)
+			return (NULL);
+		return (result);
 	}
 	return (NULL);
 }
@@ -35,9 +43,15 @@ bool	extract_var_name(const char *input, size_t *start, char *var_name)
 char	*lookup_and_expand(char *var_name, t_lexer *lexer)
 {
 	char	*env_value;
+	char	*result;
 
 	env_value = get_env_value(lexer->shell->env, var_name);
 	if (env_value)
-		return (ft_strdup(env_value));
+	{
+		result = ft_strdup(env_value);
+		if (!result)
+			return (NULL);
+		return (result);
+	}
 	return (NULL);
 }

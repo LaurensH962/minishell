@@ -6,7 +6,7 @@ static t_token	*inner_loop(int *pos, char *quote_char, char **token_value,
 	while (lexer->input[*pos])
 	{
 		if ((lexer->input[*pos] == '"' || lexer->input[*pos] == '\'')
-				&& (*quote_char == lexer->input[*pos] || *quote_char == 0))
+			&& (*quote_char == lexer->input[*pos] || *quote_char == 0))
 		{
 			lexer_quotes(quote_char, lexer, pos, token_value);
 			continue ;
@@ -19,11 +19,23 @@ static t_token	*inner_loop(int *pos, char *quote_char, char **token_value,
 		}
 		else if (!*quote_char && (ft_isspace(lexer->input[*pos])
 				|| !is_delimiter(lexer->input[*pos])))
+		{
+			if (*token_value == NULL)
+				return (new_token(TOKEN_INVALID, ""));
 			break ;
+		}
 		if (*token_value != NULL)
 			*token_value = ft_strncat(*token_value, &lexer->input[*pos], 1);
+		else
+		{
+			*token_value = ft_strndup(&lexer->input[*pos], 1);
+			if (!*token_value)
+				return (new_token(TOKEN_ERROR, "Memory allocation error"));
+		}
 		(*pos)++;
 	}
+	if (*token_value == NULL)
+		return (new_token(TOKEN_INVALID, ""));
 	return (NULL);
 }
 
@@ -41,7 +53,7 @@ t_token	*lexer_next_token(t_lexer *lexer, t_token *temp_token, char quote_char,
 			return (temp_token);
 		token_value = ft_calloc(1, ft_strlen(lexer->input) + 1);
 		if (!token_value)
-			return (NULL);
+			return (new_token(TOKEN_ERROR, "Memory allocation error"));
 		temp_token = inner_loop((int *)&lexer->pos, &quote_char, &token_value,
 				lexer);
 		if (temp_token)
@@ -57,7 +69,8 @@ t_token	*lexer_next_token(t_lexer *lexer, t_token *temp_token, char quote_char,
 	return (new_token(TOKEN_EOF, NULL));
 }
 
-void	init_lexer(t_token **tokens, t_lexer *lexer, t_shell *shell, char *line)
+void	init_lexer(t_token **tokens, t_lexer *lexer, t_shell *shell,
+		char *line)
 {
 	*tokens = NULL;
 	lexer->input = line;
@@ -83,7 +96,7 @@ t_token	*lexer(char *line, t_shell *shell)
 	{
 		if (current_token->type == TOKEN_ERROR)
 		{
-			fprintf(stderr, "Lexer error: %s\n", current_token->value);
+			fprintf(stderr, "error: %s\n", current_token->value);
 			free_structs(shell);
 			free(current_token);
 			return (NULL);

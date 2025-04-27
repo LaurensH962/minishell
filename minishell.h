@@ -12,7 +12,6 @@
 # include <stdbool.h>
 # include <string.h>
 # include <sys/wait.h>
-# include <sys/ioctl.h> 
 # include <termios.h>
 # include <unistd.h>
 
@@ -31,6 +30,7 @@ typedef enum e_token_type
 	TOKEN_ENV_VAR,
 	TOKEN_EXIT_STATUS,
 	TOKEN_ERROR,
+	TOKEN_INVALID,
 	TOKEN_EOF
 }						t_token_type;
 
@@ -145,7 +145,7 @@ void					print_tokens(t_token *tokens);
 // utils
 int						is_delimiter(char c);
 bool					is_redirect(t_token_type type);
-char					*ft_strjoin_minishell(char const *s1, char const *s2,
+char					*ft_strjoin_minishell(char const *s1, char *s2,
 							t_lexer *lexer);
 
 // heredoc
