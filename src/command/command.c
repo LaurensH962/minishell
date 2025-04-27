@@ -193,7 +193,11 @@ static void	execute_ast(t_shell *shell, t_ast *node, int in_fd, int out_fd)
         close(pipe_fd[0]);
     }
     else if(node->type == NODE_COMMAND)
+    {
+        if(!node->args)
+            return;
         execute_command(shell, node, in_fd, out_fd);
+    }
     if (in_fd != STDIN_FILENO)
         close(in_fd);
     if (out_fd != STDOUT_FILENO)

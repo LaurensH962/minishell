@@ -125,7 +125,6 @@ int	main(int argc, char **argv, char **envp)
 		exit (1);
 	if (copy_environ(envp, &shell->export))
 		exit (1);
-	//export_default_variables(shell);
 	while (1)
 	{
 		/*if (isatty(fileno(stdin)))
@@ -154,6 +153,7 @@ int	main(int argc, char **argv, char **envp)
 		}
 		add_history(line);
 		shell->tokens = lexer(line, shell);
+		//print_tokens(shell->tokens);
 		syntax_error = syntax_checker(shell->tokens);
 		if (syntax_error != NULL)
 		{
@@ -164,9 +164,8 @@ int	main(int argc, char **argv, char **envp)
 			shell->status_last_command = 2;
 			continue ;
 		}
-		//print_tokens(shell->tokens);
 		ast = parse(shell->tokens);
-
+		//print_ast(ast, 1);
 		if (!ast)
 		{
 			free_structs(shell);
@@ -175,12 +174,11 @@ int	main(int argc, char **argv, char **envp)
 		}
 		free_tokens(shell);
 		shell->node = ast;
+		//print_ast(ast, 1);
 		if (!set_command_path(shell->node, shell))
 			execute_pipeline(shell);
 		//printf ("cmd = %s\n", shell->node->cmd);
-		//print_ast(ast, 1);
-		//handle_path(shell, shell->node);
-		//print_ast(ast, 1);
+		//handle_path(shell, shell->node)
 		//printf("\n");
 		cleanup_ast(&(shell->node));
 		//free_array(shell->env);

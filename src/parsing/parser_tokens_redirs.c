@@ -30,6 +30,8 @@ t_ast	*parse_redirection(t_token **tokens, t_ast *command,
 	t_redirect	**redir_ptr;
 
 	redir_ptr = &command->redirections;
+	if ((*tokens)->type == TOKEN_INVALID)
+		return (command);
 	while (*tokens && is_redirect((*tokens)->type))
 	{
 		redirection_token = get_next_token(tokens);

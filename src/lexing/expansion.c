@@ -5,8 +5,6 @@ static char	*find_expanded_value(t_lexer *lexer, char *token_value)
 	char	*expanded_value;
 
 	expanded_value = expand_variable(lexer->input, &(lexer->pos), lexer);
-	/* if (!expanded_value)
-		return (NULL); */
 	token_value = ft_strjoin_minishell(token_value, expanded_value, lexer);
 	if (expanded_value && !ft_strcmp(expanded_value, "$")
 		&& !ft_strcmp(expanded_value, ""))
@@ -24,7 +22,7 @@ void	lexer_expander(t_lexer *lexer, char **token_value)
 	if (after)
 		*token_value = after;
 	else
-		*token_value = ft_strdup("");
+		*token_value = NULL;
 	lexer->was_expanded = 1;
 }
 
