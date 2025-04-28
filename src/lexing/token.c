@@ -61,60 +61,6 @@ void	add_token(t_token **head, t_token *new)
 	temp->next = new;
 }
 
-// static t_token	*inner_loop(int *pos, char *quote_char, char **token_value,
-// 	t_lexer *lexer)
-// {
-// 	char *before;
-// 	char *after;
-
-// 	while (lexer->input[*pos])
-// 	{
-// 		if ((lexer->input[*pos] == '"' || lexer->input[*pos] == '\'')
-// 				&& (*quote_char == lexer->input[*pos] || *quote_char == 0))
-// 		{
-// 			if (*quote_char == lexer->input[*pos])
-// 			{
-// 				if (*token_value == NULL)
-// 					*token_value = ft_strdup("");
-// 				*quote_char = 0;
-// 			}
-// 			else if (*quote_char == 0)
-// 			{
-// 				*quote_char = lexer->input[*pos];
-// 				lexer->was_quoted = 1;
-// 			}
-// 			(*pos)++;
-// 			continue ;
-// 		}
-// 		else if (lexer->input[*pos] == '$' && *quote_char != '\''
-// 			&& lexer->hereflag != '<')
-// 		{
-// 			before = *token_value;
-// 			after = find_expanded_value(lexer, before);
-
-// 			if (after)
-// 				*token_value = after;
-// 			//*token_value = find_expanded_value(lexer, *token_value);
-// 			lexer->was_expanded = 1;
-// 			//printf("{%p}", *token_value);
-// 			//printf("----expanded token = %s ----\n", *token_value);
-// 			/* if (!*token_value)
-// 			{
-// 				//return (new_token(TOKEN_ERROR, "Variable expansion error"));
-// 				return (NULL);
-// 			} */
-// 			continue ;
-// 		}
-// 		else if (!*quote_char && (ft_isspace(lexer->input[*pos])
-// 				|| !is_delimiter(lexer->input[*pos])))
-// 			break ;
-// 		if (*token_value != NULL)
-// 			*token_value = ft_strncat(*token_value, &lexer->input[*pos], 1);
-// 		(*pos)++;
-// 	}
-// 	return (NULL);
-// }
-
 t_token	*lexer_try_delim_token(t_lexer *lexer, char quote_char)
 {
 	t_token	*temp_token;
