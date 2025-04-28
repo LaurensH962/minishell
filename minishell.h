@@ -169,6 +169,7 @@ void					execute_builtin_exit(t_ast *node, t_shell *shell);
 int						check_if_builtin(t_ast *node);
 int						set_command_path(t_ast *node, t_shell *shell);
 void   					execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd);
+char					*get_command_path(char *cmd, char **envp, int *fail_flag);
 
 // access
 

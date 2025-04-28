@@ -77,7 +77,8 @@ char	*get_command_path(char *cmd, char **envp, int *fail_flag)
 	if (!paths)
 	{
 		perror("minishell: Memory allocation failed");
-		*fail_flag = 1;
+		if(fail_flag)
+			*fail_flag = 1;
 		return (NULL);
 	}
 	full_path = find_command_path(cmd, paths, fail_flag);
@@ -94,12 +95,21 @@ int	set_command_path(t_ast *node, t_shell *shell)
 {
 	int		fail_flag;
 	int		path;
+	int i = 0;
 
 	fail_flag = 0;
 	if (node == NULL)
 		return (0);
 	if (!node->cmd && node->type != NODE_PIPE)
 		return (0);
+	if (node->cmd)
+	{
+		if (node->cmd[i] == '\0')
+		{
+			node->cmd_path = NULL;
+			return (0);
+		}
+	}
 	if (set_command_path(node->right, shell))
 		return (1);
 	if (set_command_path(node->left, shell))

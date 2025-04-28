@@ -52,7 +52,7 @@ void ft_exit(char **args)
 		exit(status);
 	if (args[1])
 	{
-		if (args[2] != NULL)
+		if (args[2] != NULL && args[1])
 		{
 			printf("minishell: exit: too many arguments\n");
 			exit (1);
