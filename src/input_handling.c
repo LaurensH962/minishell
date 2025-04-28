@@ -2,43 +2,8 @@
 
 
 volatile sig_atomic_t g_rl_interrupted = 0;
-//struct termios	g_original_termios;
 
-/* Save and restore terminal. in main we save the current terminal,
-	since we are changing it to
-not display control characters like ctrl-c. then we restore it with the TSCANOW (so like imediately)
-to the original settings once we exit (with ctrl-d for example)*/
-/* void	save_original_terminal(void)
-{
-	if (tcgetattr(STDIN_FILENO, &g_original_termios) == -1)
-		perror("minishell: tcgetattr (saving original settings)");
-}
 
-void	restore_terminal(void)
-{
-	if (tcsetattr(STDIN_FILENO, TCSANOW, &g_original_termios) == -1)
-		perror("minishell: tcsetattr (restoring terminal)");
-} */
-
-/* suppress_output
-	- Modifies terminal settings to hide control character echoes.
-Disables the ECHOCTL flag, which prevents control characters
-(like ^C for SIGINT) from being displayed in the terminal when typed. */
-/* void	suppress_output(void)
-{
-	struct termios	termios_p;
-
-	if (tcgetattr(0, &termios_p))
-		perror("minishell: tcgetattr");
-	termios_p.c_lflag &= ~ECHOCTL;
-	if (tcsetattr(0, 0, &termios_p))
-		perror("minishell: tcsetattr");
-} */
-
-/* we don't use sig for anything so just void it to mute warnings.
-Inform readline we are on a new line.
-Clear the current input line.
-Redisplay the prompt so it looks always like we are in a proper shell lol.*/
 void	handle_sigint(int sig)
 {
 	(void)sig;
@@ -48,23 +13,6 @@ void	handle_sigint(int sig)
 	rl_replace_line("", 0);
 	rl_redisplay();
 }
-
-// void	handle_exit(int sig)
-// {
-
-// 	(void)sig;
-// 	//restore_terminal();
-// 	printf("\nexit\n");
-// 	exit(0);
-// }
-
-/* 2 different signal handlers. 1 for Ctrl-C (SIGINT): sa_int and one to
-ignore Ctrl-\ (SIG_QUIT). define the handler for when SIGINT is received
-and sigemptyset the mask to prevent signalqueuing.
-the flag will be set to SA_RESTART to ensure readline() will not fail but resumes.
-then we do the same for the Ctrl-\. but instead of calling a function to handle the signal,we just
-ignore it (SIG_IGN)
-we also use an exit if the terminal is terminated in a different way to restore the terminal properly*/
 
 void	setup_signal_handlers(void)
 {
@@ -80,17 +28,7 @@ void	setup_signal_handlers(void)
 	sigemptyset(&sa_quit.sa_mask);
 	sa_quit.sa_flags = 0;
 	sigaction(SIGQUIT, &sa_quit, NULL);
-	//sa_exit.sa_handler = handle_exit;
-	//sigemptyset(&sa_exit.sa_mask);
-	//sa_exit.sa_flags = 0;
-	//sigaction(SIGHUP, &sa_exit, NULL);
-	//sigaction(SIGTERM, &sa_exit, NULL);
 }
-
-/* first sigal handling is initiated. then while(1) to recreate shell. minishell> will be displayed
-and stores result in line. then add line to history. if readline fails or ctrl-D(EOF),
-	exit the shell*/
-
 
 void	free_tokens(t_shell *shell)
 {
@@ -104,89 +42,4 @@ void	free_tokens(t_shell *shell)
 		free(shell->tokens);
 		shell->tokens = temp;
 	}
-}
-int	main(int argc, char **argv, char **envp)
-{
-	char	*line;
-	t_ast	*ast;
-	t_shell *shell;
-	char 	*syntax_error;
-
-
-	(void)argc;
-	(void)argv;
-	syntax_error = NULL;
-	rl_catch_signals = 0;
-	g_rl_interrupted = 0;
-	setup_signal_handlers();
-	//suppress_output();
-	shell = ft_calloc(1, sizeof(t_shell));
-	if (copy_environ(envp, &shell->env))
-		exit (1);
-	if (copy_environ(envp, &shell->export))
-		exit (1);
-	while (1)
-	{
-		/*if (isatty(fileno(stdin)))
-			line = readline("minishell: ");
-		else
-		{
-			char *linetemp;
-			linetemp = get_next_line(fileno(stdin));
-			if (!linetemp)
-				break;
-			line = ft_strtrim(linetemp, "\n");
-			free(linetemp);
-		}*/
-		line = readline("minishell: ");
-		if (g_rl_interrupted == 2)
-		{
-			shell->status_last_command = 2;
-			g_rl_interrupted = 0;
-		}
-		if (!line)
-		{
-			//restore_terminal();
-			//free_structs(shell);
-			printf("exit\n");
-			break ;
-		}
-		add_history(line);
-		shell->tokens = lexer(line, shell);
-		//print_tokens(shell->tokens);
-		syntax_error = syntax_checker(shell->tokens);
-		if (syntax_error != NULL)
-		{
-			printf("%s\n", syntax_error);
-			free (syntax_error);
-			free_structs(shell);
-			free(line);
-			shell->status_last_command = 2;
-			continue ;
-		}
-		ast = parse(shell->tokens);
-		//print_ast(ast, 1);
-		if (!ast)
-		{
-			free_structs(shell);
-			free(line);
-			continue;
-		}
-		free_tokens(shell);
-		shell->node = ast;
-		//print_ast(ast, 1);
-		if (!set_command_path(shell->node, shell))
-			execute_pipeline(shell);
-		//printf ("cmd = %s\n", shell->node->cmd);
-		//handle_path(shell, shell->node)
-		//printf("\n");
-		cleanup_ast(&(shell->node));
-		//free_array(shell->env);
-		//printf("%i\n", shell->status_last_command);
-		// printf("You entered: %s\n", line);
-		free(line);
-	}
-	cleanup_shell(shell);
-	//restore_terminal();
-	return (0);
 }

@@ -15,6 +15,9 @@
 # include <termios.h>
 # include <unistd.h>
 
+//MAIN
+int				main(int argc, char **argv, char **envp);
+
 //Sigals
 extern volatile sig_atomic_t g_rl_interrupted;
 
@@ -224,5 +227,6 @@ void					cleanup_shell(t_shell *shell);
 void					cleanup_ast(t_ast **node);
 void					free_array(char **array, int len);
 void					free_split(char **split);
+void					free_tokens(t_shell *shell);
 
 #endif

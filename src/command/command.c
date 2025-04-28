@@ -54,7 +54,6 @@ static int fill_heredoc(t_redirect *redir, char *name, t_shell *shell)
     if (g_rl_interrupted == 2)
     {
         shell->status_last_command = 2;
-        g_rl_interrupted = 0;
         unlink(name);
         return (-1);
     }
@@ -74,7 +73,7 @@ static void	scan_heredocs(t_ast *node, t_shell *shell)
 	redir = node->redirections;
 	while (redir)
 	{
-		if (redir->type == NODE_HEREDOC)
+		if (redir->type == NODE_HEREDOC  &&  g_rl_interrupted == 0)
 		{
 			i++;
 			ft_strlcpy(temp_name, "tempfile_", sizeof(temp_name));
@@ -88,6 +87,7 @@ static void	scan_heredocs(t_ast *node, t_shell *shell)
 		}
 		redir = redir->next;
 	}
+    g_rl_interrupted = 0;
 	if (node->left)
         scan_heredocs(node->left, shell);
 	if (node->right)
