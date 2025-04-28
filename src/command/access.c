@@ -1,13 +1,14 @@
 #include "minishell.h"
 
-int is_directory(char *filename)
+int is_directory(char *filename) 
 {
-	struct stat statbuf;
+    struct stat statbuf;
 
-	if (stat(filename, &statbuf) != 0)
-		return (0);
-	else
-		return (1);
+    if (stat(filename, &statbuf) != 0) 
+        return (0);
+    if (S_ISDIR(statbuf.st_mode)) 
+        return (1);
+    return 0;
 }
 
 int	check_file_access_read(char *filename, int i)
