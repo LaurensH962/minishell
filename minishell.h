@@ -86,6 +86,7 @@ typedef struct s_shell
 	int					**pipes;
 	int					pipe_index;
 	int					status_last_command;
+	int					index;
 	t_token				*tokens;
 
 }						t_shell;

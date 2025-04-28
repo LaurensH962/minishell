@@ -125,15 +125,9 @@ static void prescan_redirections(t_ast *node)
 void redir_close(int in_fd, int out_fd)
 {
     if (in_fd != STDIN_FILENO)
-    {
         dup2(in_fd, STDIN_FILENO);
-        //close(in_fd);
-    }
     if (out_fd != STDOUT_FILENO)
-    {
         dup2(out_fd, STDOUT_FILENO);
-        //close(out_fd);
-    }
 }
 
 
@@ -181,6 +175,7 @@ static void	execute_ast(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 {
     if (node->type == NODE_PIPE)
     {
+        //rec_index++;
         if (pipe(shell->pipes[shell->pipe_index]) == -1)
         {
             perror("minishell: pipe");
@@ -188,16 +183,11 @@ static void	execute_ast(t_shell *shell, t_ast *node, int in_fd, int out_fd)
         }
         shell->pipe_index++;
         execute_ast(shell, node->left, in_fd, shell->pipes[shell->pipe_index - 1][1]);
-        execute_ast(shell, node->right, shell->pipes[shell->pipe_index - 1][0], out_fd);
-        close(shell->pipes[shell->pipe_index - 1][1]); 
-        close(shell->pipes[shell->pipe_index - 1][0]);
+        shell->index++;
+        execute_ast(shell, node->right, shell->pipes[shell->pipe_index - shell->index][0], out_fd);
     }
     else if(node->type == NODE_COMMAND)
         execute_command(shell, node, in_fd, out_fd);
-    if (in_fd != STDIN_FILENO)
-        close(in_fd);
-    if (out_fd != STDOUT_FILENO)
-        close(out_fd);
 }
 
 static void	wait_for_children(t_shell * shell)
@@ -255,6 +245,7 @@ void execute_pipeline(t_shell *shell)
             return ;
         }
         shell->pipe_index = 0;
+        shell->index = 0;
         int i = 0;
         while(i < shell->pipe_count)
         {
@@ -270,6 +261,13 @@ void execute_pipeline(t_shell *shell)
     }
     prescan_redirections(shell->node);
     execute_ast(shell, shell->node, in_fd, out_fd);
+    int i = 0;
+    while (i < (shell->pipe_count))
+    {
+        close(shell->pipes[i][0]);
+        close(shell->pipes[i][1]);
+        i++;
+    }
     wait_for_children(shell);
     free(shell->pid);
     setup_signal_handlers();

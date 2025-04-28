@@ -24,7 +24,7 @@ void	report_error(const char *filename, const char *err_msg)
 	buffer[len++] = ' ';
 	while (*err_msg)
 		buffer[len++] = *err_msg++;
-	buffer[len++] = ' ';
+	//buffer[len++] = ' ';
 	buffer[len++] = '\n';
 	write(2, buffer, len);	
 }
