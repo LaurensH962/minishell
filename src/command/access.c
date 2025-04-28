@@ -15,7 +15,7 @@ int	check_file_access_read(char *filename, int i)
 {
 	if (access(filename, F_OK) == -1)
 	{
-		report_error(filename, "no such file or directory:");
+		report_error(filename, "No such file or directory");
 		if (i == 0)
 			exit(1);
 		else
@@ -23,7 +23,7 @@ int	check_file_access_read(char *filename, int i)
 	}
 	if (access(filename, R_OK) == -1)
 	{
-		report_error(filename, "permission denied:");
+		report_error(filename, "Permission denied");
 		if (i == 0)
 			exit(1);
 		else
@@ -38,7 +38,7 @@ int	check_file_access_write(char *filename, int i)
 	{
 		if (access(filename, W_OK) == -1)
 		{
-			report_error(filename, "permission denied:");
+			report_error(filename, "Permission denied");
 			if (i == 0)
 				exit(1);
 			else
@@ -57,12 +57,12 @@ void	check_command_access(t_ast *node)
 	}
 	if (access(node->cmd_path, F_OK) == -1)
 	{
-		report_error(node->cmd, "no such file or directory:");
+		report_error(node->cmd, "No such file or directory");
 		exit (127);
 	}
 	if (access(node->cmd_path, X_OK) == -1)
 	{
-		report_error(node->cmd, "permission denied:");
+		report_error(node->cmd, "Permission denied");
 		exit (126);
 	}
 }

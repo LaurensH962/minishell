@@ -13,11 +13,18 @@ void	report_error(const char *filename, const char *err_msg)
 	while (*program)
 		buffer[len++] = *program++;
 	buffer[len++] = ' ';
+	if(*filename == '\0')
+	{
+		buffer[len++] = '\'';
+		buffer[len++] = '\'';
+	}
+	while (*filename)
+		buffer[len++] = *filename++;
+	buffer[len++] = ':';
+	buffer[len++] = ' ';
 	while (*err_msg)
 		buffer[len++] = *err_msg++;
 	buffer[len++] = ' ';
-	while (*filename)
-		buffer[len++] = *filename++;
 	buffer[len++] = '\n';
 	write(2, buffer, len);	
 }
