@@ -14,6 +14,7 @@
 # include <sys/wait.h>
 # include <termios.h>
 # include <unistd.h>
+#include <sys/stat.h>
 
 //MAIN
 int				main(int argc, char **argv, char **envp);
