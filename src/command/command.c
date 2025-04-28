@@ -54,7 +54,7 @@ static int fill_heredoc(t_redirect *redir, char *name, t_shell *shell)
     sigaction(SIGINT, &old_sa, NULL);
     if (g_rl_interrupted == 2)
     {
-        shell->status_last_command = 2;
+        shell->status_last_command = 130;
         unlink(name);
         return (-1);
     }
@@ -88,7 +88,6 @@ static void	scan_heredocs(t_ast *node, t_shell *shell)
 		}
 		redir = redir->next;
 	}
-    g_rl_interrupted = 0;
 	if (node->left)
         scan_heredocs(node->left, shell);
 	if (node->right)
@@ -194,11 +193,7 @@ static void	execute_ast(t_shell *shell, t_ast *node, int in_fd, int out_fd)
         close(shell->pipes[shell->pipe_index - 1][0]);
     }
     else if(node->type == NODE_COMMAND)
-    {
-        if(!node->args)
-            return;
         execute_command(shell, node, in_fd, out_fd);
-    }
     if (in_fd != STDIN_FILENO)
         close(in_fd);
     if (out_fd != STDOUT_FILENO)
@@ -244,7 +239,12 @@ void execute_pipeline(t_shell *shell)
     in_fd = STDIN_FILENO;
     out_fd = STDOUT_FILENO;
     signal(SIGINT, SIG_IGN); //not sure if correctly placed
-    //scan_heredocs(shell->node);
+    scan_heredocs(shell->node, shell);
+    if (g_rl_interrupted != 0)
+    {
+        g_rl_interrupted = 0;
+        return ;
+    }
     if (shell->pipe_count > 0)
     {
         shell->pipes = malloc(sizeof (int *) * shell->pipe_count);
@@ -268,7 +268,6 @@ void execute_pipeline(t_shell *shell)
             i++;
         }
     }
-    scan_heredocs(shell->node, shell);
     prescan_redirections(shell->node);
     execute_ast(shell, shell->node, in_fd, out_fd);
     wait_for_children(shell);

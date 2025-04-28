@@ -26,9 +26,7 @@ char	*syntax_checker(t_token *tokens)
 	{
 		if (tokens->type == TOKEN_PIPE)
 		{
-			if (!prev || tokens->next->type == TOKEN_EOF)
-				return (build_error_msg("|"));
-			if (tokens->next->type == TOKEN_PIPE)
+			if (!prev || tokens->next->type == TOKEN_EOF || tokens->next->type == TOKEN_PIPE)
 				return (build_error_msg("|"));
 		}
 		else if (tokens->type == TOKEN_REDIRECT_OUT
