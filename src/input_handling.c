@@ -1,12 +1,7 @@
 #include "minishell.h"
-#include <readline/history.h>
-#include <readline/readline.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <termios.h>
-#include <unistd.h>
 
+
+volatile sig_atomic_t g_rl_interrupted = 0;
 //struct termios	g_original_termios;
 
 /* Save and restore terminal. in main we save the current terminal,
@@ -47,7 +42,8 @@ Redisplay the prompt so it looks always like we are in a proper shell lol.*/
 void	handle_sigint(int sig)
 {
 	(void)sig;
-	printf("\n");
+	g_rl_interrupted = 2;
+	ft_putstr_fd("^C\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
@@ -55,6 +51,7 @@ void	handle_sigint(int sig)
 
 // void	handle_exit(int sig)
 // {
+
 // 	(void)sig;
 // 	//restore_terminal();
 // 	printf("\nexit\n");
@@ -119,7 +116,8 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	syntax_error = NULL;
-	//save_original_terminal();
+	rl_catch_signals = 0;
+	g_rl_interrupted = 0;
 	setup_signal_handlers();
 	//suppress_output();
 	shell = ft_calloc(1, sizeof(t_shell));
@@ -127,7 +125,6 @@ int	main(int argc, char **argv, char **envp)
 		exit (1);
 	if (copy_environ(envp, &shell->export))
 		exit (1);
-	//export_default_variables(shell);
 	while (1)
 	{
 		/*if (isatty(fileno(stdin)))
@@ -141,8 +138,12 @@ int	main(int argc, char **argv, char **envp)
 			line = ft_strtrim(linetemp, "\n");
 			free(linetemp);
 		}*/
-
 		line = readline("minishell: ");
+		if (g_rl_interrupted == 2)
+		{
+			shell->status_last_command = 2;
+			g_rl_interrupted = 0;
+		}
 		if (!line)
 		{
 			//restore_terminal();
@@ -152,19 +153,19 @@ int	main(int argc, char **argv, char **envp)
 		}
 		add_history(line);
 		shell->tokens = lexer(line, shell);
+		//print_tokens(shell->tokens);
 		syntax_error = syntax_checker(shell->tokens);
 		if (syntax_error != NULL)
 		{
 			printf("%s\n", syntax_error);
 			free (syntax_error);
 			free_structs(shell);
-			//free(shell);
 			free(line);
+			shell->status_last_command = 2;
 			continue ;
 		}
-		//print_tokens(shell->tokens);
 		ast = parse(shell->tokens);
-
+		//print_ast(ast, 1);
 		if (!ast)
 		{
 			free_structs(shell);
@@ -173,12 +174,11 @@ int	main(int argc, char **argv, char **envp)
 		}
 		free_tokens(shell);
 		shell->node = ast;
+		//print_ast(ast, 1);
 		if (!set_command_path(shell->node, shell))
 			execute_pipeline(shell);
 		//printf ("cmd = %s\n", shell->node->cmd);
-		//print_ast(ast, 1);
-		//handle_path(shell, shell->node);
-		//print_ast(ast, 1);
+		//handle_path(shell, shell->node)
 		//printf("\n");
 		cleanup_ast(&(shell->node));
 		//free_array(shell->env);

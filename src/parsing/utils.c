@@ -13,7 +13,7 @@ int	is_delimiter(char c)
 	return (1);
 }
 
-char	*ft_strjoin_minishell(char const *s1, char const *s2, t_lexer *lexer)
+char	*ft_strjoin_minishell(const char *s1, char *s2, t_lexer *lexer)
 {
 	char	*str;
 	size_t	len;
@@ -21,7 +21,7 @@ char	*ft_strjoin_minishell(char const *s1, char const *s2, t_lexer *lexer)
 	if (!s1 && !s2)
 		return (NULL);
 	if (!s1)
-		return (NULL);
+		return (s2);
 	if (!s2 && s1 && s1[0] == '\0')
 		return (NULL);
 	else if (!s2)
@@ -39,7 +39,6 @@ void	free_structs(t_shell *shell)
 {
 	t_token	*temp;
 
-
 	while (shell->tokens)
 	{
 		temp = shell->tokens->next;
@@ -50,4 +49,3 @@ void	free_structs(t_shell *shell)
 	if (shell->node)
 		cleanup_ast(&(shell->node));
 }
-

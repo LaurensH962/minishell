@@ -23,7 +23,7 @@ static int	setenve_export(t_shell *shell, char *arg)
 	if (equal) // VAR=VALUE case
 	{
 		key = ft_substr(arg, 0, (equal + 1) - arg);
-		value = strdup(equal + 1);
+		value = ft_strdup(equal + 1);
 		if (!value || !key)
 			return (perror_malloc_return());
 		if (ft_setenv(key, value, &(shell->export)))
