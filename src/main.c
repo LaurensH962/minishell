@@ -35,7 +35,7 @@ int	main(int argc, char **argv, char **envp)
 		line = readline("minishell: ");
 		if (g_rl_interrupted == 2)
 		{
-			shell->status_last_command = 2;
+			shell->status_last_command = 130;
 			g_rl_interrupted = 0;
 		}
 		if (!line)

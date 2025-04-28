@@ -96,10 +96,8 @@ t_token	*lexer(char *line, t_shell *shell)
 	{
 		if (current_token->type == TOKEN_ERROR)
 		{
-			fprintf(stderr, "error: %s\n", current_token->value);
-			free_structs(shell);
-			free(current_token);
-			return (NULL);
+			add_token(&tokens, current_token);
+			return (tokens);
 		}
 		add_token(&tokens, current_token);
 		current_token = lexer_next_token(&lexer, NULL, '\0', NULL);
