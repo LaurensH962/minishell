@@ -18,7 +18,6 @@ static int	handle_builtin_one_command(t_shell *shell, t_ast *node, int in_fd, in
             return (1);
         }
         shell->status_last_command = execute_builtin(node, shell, backup_stdin, backup_stdout);
-		printf("%d\n", shell->status_last_command);
 		dup2(backup_stdin, STDIN_FILENO);
 		dup2(backup_stdout, STDOUT_FILENO);
 		close(backup_stdin);
