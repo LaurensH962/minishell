@@ -12,6 +12,7 @@ static int	handle_builtin_one_command(t_shell *shell, t_ast *node, int in_fd, in
         if(handle_redirections_builtin(node, in_fd, out_fd))
         {
             shell->status_last_command = 1;
+			unlink_heredoc_fd(shell->node);
             return (1);
         }
         shell->status_last_command = execute_builtin(node, shell);
@@ -19,10 +20,12 @@ static int	handle_builtin_one_command(t_shell *shell, t_ast *node, int in_fd, in
 		dup2(backup_stdout, STDOUT_FILENO);
 		close(backup_stdin);
 		close(backup_stdout);
+		unlink_heredoc_fd(shell->node);
 		return (1);
     }
 	close(backup_stdin);
 	close(backup_stdout);
+	unlink_heredoc_fd(shell->node);
 	return (0);
 }
 
@@ -86,17 +89,25 @@ static void	create_child(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 			i++;
 		}
 		if (node->cmd == NULL)
-			//CLEANUP NEEDED
+		{
+			// CLEANUP
+			unlink_heredoc_fd(shell->node);
+			cleanup_ast(&(shell->node));
+			cleanup_shell(shell);
 			exit(0);
+		}
 		if (check_if_builtin(node))
 		{
 			// CLEANUP NEEDED
 			execute_builtin_exit(node, shell);
 		}
 		check_command_access(node);
+		unlink_heredoc_fd(shell->node);
 		execve(node->cmd_path, node->args, shell->export);
 		perror("minishell: execve");
 		// NEED CLEANUP HERE!!!!
+		cleanup_ast(&(shell->node));
+		cleanup_shell(shell);
 		exit(1);
 	}
 	shell->pid[shell->pid_index++] = pid;

@@ -158,6 +158,7 @@ char					*ft_strjoin_minishell(char const *s1, char *s2,
 // heredoc
 void					handle_heredoc(int *fd_read);
 int						handle_heredoc_builtin(int *fd_read);
+void    				unlink_heredoc_fd(t_ast *node);
 
 // commmand + pipes
 void					execute_pipeline(t_shell *shell);
@@ -234,5 +235,6 @@ void					cleanup_ast(t_ast **node);
 void					free_array(char **array, int len);
 void					free_split(char **split);
 void					free_tokens(t_shell *shell);
+void					free_pipes(int **pipes, int count);
 
 #endif

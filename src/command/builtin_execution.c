@@ -41,6 +41,8 @@ void	execute_builtin_exit(t_ast *node, t_shell *shell)
 		exit_value = ft_unset(shell, node->args);
 	else if (ft_strcmp(node->cmd ,"env") == 0)
 		exit_value = ft_env(shell, node);
+	cleanup_ast(&(shell->node));
+	cleanup_shell(shell);
 	exit (exit_value);
 }
 
