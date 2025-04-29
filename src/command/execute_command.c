@@ -14,7 +14,7 @@ static int	handle_builtin_one_command(t_shell *shell, t_ast *node, int in_fd, in
             shell->status_last_command = 1;
 			close(backup_stdin);
 			close(backup_stdout);
-			unlink_heredoc_fd(shell->node);
+			//unlink_heredoc_fd(shell->node);
             return (1);
         }
         shell->status_last_command = execute_builtin(node, shell, backup_stdin, backup_stdout);
@@ -22,12 +22,12 @@ static int	handle_builtin_one_command(t_shell *shell, t_ast *node, int in_fd, in
 		dup2(backup_stdout, STDOUT_FILENO);
 		close(backup_stdin);
 		close(backup_stdout);
-		unlink_heredoc_fd(shell->node);
+		//unlink_heredoc_fd(shell->node);
 		return (1);
     }
 	close(backup_stdin);
 	close(backup_stdout);
-	unlink_heredoc_fd(shell->node);
+	//unlink_heredoc_fd(shell->node);
 	return (0);
 }
 
