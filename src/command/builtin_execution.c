@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	execute_builtin(t_ast *node, t_shell *shell)
+int	execute_builtin(t_ast *node, t_shell *shell, int in_fd, int out_fd)
 {
 	int exit_value;
 
@@ -10,7 +10,11 @@ int	execute_builtin(t_ast *node, t_shell *shell)
 	else if (ft_strcmp(node->cmd , "cd") == 0)
 		exit_value = ft_cd(shell, node);
 	else if (ft_strcmp(node->cmd ,"exit") == 0)
-		ft_exit(node->args);
+	{
+		close(in_fd);
+		close(out_fd);
+		ft_exit(node->args, shell);
+	}
 	else if (ft_strcmp(node->cmd  ,"pwd") == 0)
 		exit_value = ft_pwd();
 	else if (ft_strcmp(node->cmd , "export") == 0)
@@ -32,7 +36,7 @@ void	execute_builtin_exit(t_ast *node, t_shell *shell)
 	else if (ft_strcmp(node->cmd , "cd") == 0)
 		exit_value = ft_cd(shell, node);
 	else if (ft_strcmp(node->cmd ,"exit") == 0)
-		ft_exit(node->args);
+		ft_exit(node->args, shell);
 	else if (ft_strcmp(node->cmd  ,"pwd") == 0)
 		exit_value = ft_pwd();
 	else if (ft_strcmp(node->cmd , "export") == 0)
@@ -41,8 +45,7 @@ void	execute_builtin_exit(t_ast *node, t_shell *shell)
 		exit_value = ft_unset(shell, node->args);
 	else if (ft_strcmp(node->cmd ,"env") == 0)
 		exit_value = ft_env(shell, node);
-	cleanup_ast(&(shell->node));
-	cleanup_shell(shell);
+	cleanup_all(shell);
 	exit (exit_value);
 }
 

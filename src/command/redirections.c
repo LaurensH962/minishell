@@ -1,8 +1,8 @@
 #include "minishell.h"
 
-void	handle_inputfile(int *fd_read, t_redirect *redirections)
+void	handle_inputfile(int *fd_read, t_redirect *redirections, t_shell *shell)
 {
-	check_file_access_read(redirections->file, 0);
+	check_file_access_read(redirections->file, 0, shell);
 	*fd_read = open(redirections->file, O_RDONLY);
 	if (*fd_read == -1)
 	{
@@ -14,9 +14,9 @@ void	handle_inputfile(int *fd_read, t_redirect *redirections)
 	close(*fd_read);
 }
 
-void	handle_outputfile(int *fd_write, t_redirect *redirections)
+void	handle_outputfile(int *fd_write, t_redirect *redirections, t_shell *shell)
 {
-	check_file_access_write(redirections->file, 0);
+	check_file_access_write(redirections->file, 0, shell);
 	if (redirections->type == NODE_APPEND)
 		*fd_write = open(redirections->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else
@@ -31,9 +31,9 @@ void	handle_outputfile(int *fd_write, t_redirect *redirections)
 	close(*fd_write);
 }
 
-int	handle_inputfile_builtin(int *fd_read, t_redirect *redirections)
+int	handle_inputfile_builtin(int *fd_read, t_redirect *redirections, t_shell *shell)
 {
-	if (check_file_access_read(redirections->file, 1))
+	if (check_file_access_read(redirections->file, 1, shell))
 		return (1);
 	*fd_read = open(redirections->file, O_RDONLY);
 	if (*fd_read == -1)
@@ -47,9 +47,9 @@ int	handle_inputfile_builtin(int *fd_read, t_redirect *redirections)
 	return (0);
 }
 
-int	handle_outputfile_builtin(int *fd_write, t_redirect *redirections)
+int	handle_outputfile_builtin(int *fd_write, t_redirect *redirections, t_shell *shell)
 {
-	if(check_file_access_write(redirections->file, 1))
+	if(check_file_access_write(redirections->file, 1, shell))
 		return (1);
 	if (redirections->type == NODE_APPEND)
 		*fd_write = open(redirections->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
@@ -66,7 +66,7 @@ int	handle_outputfile_builtin(int *fd_write, t_redirect *redirections)
 	return (0);
 }
 
-int     handle_redirections_builtin(t_ast *node, int in_fd, int out_fd)
+int     handle_redirections_builtin(t_ast *node, int in_fd, int out_fd, t_shell *shell)
 {
     int fd_read;
     int fd_write;
@@ -79,11 +79,11 @@ int     handle_redirections_builtin(t_ast *node, int in_fd, int out_fd)
     while(redir)
     {
         if (redir->type == NODE_REDIRECT_IN)
-            result = handle_inputfile_builtin(&fd_read, redir);
+            result = handle_inputfile_builtin(&fd_read, redir, shell);
         if (redir->type == NODE_REDIRECT_OUT)
-            result = handle_outputfile_builtin(&fd_write, redir);
+            result = handle_outputfile_builtin(&fd_write, redir, shell);
         if (redir->type == NODE_APPEND)
-    		result = handle_outputfile_builtin(&fd_write, redir);
+    		result = handle_outputfile_builtin(&fd_write, redir, shell);
         if (redir->type == NODE_HEREDOC)
 			result = handle_heredoc_builtin(&redir->fd_heredoc);
 		if (result != 0)

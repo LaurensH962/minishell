@@ -95,7 +95,7 @@ static void	scan_heredocs(t_ast *node, t_shell *shell)
 		scan_heredocs(node->right, shell);
 }
 
-static void	prescan_redirections(t_ast *node)
+static void	prescan_redirections(t_ast *node, t_shell *shell)
 {
 	t_redirect *redir;
 	int fd;
@@ -106,21 +106,27 @@ static void	prescan_redirections(t_ast *node)
 	{
 		if (redir->type == NODE_REDIRECT_OUT || redir->type == NODE_APPEND)
 		{
+
 			if (redir->type == NODE_REDIRECT_OUT)
 				flags = O_CREAT | O_WRONLY | O_TRUNC;
-			// else if (redir->type == NODE_REDIRECT_IN)
 			else
 				flags = O_CREAT | O_WRONLY | O_APPEND;
+            if (check_file_access_write(redir->file, 3, shell))
+                break ;
 			fd = open(redir->file, flags, 0644);
-			if (fd != -1)
-				close(fd);
+			if (fd == -1)
+            {
+				perror("minishell: open");
+                break ;
+            }
+            close(fd);
 		}
 		redir = redir->next;
 	}
 	if (node->left)
-		prescan_redirections(node->left);
+		prescan_redirections(node->left, shell);
 	if (node->right)
-		prescan_redirections(node->right);
+		prescan_redirections(node->right, shell);
 }
 
 void	redir_close(int in_fd, int out_fd)
@@ -285,8 +291,11 @@ void	execute_pipeline(t_shell *shell)
 			i++;
 		}
 	}
-	prescan_redirections(shell->node);
-	execute_ast(shell, shell->node, in_fd, out_fd);
+	prescan_redirections(shell->node, shell);
+    if (!shell->node->cmd && shell->node->type == NODE_COMMAND)
+        return ;
+    else
+	    execute_ast(shell, shell->node, in_fd, out_fd);
 	int i = 0;
 	while (i < (shell->pipe_count))
 	{
@@ -295,8 +304,6 @@ void	execute_pipeline(t_shell *shell)
 		i++;
 	}
 	wait_for_children(shell);
-	free(shell->pid);
-	shell->pid = NULL;
 	unlink_heredoc_fd(shell->node);
 	setup_signal_handlers();
 }

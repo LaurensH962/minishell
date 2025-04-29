@@ -163,10 +163,10 @@ void    				unlink_heredoc_fd(t_ast *node);
 // commmand + pipes
 void					execute_pipeline(t_shell *shell);
 void					handle_inputfile(int *fd_read,
-							t_redirect *redirections);
+							t_redirect *redirections, t_shell *shell);
 void					handle_outputfile(int *fd_write,
-							t_redirect *redirections);
-int						execute_builtin(t_ast *node, t_shell *shell);
+							t_redirect *redirections, t_shell *shell);
+int						execute_builtin(t_ast *node, t_shell *shell, int in_fd, int out_fd);
 void					execute_builtin_exit(t_ast *node, t_shell *shell);
 int						check_if_builtin(t_ast *node);
 int						set_command_path(t_ast *node, t_shell *shell);
@@ -175,9 +175,9 @@ char					*get_command_path(char *cmd, char **envp, int *fail_flag);
 
 // access
 
-int						check_file_access_write(char *filename, int i);
-int						check_file_access_read(char *filename, int i);
-void					check_command_access(t_ast *node);
+int						check_file_access_write(char *filename, int i, t_shell *shell);
+int						check_file_access_read(char *filename, int i, t_shell *shell);
+void					check_command_access(t_ast *node, t_shell *shell);
 int						command_is_path(char *argv);
 int						current_path(char *command);
 int 					is_directory(char *filename);
@@ -195,9 +195,9 @@ int						ft_unset(t_shell *shell, char **vars);
 int						ft_env(t_shell *shell, t_ast *node);
 int						ft_echo(char **args);
 int						ft_cd(t_shell *shell, t_ast *node);
-void					ft_exit(char **args);
+void					ft_exit(char **args, t_shell *shell);
 int						ft_pwd(void);
-char	*get_oldpwd(t_shell *shell);
+char					*get_oldpwd(t_shell *shell);
 
 // builtin helpers
 
@@ -215,11 +215,11 @@ void					setup_signal_handlers(void);
 //redirections
 
 int						handle_redirections_builtin(t_ast *node, int in_fd,
-	int out_fd);
+	int out_fd, t_shell *shell);
 int						handle_outputfile_builtin(int *fd_write,
-	t_redirect *redirections);
+	t_redirect *redirections, t_shell *shell);
 int						handle_inputfile_builtin(int *fd_read,
-	t_redirect *redirections);
+	t_redirect *redirections, t_shell *shell);
 void					redir_close(int in_fd, int out_fd);
 
 
@@ -236,5 +236,6 @@ void					free_array(char **array, int len);
 void					free_split(char **split);
 void					free_tokens(t_shell *shell);
 void					free_pipes(int **pipes, int count);
+void 					cleanup_all(t_shell *shell);
 
 #endif

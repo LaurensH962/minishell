@@ -53,6 +53,11 @@ void	cleanup_shell(t_shell *shell)
 
 	if (shell == NULL)
 		return ;
+	if(shell->pid)
+	{
+		free(shell->pid);
+		shell->pid = NULL;
+	}
 	// free_structs(shell);    // Clean up AST nodes
 	if (shell->env)
 	{

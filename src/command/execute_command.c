@@ -9,13 +9,15 @@ static int	handle_builtin_one_command(t_shell *shell, t_ast *node, int in_fd, in
 	backup_stdout = dup(STDOUT_FILENO);
 	if(check_if_builtin(node) && shell->pipe_count == 0)
     {
-        if(handle_redirections_builtin(node, in_fd, out_fd))
+        if(handle_redirections_builtin(node, in_fd, out_fd, shell))
         {
             shell->status_last_command = 1;
+			close(backup_stdin);
+			close(backup_stdout);
 			unlink_heredoc_fd(shell->node);
             return (1);
         }
-        shell->status_last_command = execute_builtin(node, shell);
+        shell->status_last_command = execute_builtin(node, shell, backup_stdin, backup_stdout);
 		dup2(backup_stdin, STDIN_FILENO);
 		dup2(backup_stdout, STDOUT_FILENO);
 		close(backup_stdin);
@@ -29,7 +31,7 @@ static int	handle_builtin_one_command(t_shell *shell, t_ast *node, int in_fd, in
 	return (0);
 }
 
-static void     handle_redirections(t_ast *node, int in_fd, int out_fd)
+static void     handle_redirections(t_ast *node, int in_fd, int out_fd, t_shell *shell)
 {
     int fd_read;
     int fd_write;
@@ -40,11 +42,11 @@ static void     handle_redirections(t_ast *node, int in_fd, int out_fd)
     while(redir)
     {
         if (redir->type == NODE_REDIRECT_IN)
-            handle_inputfile(&fd_read, redir);
+            handle_inputfile(&fd_read, redir, shell);
         if (redir->type == NODE_REDIRECT_OUT)
-            handle_outputfile(&fd_write, redir);
+            handle_outputfile(&fd_write, redir, shell);
         if (redir->type == NODE_APPEND)
-            handle_outputfile(&fd_write, redir);
+            handle_outputfile(&fd_write, redir, shell);
         if (redir->type == NODE_HEREDOC)
             handle_heredoc(&redir->fd_heredoc);
         redir = redir->next;
@@ -68,7 +70,7 @@ static void	create_child(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 	{
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
-		handle_redirections(node, in_fd, out_fd);
+		handle_redirections(node, in_fd, out_fd, shell);
 		while (i < (shell->pipe_count))
 		{
 			close(shell->pipes[i][0]);
@@ -78,9 +80,7 @@ static void	create_child(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 		if (node->cmd == NULL)
 		{
 			// CLEANUP
-			unlink_heredoc_fd(shell->node);
-			cleanup_ast(&(shell->node));
-			cleanup_shell(shell);
+			cleanup_all(shell);
 			exit(0);
 		}
 		if (check_if_builtin(node))
@@ -88,7 +88,7 @@ static void	create_child(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 			// CLEANUP NEEDED
 			execute_builtin_exit(node, shell);
 		}
-		check_command_access(node);
+		check_command_access(node, shell);
 		unlink_heredoc_fd(shell->node);
 		execve(node->cmd_path, node->args, shell->export);
 		perror("minishell: execve");

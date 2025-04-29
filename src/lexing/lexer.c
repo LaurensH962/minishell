@@ -54,7 +54,7 @@ t_token	*lexer_next_token(t_lexer *lexer, t_token *temp_token, char quote_char,
 		token_value = ft_calloc(1, ft_strlen(lexer->input) + 1);
 		if (!token_value)
 			return (new_token(TOKEN_ERROR, "Memory allocation error"));
-		temp_token = inner_loop((int *)&lexer->pos, &quote_char, &token_value,
+		temp_token = inner_loop((int *)&lexer->pos	, &quote_char, &token_value,
 				lexer);
 		if (temp_token)
 			return (free(token_value), temp_token);
