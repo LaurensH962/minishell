@@ -65,19 +65,6 @@ static void	create_child(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 	{
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
-		/*if (in_fd == STDIN_FILENO && shell->pipe_count > 0)
-			close(shell->pipes[shell->pipe_index - 1][0]);
-		if (out_fd == STDOUT_FILENO && shell->pipe_count > 0)
-			close(shell->pipes[shell->pipe_index - 1][1]);*/
-		//printf("%d\n", shell->pipe_index);
-		//printf("cmd: %s path: %s\n", node->cmd, node->cmd_path);
-		if (is_directory(node->cmd) /*&& ft_strncmp(node->cmd, "./", 2) == 0)*/)
-		{
-			ft_putstr_fd("minishell: ", STDERR_FILENO);
-			ft_putstr_fd(node->cmd, STDERR_FILENO);
-			ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
-			exit(126);
-		}
 		handle_redirections(node, in_fd, out_fd);
 		while (i < (shell->pipe_count))
 		{

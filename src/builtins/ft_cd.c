@@ -95,9 +95,9 @@ static int	cd_to_path(t_shell *shell, char *path)
 	if (!newpwd)
 		perror("minishell: getcwd");
 	if (oldpwd)
-		ft_setenv("OLDPWD=", oldpwd, &shell->env);
+		ft_setenv("OLDPWD=", oldpwd, &shell->env, 0);
 	if (newpwd)
-		ft_setenv("PWD=", newpwd, &shell->env);
+		ft_setenv("PWD=", newpwd, &shell->env, 0);
 	free(oldpwd);
 	free(newpwd);
 	return (0);

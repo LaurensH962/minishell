@@ -65,6 +65,13 @@ void	check_command_access(t_ast *node)
 		report_error(node->cmd, "Permission denied");
 		exit (126);
 	}
+	if (access(node->cmd_path, X_OK) == 0 && is_directory(node->cmd))
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(node->cmd, STDERR_FILENO);
+		ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+		exit(126);
+	}
 }
 
 /*-fsanitize=address*/

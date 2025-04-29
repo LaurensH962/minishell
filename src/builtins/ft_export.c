@@ -1,10 +1,38 @@
 #include "minishell.h"
 
+static void sort_strings(char **arr)
+{
+    int i;
+    int swapped;
+    char *temp;
+
+    if (!arr)
+        return;
+    swapped = 1;
+    while (swapped)
+    {
+        swapped = 0;
+        i = 0;
+        while (arr[i] && arr[i + 1])
+        {
+            if (ft_strcmp(arr[i], arr[i + 1]) > 0)
+            {
+                temp = arr[i];
+                arr[i] = arr[i + 1];
+                arr[i + 1] = temp;
+                swapped = 1;
+            }
+            i++;
+        }
+    }
+}
+
 static int	print_export(t_shell *shell)
 {
 	int i;
 
 	i = 0;
+	sort_strings(shell->export);
 	while(shell->export[i] != NULL)
 	{
 		printf("%s\n", shell->export[i]);
@@ -22,20 +50,20 @@ static int	setenve_export(t_shell *shell, char *arg)
 	equal = ft_strchr(arg, '=');
 	if (equal) // VAR=VALUE case
 	{
-		key = ft_substr(arg, 0, (equal + 1) - arg);
+		key = ft_substr(arg, 0, (equal) - arg);
 		value = ft_strdup(equal + 1);
 		if (!value || !key)
 			return (perror_malloc_return());
-		if (ft_setenv(key, value, &(shell->export)))
+		if (ft_setenv(key, value, &(shell->export), 1))
 			return (perror_malloc_free_return(key, value));
-		if (ft_setenv(key, value, &(shell->env)))
+		if (ft_setenv(key, value, &(shell->env), 1))
 			return (perror_malloc_free_return(key, value));
 		free(key);
 		free(value);
 	}
 	else
 	{
-		if (ft_setenv(arg, NULL, &(shell->export)) != 0)
+		if (ft_setenv(arg, "\0", &(shell->export), 0) != 0)
 			return (perror_malloc_return());
 	}
 	return (0);
