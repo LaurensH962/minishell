@@ -184,7 +184,7 @@ int 					is_directory(char *filename);
 // env
 
 int						ft_setenv(const char *key, const char *value,
-							char ***envp);
+							char ***envp, int equal);
 int						copy_environ(char **envp, char ***env);
 
 // builtins
