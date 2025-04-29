@@ -6,9 +6,9 @@ static char	*find_expanded_value(t_lexer *lexer, char *token_value)
 
 	expanded_value = expand_variable(lexer->input, &(lexer->pos), lexer);
 	token_value = ft_strjoin_minishell(token_value, expanded_value, lexer);
-	if (expanded_value && !ft_strcmp(expanded_value, "$")
-		&& !ft_strcmp(expanded_value, ""))
-		free(expanded_value);
+	/* if (expanded_value && !ft_strcmp(expanded_value, "$")
+		&& !ft_strcmp(expanded_value, "")) */
+	free(expanded_value);
 	return (token_value);
 }
 

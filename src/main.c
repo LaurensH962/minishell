@@ -67,7 +67,6 @@ int	main(int argc, char **argv, char **envp)
 		}
 		free_tokens(shell);
 		shell->node = ast;
-		printf("pipe count = %d\n", shell->pipe_count);
 		if (!set_command_path(shell->node, shell))
 			execute_pipeline(shell);
 		cleanup_ast(&(shell->node));
