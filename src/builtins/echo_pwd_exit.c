@@ -58,8 +58,13 @@ void ft_exit(char **args, t_shell *shell)
 		if (args[2] != NULL && args[1])
 		{
 			ft_putstr_fd("minishell: exit: too many arguments\n", 2);
-			cleanup_all(shell);
-			exit (1);
+			if (is_number(args[1]))
+				return ;
+			else
+			{
+				cleanup_all(shell);
+				exit (1);
+			}
 		}
 		if(is_number(args[1]))
 		{
@@ -98,109 +103,3 @@ int ft_pwd(void)
 	}
 	return (0);
 }
-
-/*void	set_pwd(t_shell *shell)
-{
-	int		i;
-	int		j;
-	char	*home;
-
-	j = 0;
-	i = 0;
-	while (shell->env[i])
-	{
-		if (strncmp(shell->env[i], "HOME=", 5) == 0)
-		{
-			home = strdup(shell->env[i] + 5); // Skip "HOME="
-			if (!home)
-			{
-				perror("minishell1: malloc");
-				return ;
-			}
-			while(shell->env[j])
-			{
-				if(strncmp(shell->env[j], "PWD=", 4) == 0)
-				{
-					free(shell->env[j]);
-					shell->env[j] = ft_strjoin("PWD=", home);
-					if (!shell->env[j])
-					{
-						perror("minishell2: malloc");
-						free(home);
-						return ;
-					}
-					break ;
-				}
-				j++;
-			}
-			free(home);
-			break ;
-		}
-		i++;
-	}
-}
-
-void	set_oldpwd(t_shell *shell)
-{
-	int		i;
-	int		j;
-	char	*home;
-
-	j = 0;
-	i = 0;
-	while (shell->env[i])
-	{
-		if (strncmp(shell->env[i], "HOME=", 5) == 0)
-		{
-			home = strdup(shell->env[i] + 5); // Skip "HOME="
-			if (!home)
-			{
-				perror("minishell3: malloc");
-				return ;
-			}
-			while(shell->env[j])
-			{
-				if(strncmp(shell->env[j], "OLDPWD=", 4) == 0)
-				{
-					free(shell->env[j]);
-					shell->env[j] = ft_strjoin("OLDPWD=", home);
-					if (!shell->env[j])
-					{
-						perror("minishell4: malloc");
-						free(home);
-						return ;
-					}
-					break ;
-				}
-				j++;
-			}
-			//if not found because unset, would I need to append it?
-			free(home);
-			break ;
-		}
-		i++;
-	}
-}
-
-void	set_default_home(t_shell *shell)
-{
-	char *home;
-	int i;
-
-	i = 0;
-	home = NULL;
-	while (shell->env[i])
-	{
-		if (strncmp(shell->env[i], "HOME=", 5) == 0)
-		{
-			home = strdup(shell->env[i] + 5); // Skip "HOME="
-			if (!home)
-				perror("minishell: malloc");
-			break;
-		}
-		i++;
-	}
-	if (home)
-		chdir(home);
-	free(home);
-}*/

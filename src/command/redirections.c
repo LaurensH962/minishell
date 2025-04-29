@@ -7,7 +7,7 @@ void	handle_inputfile(int *fd_read, t_redirect *redirections, t_shell *shell)
 	if (*fd_read == -1)
 	{
 		perror("minishell: open");
-		close(*fd_read);
+		cleanup_all(shell);
 		exit(1);
 	}
 	dup2(*fd_read, STDIN_FILENO);
@@ -24,7 +24,7 @@ void	handle_outputfile(int *fd_write, t_redirect *redirections, t_shell *shell)
 	if (*fd_write == -1)
 	{
 		perror("minishell: open output file failed");
-		//close(*fd_write); not needed ???
+		cleanup_all(shell);
 		exit(1);
 	}
 	dup2(*fd_write, STDOUT_FILENO);
@@ -39,7 +39,6 @@ int	handle_inputfile_builtin(int *fd_read, t_redirect *redirections, t_shell *sh
 	if (*fd_read == -1)
 	{
 		perror("minishell: open");
-		//close(*fd_read);
 		return(1);
 	}
 	dup2(*fd_read, STDIN_FILENO);
