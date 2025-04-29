@@ -79,17 +79,3 @@ void	cleanup_shell(t_shell *shell)
 		free(shell->pid);
 	free(shell);
 }
-
-/*void free_array(char **array, int len)
-{
-	int i;
-
-	i = 0;
-	if (len != -1)
-		array[len] = NULL;
-	if (!array)
-		return ;
-	while(array[i])
-		free(array[i++]);
-	free(array);
-}*/
