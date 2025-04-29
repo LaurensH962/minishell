@@ -32,6 +32,7 @@ int	main(int argc, char **argv, char **envp)
 			line = ft_strtrim(linetemp, "\n");
 			free(linetemp);
 		}*/
+		shell->pipe_count = 0;
 		line = readline("minishell: ");
 		if (g_rl_interrupted == 2)
 		{
@@ -66,10 +67,12 @@ int	main(int argc, char **argv, char **envp)
 		}
 		free_tokens(shell);
 		shell->node = ast;
+		printf("pipe count = %d\n", shell->pipe_count);
 		if (!set_command_path(shell->node, shell))
 			execute_pipeline(shell);
-		shell->pipe_count = 0;
 		cleanup_ast(&(shell->node));
+		if (shell->pipe_count > 0)
+        	free_pipes(shell->pipes, shell->pipe_count);
 		free(line);
 	}
 	cleanup_shell(shell);
