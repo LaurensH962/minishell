@@ -6,12 +6,12 @@
 #    By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/28 16:36:18 by lhaas             #+#    #+#              #
-#    Updated: 2025/04/29 14:50:07 by lhaas            ###   ########.fr        #
+#    Updated: 2025/04/30 15:23:34 by lhaas            ###   ########.fr        #
 #                                                                              #
 #******************************************************************************#
 
 NAME := minishell
-CFLAGS := -Wall -Wextra -Werror -g2 -gdwarf 
+CFLAGS := -Wall -Wextra -Werror -g
 LDFLAGS := -lreadline
 LIBFT := libft
 
