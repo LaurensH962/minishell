@@ -10,7 +10,7 @@ void	cleanup_redirect(t_redirect *redirect)
 		tmp = redirect;
 		if (tmp->type == NODE_HEREDOC)
 		{	
-			if (tmp->fd_heredoc != 0)
+			if (tmp->fd_heredoc > 2)
 				close(tmp->fd_heredoc);
 		}
 		redirect = redirect->next;

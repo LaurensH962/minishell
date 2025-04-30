@@ -4,7 +4,7 @@
 void	handle_sigint(int sig)
 {
 	(void)sig;
-	//g_rl_interrupted = 2;
+	g_rl_interrupted = 2;
 	ft_putstr_fd("^C\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
@@ -31,7 +31,6 @@ void	setup_signal_handlers(void)
 void	free_tokens(t_shell *shell)
 {
 	t_token	*temp;
-
 
 	while (shell->tokens)
 	{

@@ -23,7 +23,7 @@ int	main(int argc, char **argv, char **envp)
 		exit (1);
 	while (1)
 	{
-		if (isatty(STDIN_FILENO))
+		/* if (isatty(STDIN_FILENO))
 			printf("stdin is ok\n");
 		else
 			printf("stdin is closed or redirected!\n");
@@ -40,9 +40,9 @@ int	main(int argc, char **argv, char **envp)
 				break;
 			line = ft_strtrim(linetemp, "\n");
 			free(linetemp);
-		}
+		} */
 		shell->pipe_count = 0;
-		//line = readline("minishell: ");
+		line = readline("minishell: ");
 		if (g_rl_interrupted == 2)
 		{
 			shell->status_last_command = 130;
