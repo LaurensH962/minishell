@@ -1,13 +1,10 @@
 #include "minishell.h"
 
 
-volatile sig_atomic_t g_rl_interrupted = 0;
-
-
 void	handle_sigint(int sig)
 {
 	(void)sig;
-	g_rl_interrupted = 2;
+	//g_rl_interrupted = 2;
 	ft_putstr_fd("^C\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
@@ -20,6 +17,7 @@ void	setup_signal_handlers(void)
 	struct sigaction	sa_quit;
 	//struct sigaction	sa_exit;
 
+	//rl_done = 0;
 	sa_int.sa_handler = handle_sigint;
 	sigemptyset(&sa_int.sa_mask);
 	sa_int.sa_flags = SA_RESTART;

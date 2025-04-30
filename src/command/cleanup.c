@@ -9,7 +9,10 @@ void	cleanup_redirect(t_redirect *redirect)
 	{
 		tmp = redirect;
 		if (tmp->type == NODE_HEREDOC)
-			close(tmp->fd_heredoc);
+		{	
+			if (tmp->fd_heredoc != 0)
+				close(tmp->fd_heredoc);
+		}
 		redirect = redirect->next;
 		free(tmp->file); // Free the file associated with the redirect
 		free(tmp);       // Free the redirect structure itself

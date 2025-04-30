@@ -27,8 +27,8 @@
 	//buffer[len++] = ' ';
 	buffer[len++] = '\n';
 	write(2, buffer, len);	
-}*/
 
+}*/
 
 void report_error(char *filename, char *err_msg)
 {
