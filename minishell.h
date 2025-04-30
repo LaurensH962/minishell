@@ -172,6 +172,7 @@ int						check_if_builtin(t_ast *node);
 int						set_command_path(t_ast *node, t_shell *shell);
 void   					execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd);
 char					*get_command_path(char *cmd, char **envp, int *fail_flag);
+void					child_process(t_shell *shell, t_ast *node, int in_fd, int out_fd);
 
 // access
 
@@ -208,6 +209,7 @@ int						perror_malloc_return(void);
 int						perror_cd_return(void);
 int 					perror_free_return(char *function_name, char *string);
 int						perror_malloc_free_return(char *key, char *value);
+char 					*perror_return(void);
 
 // signals
 void					setup_signal_handlers(void);
@@ -226,7 +228,9 @@ void					redir_close(int in_fd, int out_fd);
 // printing
 void					print_tokens(t_token *tokens);
 void					print_ast(t_ast *node, int level);
-void					report_error(const char *filename, const char *err_msg);
+//void					report_error(const char *filename, const char *err_msg);
+void 					report_error(char *filename, char *err_msg);
+void					print_export_if_equalsign(t_shell *shell, int *index_string, int *index_char);
 
 // cleanup
 
@@ -235,7 +239,11 @@ void					cleanup_ast(t_ast **node);
 void					free_array(char **array, int len);
 void					free_split(char **split);
 void					free_tokens(t_shell *shell);
-void					free_pipes(int **pipes, int count);
+//void					free_pipes(int **pipes, int count);
 void 					cleanup_all(t_shell *shell);
+void					cleanup_pipes_pids(t_shell *shell);
+void					close_pipes(t_shell *shell);
+int						cd_access(char *path);
+void 					cd_report_error(char *cmd, char *filename, char *err_msg);
 
 #endif

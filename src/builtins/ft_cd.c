@@ -19,7 +19,9 @@ static int cd_to_home(t_shell *shell)
 		i++;
 	}
 	if (!home)
-		return (report_error("cd", "HOME not set"), 1);
+		return (report_error("cd", ": HOME not set\n"), 1);
+	if (cd_access(home))
+		return (1);
 	if (chdir(home) != 0)
 		return (perror_free_return("chdir", home));
 	free(home);
@@ -87,6 +89,8 @@ static int	cd_to_path(t_shell *shell, char *path)
 	}
 	else
 	{
+		if (cd_access(path))
+			return (1);
 		if(chdir(path) != 0)
 			return(perror_cd_return());
 	}
@@ -95,9 +99,9 @@ static int	cd_to_path(t_shell *shell, char *path)
 	if (!newpwd)
 		perror("minishell: getcwd");
 	if (oldpwd)
-		ft_setenv("OLDPWD=", oldpwd, &shell->env, 0);
+		ft_setenv("OLDPWD", oldpwd, &shell->env, 1);
 	if (newpwd)
-		ft_setenv("PWD=", newpwd, &shell->env, 0);
+		ft_setenv("PWD", newpwd, &shell->env, 1);
 	free(oldpwd);
 	free(newpwd);
 	return (0);
@@ -109,7 +113,7 @@ int	ft_cd(t_shell *shell, t_ast *node)
 	{
 		if(node->args[2] != NULL)
 		{
-			report_error(node->args[2], "cd: too many arguments");
+			report_error(node->args[2], ": cd: too many arguments\n");
 			return (1);
 		}
 	}

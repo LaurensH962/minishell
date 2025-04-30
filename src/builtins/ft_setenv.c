@@ -43,61 +43,73 @@ static int add_new_entry(char ***envp, char *new_entry)
     i = 0;
 	while (*envp && (*envp)[i])
     {
-        new_env[i] = strdup((*envp)[i]);  // Use strdup to allocate and copy strings
-        if (!new_env[i])  // Check if strdup failed
+        new_env[i] = strdup((*envp)[i]);
+        if (!new_env[i])
         {
             free_array(new_env, i);
             return (perror_malloc_return());
         }
         i++;
     }
-    new_env[i++] = new_entry;  // Add the new key=value pair
+    new_env[i++] = new_entry;
     new_env[i] = NULL;
     free_array((*envp), -1);
     *envp = new_env;
     return (0);
 }
 
-int ft_setenv(const char *key, const char *value, char ***envp, int equal)
-{   
-    char *new_entry;
-    char *equal_string;
+static char *test(const char *key, const char *value)
+{
+    char    *equal_string;
+    char    *new_entry;
+
+    equal_string = ft_strjoin(key, "=");
+    if (!equal_string)
+        return (NULL);
+    new_entry = ft_strjoin(equal_string, value);
+    if (!new_entry)
+    {
+        free(equal_string);
+        return (NULL);
+    }
+    free(equal_string);
+    return (new_entry); 
+}
+
+static char    *join_key_value(const char *key, const char *value, int equal)
+{
+    char    *new_entry;
 
     if (*value != '\0')
     {
-        equal_string = ft_strjoin(key, "=");
-        if (!equal_string)
-            return (1);
-        new_entry = ft_strjoin(equal_string, value);
+        new_entry = test(key, value);
         if (!new_entry)
-        {
-            free(equal_string);
-            return (1);
-        }
-        free(equal_string);
+            return (NULL);
+        return (new_entry);
     }
     else if (*value == '\0' && equal)
     {
-        equal_string = ft_strjoin(key, "=");
-        if (!equal_string)
-            return (1);
-        new_entry = ft_strjoin(equal_string, value);
+        new_entry = ft_strjoin(key, "=");
         if (!new_entry)
-        {
-            free(equal_string);
-            return (1);
-        }
-        free(equal_string);
+            return (NULL);
+        return (new_entry);
     }
     else
     {
         new_entry = ft_strdup(key);
         if (!new_entry)
-        {
-            perror("minishell: malloc");
-            return (1);
-        }
+            return(perror_return());
+        return (new_entry);
     }
+}
+
+int ft_setenv(const char *key, const char *value, char ***envp, int equal)
+{   
+    char *new_entry;
+
+    new_entry = join_key_value(key, value, equal);
+    if(!new_entry)
+        return (1);
     if (search_for_key(key, envp, new_entry, equal))
         return (0);
     else

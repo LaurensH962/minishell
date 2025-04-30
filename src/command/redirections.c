@@ -23,7 +23,7 @@ void	handle_outputfile(int *fd_write, t_redirect *redirections, t_shell *shell)
 		*fd_write = open(redirections->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (*fd_write == -1)
 	{
-		perror("minishell: open output file failed");
+		perror("minishell: open");
 		cleanup_all(shell);
 		exit(1);
 	}
@@ -56,7 +56,7 @@ int	handle_outputfile_builtin(int *fd_write, t_redirect *redirections, t_shell *
 		*fd_write = open(redirections->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (*fd_write == -1)
 	{
-		perror("minishell: open output file failed");
+		perror("minishell: open");
 		close(*fd_write);
 		return (1);
 	}

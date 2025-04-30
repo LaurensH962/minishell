@@ -42,12 +42,18 @@ void	cleanup_ast(t_ast **node)
 	(*node) = NULL;
 }
 
-void	free_pipes(int **pipes, int count)
+void	cleanup_pipes_pids(t_shell *shell)
 {
 	int i = 0;
-	while (i < count)
-		free(pipes[i++]);
-	free(pipes);
+
+	if (shell->pipe_count)
+	{
+		while (i < shell->pipe_count)
+			free(shell->pipes[i++]);
+		free(shell->pipes);
+	}
+	if (shell->pid)
+		free(shell->pid);
 }
 
 void	cleanup_shell(t_shell *shell)
@@ -56,11 +62,6 @@ void	cleanup_shell(t_shell *shell)
 
 	if (shell == NULL)
 		return ;
-	if(shell->pid)
-	{
-		free(shell->pid);
-		shell->pid = NULL;
-	}
 	// free_structs(shell);    // Clean up AST nodes
 	if (shell->env)
 	{
@@ -69,8 +70,6 @@ void	cleanup_shell(t_shell *shell)
 			free(shell->env[i++]);
 		free(shell->env); // Free environment array
 	}
-	if (shell->pipe_count > 0)
-        free_pipes(shell->pipes, shell->pipe_count);
 	if (shell->export)
 	{
 		i = 0;
@@ -78,7 +77,5 @@ void	cleanup_shell(t_shell *shell)
 			free(shell->export[i++]);
 		free(shell->export); // Free environment array
 	}
-	if (shell->pid)
-		free(shell->pid);
 	free(shell);
 }
