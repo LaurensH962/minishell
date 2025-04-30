@@ -27,15 +27,48 @@ static void sort_strings(char **arr)
     }
 }
 
+/*void		put_quotes(t_shell *shell)
+{
+	int i;
+	char *export_quotes;
+	int		string_len;
+
+	i = 0;
+
+	if (!shell->export)
+		return ;
+	while(shell->export[i])
+	{
+		string_len = ft_strlen(shell->export[i]);
+		export_quotes = malloc(sizeof(char) * string_len + 2);
+		while(shell->export[i] != '=')
+		{
+			export_quotes = shell->export[i];
+			i++;
+		}
+		if (shell->export[i] == )
+		
+		
+	}
+}*/
+
 static int	print_export(t_shell *shell)
 {
 	int i;
+	int j;
 
 	i = 0;
 	sort_strings(shell->export);
 	while(shell->export[i] != NULL)
 	{
-		printf("%s\n", shell->export[i]);
+		j = 0;
+		printf("declare -x ");
+		while (shell->export[i][j] && shell->export[i][j] != '=')
+			printf("%c", shell->export[i][j++]);
+		if (shell->export[i][j] == '=')
+			print_export_if_equalsign(shell, &i, &j);
+		else
+			printf("\n");
 		i++;
 	}
 	return (0);
@@ -82,8 +115,9 @@ static int	update_export(t_shell *shell, char **args)
 	{
 		if (!is_valid_identifier(args[i]))
 		{
-			printf("minishell: export: '%s':", args[i]);
-			ft_putstr_fd(" not a valid identifier\n", 2);
+			ft_putstr_fd("minishell: export: ",2);
+			ft_putstr_fd(args[i], 2);
+			ft_putstr_fd(": not a valid identifier\n", 2);
 			not_valid = 1;
 		}
 		else
