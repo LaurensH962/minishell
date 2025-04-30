@@ -58,24 +58,34 @@ static int add_new_entry(char ***envp, char *new_entry)
     return (0);
 }
 
-static char    *join_key_value(const char *key, const char *value, int equal)
+static char *test(const char *key, const char *value)
 {
     char    *equal_string;
     char    *new_entry;
 
+    equal_string = ft_strjoin(key, "=");
+    if (!equal_string)
+        return (NULL);
+    new_entry = ft_strjoin(equal_string, value);
+    if (!new_entry)
+    {
+        free(equal_string);
+        return (NULL);
+    }
+    free(equal_string);
+    return (new_entry); 
+}
+
+static char    *join_key_value(const char *key, const char *value, int equal)
+{
+    char    *new_entry;
+
     if (*value != '\0')
     {
-        equal_string = ft_strjoin(key, "=");
-        if (!equal_string)
-            return (NULL);
-        new_entry = ft_strjoin(equal_string, value);
+        new_entry = test(key, value);
         if (!new_entry)
-        {
-            free(equal_string);
             return (NULL);
-        }
-        free(equal_string);
-        return (new_entry); 
+        return (new_entry);
     }
     else if (*value == '\0' && equal)
     {
@@ -84,7 +94,13 @@ static char    *join_key_value(const char *key, const char *value, int equal)
             return (NULL);
         return (new_entry);
     }
-    return (NULL);
+    else
+    {
+        new_entry = ft_strdup(key);
+        if (!new_entry)
+            return(perror_return());
+        return (new_entry);
+    }
 }
 
 int ft_setenv(const char *key, const char *value, char ***envp, int equal)
@@ -94,12 +110,6 @@ int ft_setenv(const char *key, const char *value, char ***envp, int equal)
     new_entry = join_key_value(key, value, equal);
     if(!new_entry)
         return (1);
-    else
-    {
-        new_entry = ft_strdup(key);
-        if (!new_entry)
-            return(perror_malloc_return());
-    }
     if (search_for_key(key, envp, new_entry, equal))
         return (0);
     else
