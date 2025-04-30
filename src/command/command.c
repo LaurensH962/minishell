@@ -182,10 +182,7 @@ static int	scan_heredocs(t_ast *node, t_shell *shell)
 			}
 			redir->fd_heredoc = fill_heredoc(redir, temp_name, shell);
 			if (redir->fd_heredoc == -1)
-			{
-				printf("i failed\n");
 				return(-1);
-			}
 		}
 		redir = redir->next;
 	}
@@ -308,7 +305,7 @@ void	execute_pipeline(t_shell *shell)
 		g_rl_interrupted = 0;
 		return ;
 	}
-	shell->pid = malloc(sizeof(pid_t) * (shell->pipe_count + 1));
+	shell->pid = ft_calloc(1, sizeof(pid_t) * (shell->pipe_count + 1));
 	if (!shell->pid)
 	{
 		perror("minishell: malloc");
