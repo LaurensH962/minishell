@@ -136,7 +136,8 @@ static int	fill_heredoc(t_redirect *redir, char *name, t_shell *shell)
 			sigaction(SIGINT, &old_sa, NULL);
 			break ;
 		}
-		//line = check_expand_heredoc(line, shell);
+		if (ft_strchr(line, '$'))
+			line = check_expand_heredoc(line, shell);
 		ft_putstr_fd(line, fd);
 		ft_putstr_fd("\n", fd);
 		free(line);
