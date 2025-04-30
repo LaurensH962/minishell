@@ -227,6 +227,7 @@ void					redir_close(int in_fd, int out_fd);
 void					print_tokens(t_token *tokens);
 void					print_ast(t_ast *node, int level);
 void					report_error(const char *filename, const char *err_msg);
+void					print_export_if_equalsign(t_shell *shell, int *index_string, int *index_char);
 
 // cleanup
 
