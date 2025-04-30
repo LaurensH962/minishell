@@ -15,7 +15,7 @@ int	check_file_access_read(char *filename, int i, t_shell *shell)
 {
 	if (access(filename, F_OK) == -1)
 	{
-		report_error(filename, "No such file or directory");
+		report_error(filename, ": No such file or directory\n");
 		if (i == 0)
 		{
 			cleanup_all(shell);
@@ -26,7 +26,7 @@ int	check_file_access_read(char *filename, int i, t_shell *shell)
 	}
 	if (access(filename, R_OK) == -1)
 	{
-		report_error(filename, "Permission denied");
+		report_error(filename, ": Permission denied\n");
 		if (i == 0)
 		{
 			cleanup_all(shell);
@@ -45,7 +45,7 @@ int	check_file_access_write(char *filename, int i, t_shell *shell)
 		if (access(filename, W_OK) == -1)
 		{
 			if (i == 0 || i == 1)
-				report_error(filename, "Permission denied");
+				report_error(filename, ": Permission denied\n");
 			if (i == 0)
 			{
 				cleanup_all(shell);
@@ -58,31 +58,49 @@ int	check_file_access_write(char *filename, int i, t_shell *shell)
 	return (0);
 }
 
+int		cd_access(char *path)
+{
+	if (access(path, F_OK) == -1)
+	{
+		cd_report_error("cd: ", path, ":  No such file or directory\n");
+		return (1);
+	}
+	if (access(path, F_OK) == 0 && !is_directory(path))
+	{
+		cd_report_error("cd: ", path, ": cd: Not a directory\n");
+		return (1);
+	}
+	if (access(path, X_OK) == -1)
+	{
+		cd_report_error("cd: ", path, ": cd: Permission denied\n");
+		return (1);
+	}
+	return (0);
+}
+
 void	check_command_access(t_ast *node, t_shell *shell)
 {
 	if (node->cmd_path == NULL)
 	{
-		report_error(node->cmd, "command not found");
+		report_error(node->cmd, ": command not found\n");
 		cleanup_all(shell);
 		exit (127);
 	}
 	if (access(node->cmd_path, F_OK) == -1)
 	{
-		report_error(node->cmd, "No such file or directory");
+		report_error(node->cmd, ": No such file or directory\n");
 		cleanup_all(shell);
 		exit (127);
 	}
 	if (access(node->cmd_path, X_OK) == -1)
 	{
-		report_error(node->cmd, "Permission denied");
+		report_error(node->cmd, ": Permission denied\n");
 		cleanup_all(shell);
 		exit (126);
 	}
 	if (access(node->cmd_path, X_OK) == 0 && is_directory(node->cmd))
 	{
-		ft_putstr_fd("minishell: ", STDERR_FILENO);
-		ft_putstr_fd(node->cmd, STDERR_FILENO);
-		ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
+		report_error(node->cmd, ": Is a directory\n");
 		cleanup_all(shell);
 		exit(126);
 	}

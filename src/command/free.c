@@ -24,9 +24,12 @@ void free_array(char **array, int len)
     free(array);
 }
 
+
+
 void cleanup_all(t_shell *shell)
 {
 	unlink_heredoc_fd(shell->node);
+	cleanup_pipes_pids(shell);
 	cleanup_ast(&(shell->node));
 	cleanup_shell(shell);
 }

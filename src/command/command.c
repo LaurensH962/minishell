@@ -115,10 +115,7 @@ static void	prescan_redirections(t_ast *node, t_shell *shell)
                 break ;
 			fd = open(redir->file, flags, 0644);
 			if (fd == -1)
-            {
-				//perror("minishell: open");
                 break ;
-            }
             close(fd);
 		}
 		redir = redir->next;
@@ -249,7 +246,7 @@ void	execute_pipeline(t_shell *shell)
 	shell->pid = malloc(sizeof(pid_t) * (shell->pipe_count + 1));
 	if (!shell->pid)
 	{
-		perror("minishell: malloc failed");
+		perror("minishell: malloc");
 		shell->status_last_command = 1;
 		return ;
 	}
@@ -268,7 +265,7 @@ void	execute_pipeline(t_shell *shell)
 		shell->pipes = malloc(sizeof(int *) * shell->pipe_count);
 		if (!shell->pipes)
 		{
-			perror("minishell: malloc failed");
+			perror("minishell: malloc");
 			shell->status_last_command = 1;
 			return ;
 		}
@@ -280,7 +277,7 @@ void	execute_pipeline(t_shell *shell)
 			shell->pipes[i] = malloc(sizeof(int) * 2);
 			if (!shell->pipes[i])
 			{
-				perror("minishell: malloc failed");
+				perror("minishell: malloc");
 				while (--i >= 0)
 					free(shell->pipes[i]);
 				free(shell->pipes);

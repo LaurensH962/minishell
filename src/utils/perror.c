@@ -27,3 +27,9 @@ int	perror_malloc_free_return(char *key, char *value)
 	free(value);
 	return (1);
 }
+
+char *perror_return(void)
+{
+	perror("minishell: malloc");
+    return (NULL);
+}

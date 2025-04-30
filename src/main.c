@@ -69,9 +69,8 @@ int	main(int argc, char **argv, char **envp)
 		shell->node = ast;
 		if (!set_command_path(shell->node, shell))
 			execute_pipeline(shell);
+		cleanup_pipes_pids(shell);
 		cleanup_ast(&(shell->node));
-		if (shell->pipe_count > 0)
-        	free_pipes(shell->pipes, shell->pipe_count);
 		free(line);
 	}
 	cleanup_shell(shell);
