@@ -1,5 +1,7 @@
 #include "minishell.h"
 
+volatile sig_atomic_t g_rl_interrupted = 0;
+
 int	main(int argc, char **argv, char **envp)
 {
 	char	*line;
@@ -21,8 +23,15 @@ int	main(int argc, char **argv, char **envp)
 		exit (1);
 	while (1)
 	{
-		/*if (isatty(fileno(stdin)))
+		if (isatty(STDIN_FILENO))
+			printf("stdin is ok\n");
+		else
+			printf("stdin is closed or redirected!\n");
+		if (isatty(fileno(stdin)))
+		{
+			printf("stdin is ok");
 			line = readline("minishell: ");
+		}
 		else
 		{
 			char *linetemp;
@@ -31,9 +40,9 @@ int	main(int argc, char **argv, char **envp)
 				break;
 			line = ft_strtrim(linetemp, "\n");
 			free(linetemp);
-		}*/
+		}
 		shell->pipe_count = 0;
-		line = readline("minishell: ");
+		//line = readline("minishell: ");
 		if (g_rl_interrupted == 2)
 		{
 			shell->status_last_command = 130;
@@ -69,9 +78,7 @@ int	main(int argc, char **argv, char **envp)
 		shell->node = ast;
 		if (!set_command_path(shell->node, shell))
 			execute_pipeline(shell);
-		cleanup_ast(&(shell->node));
-		if (shell->pipe_count > 0)
-        	free_pipes(shell->pipes, shell->pipe_count);
+		cleanup_ast(&(shell->node));		
 		free(line);
 	}
 	cleanup_shell(shell);

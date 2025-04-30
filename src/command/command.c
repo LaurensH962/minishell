@@ -7,15 +7,100 @@ void	handle_sigint_heredoc(int sig)
 	(void)sig;
 	write(1, "^C", 2);
 	g_rl_interrupted = 2;
+	rl_done = 1;
 }
 
 int	heredoc_event_hook(void)
 {
-	if (g_rl_interrupted)
+	/* if (g_rl_interrupted)
 	{
 		rl_done = 1;
-	}
+	} */
 	return (0);
+}
+
+char	*append_char(char *s, char c)
+{
+	char str[2];
+	char *result;
+
+	str[0] = c;
+	str[1] = '\0';
+	result = ft_strjoin(s, str);
+	free(s);
+	return (result);
+}
+
+char	*ft_strjoin_free(char *a, char *b)
+{
+	char *tmp = ft_strjoin(a, b);
+	free(a);
+	return (tmp);
+}
+
+char	*expand_dollar(char *line, int *i, t_shell *shell)
+{
+	char *result = ft_strdup("");
+	char *temp;
+	char *var_name;
+	char *env_value;
+	char *status_str;
+
+	if (line[*i + 1] == '?')
+	{
+		status_str = ft_itoa(shell->status_last_command);
+		result = ft_strjoin_free(result, status_str);
+		free(status_str);
+		*i += 2;
+	}
+	else
+	{
+		(*i)++;
+		int start = *i;
+		while (line[*i] && (ft_isalnum(line[*i]) || line[*i] == '_'))
+			(*i)++;
+		var_name = ft_substr(line, start, *i - start);
+		env_value = get_env_value(shell->env, var_name);
+		if (!env_value)
+			env_value = "";
+		temp = result;
+		result = ft_strjoin(result, env_value);
+		free(temp);
+		free(var_name);
+	}
+	return (result);
+}
+
+char	*check_expand_heredoc(char *line, t_shell *shell)
+{
+	int i = 0;
+	char *expanded = ft_strdup("");
+	char *temp;
+	char *expanded_part;
+
+	while (line[i])
+	{
+		if (line[i] == '$' && (line[i + 1] == '?' || ft_isalpha(line[i + 1])
+				|| line[i + 1] == '_'))
+		{
+			expanded_part = expand_dollar(line, &i, shell);
+			temp = expanded;
+			expanded = ft_strjoin(expanded, expanded_part);
+			free(temp);
+			free(expanded_part);
+		}
+		else
+		{
+			expanded = append_char(expanded, line[i]);
+			i++;
+		}
+	}
+	if (temp)
+		free(temp);
+	if(expanded_part)
+		free(expanded_part);
+	free(line);
+	return (expanded);
 }
 
 static int	fill_heredoc(t_redirect *redir, char *name, t_shell *shell)
@@ -30,28 +115,36 @@ static int	fill_heredoc(t_redirect *redir, char *name, t_shell *shell)
 	new_sa.sa_flags = 0;
 	sigaction(SIGINT, &new_sa, &old_sa);
 	g_rl_interrupted = 0;
+	rl_done = 0;
 	rl_event_hook = heredoc_event_hook;
-	fd = open(name, O_CREAT | O_RDWR | O_EXCL, 0640);
+	fd = open(name, O_CREAT | O_RDWR | O_EXCL, 0644);
 	if (fd == -1)
 		return (fd);
 	while (1)
 	{
+		if (g_rl_interrupted)
+			break ;
 		line = readline("> ");
 		if (!line || g_rl_interrupted)
+		{
+			sigaction(SIGINT, &old_sa, NULL);
 			break ;
+		}
 		if (ft_strcmp(line, redir->file) == 0)
 		{
 			free(line);
+			sigaction(SIGINT, &old_sa, NULL);
 			break ;
 		}
+		//line = check_expand_heredoc(line, shell);
 		ft_putstr_fd(line, fd);
 		ft_putstr_fd("\n", fd);
 		free(line);
 	}
-
+	rl_done = 0;
 	rl_event_hook = NULL;
-	close(fd);
 	sigaction(SIGINT, &old_sa, NULL);
+	close(fd);
 	if (g_rl_interrupted == 2)
 	{
 		shell->status_last_command = 130;
@@ -60,10 +153,12 @@ static int	fill_heredoc(t_redirect *redir, char *name, t_shell *shell)
 	}
 	fd = open(name, O_RDWR, 0640);
 	unlink(name);
+	printf("fd %d\n",fd);
 	return (fd);
 }
 
-static void	scan_heredocs(t_ast *node, t_shell *shell)
+
+static int	scan_heredocs(t_ast *node, t_shell *shell)
 {
 	t_redirect *redir;
 	char temp_name[25];
@@ -74,18 +169,22 @@ static void	scan_heredocs(t_ast *node, t_shell *shell)
 	redir = node->redirections;
 	while (redir)
 	{
-		if (redir->type == NODE_HEREDOC && g_rl_interrupted == 0)
+		if (redir->type == NODE_HEREDOC )
 		{
 			i++;
 			ft_strlcpy(temp_name, "tempfile_", sizeof(temp_name));
 			num_str = ft_itoa((int)i);
-			// if (num_str)
-			//{
-			// ft_strlcat(temp_name, *i, sizeof(temp_name));
-			ft_strlcat(temp_name, num_str, sizeof(temp_name));
-			free(num_str);
-			//}
+			if (num_str)
+			{
+				ft_strlcat(temp_name, num_str, sizeof(temp_name));
+				free(num_str);
+			}
 			redir->fd_heredoc = fill_heredoc(redir, temp_name, shell);
+			if (redir->fd_heredoc == -1)
+			{
+				printf("i failed\n");
+				return(-1);
+			}
 		}
 		redir = redir->next;
 	}
@@ -93,6 +192,7 @@ static void	scan_heredocs(t_ast *node, t_shell *shell)
 		scan_heredocs(node->left, shell);
 	if (node->right)
 		scan_heredocs(node->right, shell);
+	return(0);
 }
 
 static void	prescan_redirections(t_ast *node, t_shell *shell)
@@ -106,20 +206,16 @@ static void	prescan_redirections(t_ast *node, t_shell *shell)
 	{
 		if (redir->type == NODE_REDIRECT_OUT || redir->type == NODE_APPEND)
 		{
-
 			if (redir->type == NODE_REDIRECT_OUT)
 				flags = O_CREAT | O_WRONLY | O_TRUNC;
 			else
 				flags = O_CREAT | O_WRONLY | O_APPEND;
-            if (check_file_access_write(redir->file, 3, shell))
-                break ;
+			if (check_file_access_write(redir->file, 3, shell))
+				break ;
 			fd = open(redir->file, flags, 0644);
 			if (fd == -1)
-            {
-				//perror("minishell: open");
-                break ;
-            }
-            close(fd);
+        break ;
+      close(fd);
 		}
 		redir = redir->next;
 	}
@@ -137,46 +233,6 @@ void	redir_close(int in_fd, int out_fd)
 		dup2(out_fd, STDOUT_FILENO);
 }
 
-/*static void   execute_command(t_shell *shell, t_ast *node, int in_fd,
-	int out_fd)
-{
-	pid_t pid;
-
-	if(check_if_builtin(node) && shell->pipe_count == 0)
-	{
-		if(handle_redirections_builtin(node, in_fd, out_fd))
-		{
-			shell->status_last_command = 1;
-			return ;
-		}
-		shell->status_last_command = execute_builtin(node, shell);
-	}
-	else
-	{
-		pid = fork();
-		if(pid == -1)
-		{
-			perror("minishell: pipe");
-			shell->status_last_command = 1;
-			return ;
-		}
-		if (pid == 0)
-		{
-			signal(SIGINT, SIG_DFL);
-			signal(SIGQUIT, SIG_DFL);
-			handle_redirections(node, in_fd, out_fd);
-			if (node->cmd == NULL)
-				exit (0);
-			if (check_if_builtin(node))
-				execute_builtin_exit(node, shell);
-			check_command_access(node);
-			execve(node->cmd_path, node->args, shell->export);
-			perror("minishell: execve");
-			exit(1);
-		}
-		shell->pid[shell->pid_index++] = pid;
-	}
-}*/
 
 static void	execute_ast(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 {
@@ -246,6 +302,11 @@ void	execute_pipeline(t_shell *shell)
 	int in_fd;
 	int out_fd;
 
+	if (scan_heredocs(shell->node, shell) == -1)
+	{
+		g_rl_interrupted = 0;
+		return ;
+	}
 	shell->pid = malloc(sizeof(pid_t) * (shell->pipe_count + 1));
 	if (!shell->pid)
 	{
@@ -256,13 +317,8 @@ void	execute_pipeline(t_shell *shell)
 	shell->pid_index = 0;
 	in_fd = STDIN_FILENO;
 	out_fd = STDOUT_FILENO;
-	signal(SIGINT, SIG_IGN); // not sure if correctly placed
-	scan_heredocs(shell->node, shell);
-	if (g_rl_interrupted != 0)
-	{
-		g_rl_interrupted = 0;
-		return ;
-	}
+	//signal(SIGINT, SIG_IGN); // not sure if correctly placed
+	
 	if (shell->pipe_count > 0)
 	{
 		shell->pipes = malloc(sizeof(int *) * shell->pipe_count);
@@ -292,10 +348,10 @@ void	execute_pipeline(t_shell *shell)
 		}
 	}
 	prescan_redirections(shell->node, shell);
-    if (!shell->node->cmd && shell->node->type == NODE_COMMAND)
-        return ;
-    else
-	    execute_ast(shell, shell->node, in_fd, out_fd);
+	if (!shell->node->cmd && shell->node->type == NODE_COMMAND)
+		return ;
+	else
+		execute_ast(shell, shell->node, in_fd, out_fd);
 	int i = 0;
 	while (i < (shell->pipe_count))
 	{
