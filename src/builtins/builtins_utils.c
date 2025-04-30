@@ -13,32 +13,17 @@ int is_number(const char *str)
 	return (1);
 }
 
-int	perror_malloc_return(void)
+void	print_export_if_equalsign(t_shell *shell, int *index_string, int *index_char)
 {
-	perror("minishell: malloc");
-	return (1);
-}
-
-int	perror_cd_return(void)
-{
-	perror("minishell: cd");
-	return (1);
-}
-
-int perror_free_return(char *function_name, char *string)
-{
-	printf("minishell: %s: %s", function_name, string);
-	perror(" ");
-	free(string);
-	return (1);
-}
-
-int	perror_malloc_free_return(char *key, char *value)
-{
-	perror("minishell: malloc");
-	free(key);
-	free(value);
-	return (1);
+	printf("=\"");
+	(*index_char)++;
+	while (shell->export[*index_string][*index_char])
+	{
+		printf("%c", shell->export[*index_string][*index_char]);
+		if (shell->export[*index_string][(*index_char) + 1] == '\0')
+			printf("\"\n");
+		(*index_char)++;
+	}
 }
 
 int		cd_minus(t_shell *shell)
@@ -54,5 +39,3 @@ int		cd_minus(t_shell *shell)
 	printf("%s\n", oldpwd);
 	return (0);
 }
-
-

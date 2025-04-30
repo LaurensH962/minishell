@@ -214,11 +214,8 @@ static void	prescan_redirections(t_ast *node, t_shell *shell)
 				break ;
 			fd = open(redir->file, flags, 0644);
 			if (fd == -1)
-			{
-				perror("minishell: open");
-				break ;
-			}
-			close(fd);
+        break ;
+      close(fd);
 		}
 		redir = redir->next;
 	}
