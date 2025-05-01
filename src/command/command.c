@@ -279,9 +279,7 @@ static void	wait_for_children(t_shell *shell)
 void	unlink_heredoc_fd(t_ast *node)
 {
 	t_redirect *redir;
-	int i;
-
-	i = 0;
+	
 	redir = node->redirections;
 	while (redir)
 	{

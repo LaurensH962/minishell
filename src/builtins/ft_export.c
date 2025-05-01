@@ -27,31 +27,6 @@ static void sort_strings(char **arr)
     }
 }
 
-/*void		put_quotes(t_shell *shell)
-{
-	int i;
-	char *export_quotes;
-	int		string_len;
-
-	i = 0;
-
-	if (!shell->export)
-		return ;
-	while(shell->export[i])
-	{
-		string_len = ft_strlen(shell->export[i]);
-		export_quotes = malloc(sizeof(char) * string_len + 2);
-		while(shell->export[i] != '=')
-		{
-			export_quotes = shell->export[i];
-			i++;
-		}
-		if (shell->export[i] == )
-		
-		
-	}
-}*/
-
 static int	print_export(t_shell *shell)
 {
 	int i;

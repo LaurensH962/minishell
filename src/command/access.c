@@ -67,12 +67,12 @@ int		cd_access(char *path)
 	}
 	if (access(path, F_OK) == 0 && !is_directory(path))
 	{
-		cd_report_error("cd: ", path, ": cd: Not a directory\n");
+		cd_report_error("cd: ", path, ": Not a directory\n");
 		return (1);
 	}
 	if (access(path, X_OK) == -1)
 	{
-		cd_report_error("cd: ", path, ": cd: Permission denied\n");
+		cd_report_error("cd: ", path, ": Permission denied\n");
 		return (1);
 	}
 	return (0);
