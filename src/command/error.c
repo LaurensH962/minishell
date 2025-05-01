@@ -33,7 +33,8 @@
 void report_error(char *filename, char *err_msg)
 {
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
-	ft_putstr_fd(filename, STDERR_FILENO);
+	if (filename)
+		ft_putstr_fd(filename, STDERR_FILENO);
 	ft_putstr_fd(err_msg, STDERR_FILENO);
 }
 

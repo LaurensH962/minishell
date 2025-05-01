@@ -103,11 +103,21 @@ static char    *join_key_value(const char *key, const char *value, int equal)
     }
 }
 
-int ft_setenv(const char *key, const char *value, char ***envp, int equal)
+int ft_setenv(const char *key, char *value, char ***envp, int equal)
 {   
     char *new_entry;
+    int malloced;
 
+    malloced = 0;
+    if (!value)
+    {
+        value = pwd_not_set(value, &malloced);
+        if(!value)
+            return (perror_malloc_return());
+    }
     new_entry = join_key_value(key, value, equal);
+    if (malloced)
+        free(value);
     if(!new_entry)
         return (1);
     if (search_for_key(key, envp, new_entry, equal))
@@ -115,10 +125,7 @@ int ft_setenv(const char *key, const char *value, char ***envp, int equal)
     else
     {
         if (add_new_entry(envp, new_entry))
-        {
-            free(new_entry);
-            return (1);
-        }
+            return (free_return(new_entry));
         return (0);
     }
 }

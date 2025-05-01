@@ -21,6 +21,9 @@ int	main(int argc, char **argv, char **envp)
 		exit (1);
 	if (copy_environ(envp, &shell->export))
 		exit (1);
+	
+	/*if (copy_pwd(envp, &shell->pwd))
+		exit (1);*/
 	while (1)
 	{
 		/* if (isatty(STDIN_FILENO))
