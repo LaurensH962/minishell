@@ -44,3 +44,21 @@ bool	lexer_skip_whitespaces(t_lexer *lexer, char quote_char)
 	}
 	return (false);
 }
+
+int	inner_quotes_expand(char *quote_char, t_lexer *lexer, int *pos,
+	char **token_value)
+{
+	if ((lexer->input[*pos] == '"' || lexer->input[*pos] == '\'')
+		&& (*quote_char == lexer->input[*pos] || *quote_char == 0))
+	{
+		lexer_quotes(quote_char, lexer, pos, token_value);
+		return (-1);
+	}
+	else if (lexer->input[*pos] == '$' && *quote_char != '\''
+		&& lexer->hereflag != '<')
+	{
+		lexer_expander(lexer, token_value);
+		return (-1);
+	}
+	return (0);
+}

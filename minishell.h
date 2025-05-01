@@ -129,6 +129,8 @@ t_token					*lexer_process_token_value(t_lexer *lexer,
 t_token					*lexer_next_token(t_lexer *lexer, t_token *temp_token,
 							char quote_char, char *token_value);
 t_token					*lexer(char *line, t_shell *shell);
+int						inner_quotes_expand(char *quote_char, t_lexer *lexer, int *pos,
+						char **token_value);
 
 // lexer_utils
 bool					lexer_skip_whitespaces(t_lexer *lexer, char quote_char);
@@ -145,6 +147,8 @@ void					fill_redir_type(t_redirect *redir,
 							t_token *redirection_token);
 t_token					*get_next_token(t_token **tokens);
 char					*syntax_checker(t_token *tokens);
+t_token					*skip_invalid_node(t_token *token, t_token **tokens);
+char					**resize_args(char **args, int *args_capacity);
 
 void					free_structs(t_shell *shell);
 void					print_tokens(t_token *tokens);

@@ -11,6 +11,23 @@ t_token	*get_next_token(t_token **tokens)
 	return (current);
 }
 
+char	**resize_args(char **args, int *args_capacity)
+{
+	int	old_capacity;
+
+	old_capacity = *args_capacity;
+	*args_capacity *= 2;
+	return (ft_realloc(args, sizeof(char *) * old_capacity, sizeof(char *)
+			* (*args_capacity)));
+}
+
+t_token	*skip_invalid_node(t_token *token, t_token **tokens)
+{
+	while ((*tokens)->type == TOKEN_INVALID)
+		token = get_next_token(tokens);
+	return (token);
+}
+
 void	fill_redir_type(t_redirect *redir, t_token *redirection_token)
 {
 	if (redirection_token->type == TOKEN_REDIRECT_OUT)

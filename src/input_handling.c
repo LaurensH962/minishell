@@ -15,9 +15,7 @@ void	setup_signal_handlers(void)
 {
 	struct sigaction	sa_int;
 	struct sigaction	sa_quit;
-	//struct sigaction	sa_exit;
 
-	//rl_done = 0;
 	sa_int.sa_handler = handle_sigint;
 	sigemptyset(&sa_int.sa_mask);
 	sa_int.sa_flags = SA_RESTART;

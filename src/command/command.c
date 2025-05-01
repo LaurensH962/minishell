@@ -169,7 +169,7 @@ static int	scan_heredocs(t_ast *node, t_shell *shell)
 	i = (unsigned long)&num_str;
 	redir = node->redirections;
 	while (redir)
-	{
+	{  
 		if (redir->type == NODE_HEREDOC )
 		{
 			i++;
