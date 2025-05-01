@@ -107,10 +107,7 @@ int	ft_cd(t_shell *shell, t_ast *node)
 			return (0);
 	}
 	if(node->args[1] == NULL)
-	{
-		printf("should\n");
 		return (cd_to_home(shell));
-	}
 	else
 		return (cd_to_path(shell, node->args[1]));
 }
