@@ -26,16 +26,69 @@ void	print_export_if_equalsign(t_shell *shell, int *index_string, int *index_cha
 	}
 }
 
-int		cd_minus(t_shell *shell)
+/*int		cd_minus(t_shell *shell, char *cmd)
 {
 	char	*oldpwd;
 
-	oldpwd = get_oldpwd(shell);
+	oldpwd = get_oldpwd(shell, cmd);
 	if(oldpwd)
 	{
+		if (cd_access(oldpwd))
+		{
+			free(oldpwd);
+			return (1);
+		}
 		if (chdir(oldpwd) != 0)
+		{
+			free(oldpwd);
 			return(perror_cd_return());
+		}
+		printf("%s\n", oldpwd);
+		free(oldpwd);
 	}
-	printf("%s\n", oldpwd);
 	return (0);
+}*/
+
+char	*get_oldpwd(t_shell *shell, char *cmd)
+{
+	int i;
+	char *oldpwd;
+	int malloc;
+
+	i = 0;
+	malloc = 0;
+	oldpwd = NULL;
+	while (shell->env[i])
+	{
+		if (ft_strncmp(shell->env[i], "OLDPWD=", 7) == 0)
+		{
+			oldpwd = ft_strdup(shell->env[i] + 7);
+			if (!oldpwd)
+			{
+				perror("minishell: malloc");
+				malloc = 1;
+			}
+			break ;
+		}
+		i++;
+	}
+	if (!oldpwd && malloc == 0)
+		report_error(cmd, ": OLDPWD not set\n");
+	return(oldpwd);
 }
+
+int free_return(char *string)
+{
+	free(string);
+	return (1);
+}
+
+ char *pwd_not_set(char *value, int *malloced)
+ {
+	value = malloc(sizeof(char) * 1);
+	if(!value)
+		return (perror_return());
+	*value = '\0';
+	*malloced = 1;
+	return (value);
+ }

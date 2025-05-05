@@ -79,6 +79,7 @@ typedef struct s_shell
 {
 	char				**env;
 	char				**export;
+	char				**pwd;
 	t_ast				*node;
 	int					pipe_count;
 	pid_t				*pid;
@@ -205,9 +206,10 @@ int 					is_directory(char *filename);
 
 // env
 
-int						ft_setenv(const char *key, const char *value,
+int						ft_setenv(const char *key, char *value,
 							char ***envp, int equal);
 int						copy_environ(char **envp, char ***env);
+int		copy_pwd(char **envp, char ***env);
 
 // builtins
 
@@ -218,16 +220,16 @@ int						ft_echo(char **args);
 int						ft_cd(t_shell *shell, t_ast *node);
 void					ft_exit(char **args, t_shell *shell);
 int						ft_pwd(void);
-char					*get_oldpwd(t_shell *shell);
+char					*get_oldpwd(t_shell *shell, char *cmd);
 
 // builtin helpers
 
-int						cd_minus(t_shell *shell);
+//int						cd_minus(t_shell *shell, char *cmd);
 int						is_number(const char *str);
 int						is_valid_identifier(const char *str);
 int						perror_malloc_return(void);
 int						perror_cd_return(void);
-int 					perror_free_return(char *function_name, char *string);
+int 					perror_free_return(char *function_name, char *string, char *string2);
 int						perror_malloc_free_return(char *key, char *value);
 char 					*perror_return(void);
 
@@ -248,7 +250,6 @@ void					redir_close(int in_fd, int out_fd);
 // printing
 void					print_tokens(t_token *tokens);
 void					print_ast(t_ast *node, int level);
-//void					report_error(const char *filename, const char *err_msg);
 void 					report_error(char *filename, char *err_msg);
 void					print_export_if_equalsign(t_shell *shell, int *index_string, int *index_char);
 
@@ -265,5 +266,9 @@ void					cleanup_pipes_pids(t_shell *shell);
 void					close_pipes(t_shell *shell);
 int						cd_access(char *path);
 void 					cd_report_error(char *cmd, char *filename, char *err_msg);
+int						change_directory(char *path);
+int 					cd_free(char *new_pwd, char *old_pwd);
+char *pwd_not_set(char *value, int *malloced);
+int free_return(char *string);
 
 #endif
