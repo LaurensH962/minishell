@@ -35,9 +35,7 @@ static int	handle_builtin_one_command(t_shell *shell, t_ast *node, int in_fd, in
 static void	create_child(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 {
 	pid_t pid;
-	int i;
 
-	i = 0;
 	pid = fork();
 	if(pid == -1)
 	{

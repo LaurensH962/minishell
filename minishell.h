@@ -159,10 +159,26 @@ bool					is_redirect(t_token_type type);
 char					*ft_strjoin_minishell(char const *s1, char *s2,
 							t_lexer *lexer);
 
-// heredoc
+// heredoc_handler
 void					handle_heredoc(int *fd_read);
 int						handle_heredoc_builtin(int *fd_read);
 void    				unlink_heredoc_fd(t_ast *node);
+void					handle_sigint_heredoc(int sig);
+int						heredoc_event_hook(void);
+
+// heredoc_add
+int						scan_heredocs(t_ast *node, t_shell *shell);
+int						fill_heredoc(t_redirect *redir, char *name, t_shell *shell);
+
+//expand_heredoc
+char					*check_expand_heredoc(char *line, t_shell *shell);
+char					*expand_dollar(char *line, int *i, t_shell *shell);
+char					*ft_strjoin_free(char *a, char *b);
+char					*append_char(char *s, char c);
+
+// heredoc_signals
+void					init_heredoc_signals(struct sigaction *old_sa);
+void					reset_heredoc_signals(struct sigaction *old_sa);
 
 // commmand + pipes
 void					execute_pipeline(t_shell *shell);
