@@ -50,3 +50,35 @@ int cd_free(char *new_pwd, char *old_pwd)
 		free(old_pwd);
 	return (1);
 }
+
+static int    cd_free_return(char *string)
+{
+    if (string)
+        free(string);
+    return (perror_malloc_return());
+}
+
+
+int     set_home_oldpwd(t_shell *shell, char **home, char **old_pwd)
+{
+	int	i;
+
+	i = 0;
+    while (shell->env[i]) 
+	{
+		if (ft_strncmp(shell->env[i], "HOME=", 5) == 0)
+		{
+			*home = ft_strdup(shell->env[i] + 5);
+			if (!(*home))
+                return (cd_free_return(*old_pwd));
+		}
+		if (ft_strncmp(shell->env[i], "PWD=", 4) == 0)
+		{
+			*old_pwd = ft_strdup(shell->env[i] + 4);
+			if (!(*old_pwd))
+                return (cd_free_return(*home));
+		}
+		i++;
+	}
+    return (0);
+}

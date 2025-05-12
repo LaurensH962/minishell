@@ -9,30 +9,8 @@ static int cd_to_home(t_shell *shell)
 	i = 0;
 	home = NULL;
 	old_pwd = NULL;
-	while (shell->env[i])
-	{
-		if (ft_strncmp(shell->env[i], "HOME=", 5) == 0)
-		{
-			home = ft_strdup(shell->env[i] + 5);
-			if (!home)
-			{
-				if (old_pwd)
-					free(old_pwd);
-				return (perror_malloc_return());
-			}
-		}
-		if (ft_strncmp(shell->env[i], "PWD=", 4) == 0)
-		{
-			old_pwd = ft_strdup(shell->env[i] + 4);
-			if (!old_pwd)
-			{
-				if (home)
-					free(home);
-				return (perror_malloc_return());
-			}
-		}
-		i++;
-	}
+	if (set_home_oldpwd(shell, &home, &old_pwd))
+		return (1);
 	if (!home)
 		return (report_error("cd", ": HOME not set\n"), 1);
 	if (cd_access(home))
