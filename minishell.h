@@ -190,7 +190,7 @@ void					handle_outputfile(int *fd_write,
 int						execute_builtin(t_ast *node, t_shell *shell, int in_fd, int out_fd);
 void					execute_builtin_exit(t_ast *node, t_shell *shell);
 int						check_if_builtin(t_ast *node);
-int						set_command_path(t_ast *node, t_shell *shell);
+int						command_path(t_ast *node, t_shell *shell);
 void   					execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd);
 char					*get_command_path(char *cmd, char **envp, int *fail_flag);
 void					child_process(t_shell *shell, t_ast *node, int in_fd, int out_fd);
@@ -202,8 +202,8 @@ void					close_pipes(t_shell *shell);
 int						check_file_access_write(char *filename, int i, t_shell *shell);
 int						check_file_access_read(char *filename, int i, t_shell *shell);
 void					check_command_access(t_ast *node, t_shell *shell);
-int						command_is_path(char *argv);
-int						current_path(char *command);
+//int						command_is_path(char *argv);
+//int						current_path(char *command);
 int 					is_directory(char *filename);
 
 // env
@@ -211,7 +211,7 @@ int 					is_directory(char *filename);
 int						ft_setenv(const char *key, char *value,
 							char ***envp, int equal);
 int						copy_environ(char **envp, char ***env);
-int		copy_pwd(char **envp, char ***env);
+//int		copy_pwd(char **envp, char ***env);
 
 // builtins
 
@@ -271,7 +271,7 @@ int						cd_access(char *path);
 void 					cd_report_error(char *cmd, char *filename, char *err_msg);
 int						change_directory(char *path);
 int 					cd_free(char *new_pwd, char *old_pwd);
-char *pwd_not_set(char *value, int *malloced);
-int free_return(char *string);
+char					*pwd_not_set(char *value, int *malloced);
+int						free_return(char *string);
 
 #endif

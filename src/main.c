@@ -21,7 +21,6 @@ int	main(int argc, char **argv, char **envp)
 		exit (1);
 	if (copy_environ(envp, &shell->export))
 		exit (1);
-	
 	/*if (copy_pwd(envp, &shell->pwd))
 		exit (1);*/
 	while (1)
@@ -46,6 +45,8 @@ int	main(int argc, char **argv, char **envp)
 		} */
 		shell->pipe_count = 0;
 		line = readline("minishell: ");
+		if (!line)
+			return (21);
 		if (g_rl_interrupted == 2)
 		{
 			shell->status_last_command = 130;
@@ -79,7 +80,7 @@ int	main(int argc, char **argv, char **envp)
 		}
 		free_tokens(shell);
 		shell->node = ast;
-		if (!set_command_path(shell->node, shell))
+		if (!command_path(shell->node, shell))
 			execute_pipeline(shell);
 		cleanup_pipes_pids(shell);
 		cleanup_ast(&(shell->node));
