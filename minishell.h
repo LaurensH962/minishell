@@ -216,6 +216,7 @@ int						perror_cd_return(void);
 int 					perror_free_return(char *function_name, char *string, char *string2);
 int						perror_malloc_free_return(char *key, char *value);
 char 					*perror_return(void);
+int     set_home_oldpwd(t_shell *shell, char **home, char **old_pwd);
 
 // signals
 void					setup_signal_handlers(void);
