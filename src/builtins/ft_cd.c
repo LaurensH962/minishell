@@ -1,10 +1,10 @@
 #include "minishell.h"
 
-static int cd_to_home(t_shell *shell)
+static int	cd_to_home(t_shell *shell)
 {
 	char	*home;
-	int	i;
-	char *old_pwd;
+	int		i;
+	char	*old_pwd;
 
 	i = 0;
 	home = NULL;
@@ -12,7 +12,7 @@ static int cd_to_home(t_shell *shell)
 	if (set_home_oldpwd(shell, &home, &old_pwd))
 		return (1);
 	if (!home)
-		return (report_error("cd", ": HOME not set\n"), 1);
+		return (cd_free_return(old_pwd, 0));
 	if (cd_access(home))
 		return (cd_free(home, old_pwd));
 	if (chdir(home) != 0)
@@ -28,8 +28,8 @@ static int cd_to_home(t_shell *shell)
 
 static char	*set_oldpwd(t_shell *shell)
 {
-	int i;
-	char *oldpwd;
+	int		i;
+	char	*oldpwd;
 
 	i = 0;
 	oldpwd = NULL;
@@ -44,7 +44,7 @@ static char	*set_oldpwd(t_shell *shell)
 		}
 		i++;
 	}
-	return(oldpwd);
+	return (oldpwd);
 }
 
 static int	cd_to_path(t_shell *shell, char *path)
@@ -76,7 +76,7 @@ int	ft_cd(t_shell *shell, t_ast *node)
 {
 	if (node->args[1] != NULL)
 	{
-		if(node->args[2] != NULL)
+		if (node->args[2] != NULL)
 		{
 			report_error(NULL, "cd: too many arguments\n");
 			return (1);
@@ -84,7 +84,7 @@ int	ft_cd(t_shell *shell, t_ast *node)
 		if (ft_strcmp(node->args[1], "") == 0)
 			return (0);
 	}
-	if(node->args[1] == NULL)
+	if (node->args[1] == NULL)
 		return (cd_to_home(shell));
 	else
 		return (cd_to_path(shell, node->args[1]));

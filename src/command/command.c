@@ -1,11 +1,21 @@
 
 #include "minishell.h"
 
+static void	prescan_redirections(t_ast *node, t_shell *shell);
+
+static void	prescan_left_right(t_ast *node, t_shell *shell)
+{
+	if (node->left)
+		prescan_redirections(node->left, shell);
+	if (node->right)
+		prescan_redirections(node->right, shell);
+}
+
 static void	prescan_redirections(t_ast *node, t_shell *shell)
 {
-	t_redirect *redir;
-	int fd;
-	int flags;
+	t_redirect	*redir;
+	int			fd;
+	int			flags;
 
 	redir = node->redirections;
 	while (redir)
@@ -20,31 +30,18 @@ static void	prescan_redirections(t_ast *node, t_shell *shell)
 				break ;
 			fd = open(redir->file, flags, 0644);
 			if (fd == -1)
-        break ;
-      close(fd);
+				break ;
+			close(fd);
 		}
 		redir = redir->next;
 	}
-	if (node->left)
-		prescan_redirections(node->left, shell);
-	if (node->right)
-		prescan_redirections(node->right, shell);
+	prescan_left_right(node, shell);
 }
-
-void	redir_close(int in_fd, int out_fd)
-{
-	if (in_fd != STDIN_FILENO)
-		dup2(in_fd, STDIN_FILENO);
-	if (out_fd != STDOUT_FILENO)
-		dup2(out_fd, STDOUT_FILENO);
-}
-
 
 static void	execute_ast(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 {
 	if (node->type == NODE_PIPE)
 	{
-		// rec_index++;
 		if (pipe(shell->pipes[shell->pipe_index]) == -1)
 		{
 			perror("minishell: pipe");
@@ -63,8 +60,8 @@ static void	execute_ast(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 
 static void	wait_for_children(t_shell *shell)
 {
-	int i;
-	int status;
+	int	i;
+	int	status;
 
 	i = 0;
 	while (i < shell->pid_index)
@@ -86,66 +83,27 @@ static void	wait_for_children(t_shell *shell)
 
 void	execute_pipeline(t_shell *shell)
 {
-	int in_fd;
-	int out_fd;
+	int	in_fd;
+	int	out_fd;
 
 	if (scan_heredocs(shell->node, shell) == -1)
 	{
 		g_rl_interrupted = 0;
 		return ;
 	}
-	shell->pid = ft_calloc(1, sizeof(pid_t) * (shell->pipe_count + 1));
-	if (!shell->pid)
-	{
-		perror("minishell: malloc");
-		shell->status_last_command = 1;
+	if (initialize_pid_array(shell))
 		return ;
-	}
-	shell->pid_index = 0;
 	in_fd = STDIN_FILENO;
 	out_fd = STDOUT_FILENO;
-	//signal(SIGINT, SIG_IGN); // not sure if correctly placed
-	
-	if (shell->pipe_count > 0)
-	{
-		shell->pipes = malloc(sizeof(int *) * shell->pipe_count);
-		if (!shell->pipes)
-		{
-			perror("minishell: malloc");
-			shell->status_last_command = 1;
-			return ;
-		}
-		shell->pipe_index = 0;
-		shell->index = 0;
-		int i = 0;
-		while (i < shell->pipe_count)
-		{
-			shell->pipes[i] = malloc(sizeof(int) * 2);
-			if (!shell->pipes[i])
-			{
-				perror("minishell: malloc");
-				while (--i >= 0)
-					free(shell->pipes[i]);
-				free(shell->pipes);
-				shell->pipes = NULL;
-				shell->status_last_command = 1;
-				return ;
-			}
-			i++;
-		}
-	}
+	signal(SIGINT, SIG_IGN); // not sure if correctly placed
+	if (initialize_pipes(shell))
+		return ;
 	prescan_redirections(shell->node, shell);
 	if (!shell->node->cmd && shell->node->type == NODE_COMMAND)
 		return ;
 	else
 		execute_ast(shell, shell->node, in_fd, out_fd);
-	int i = 0;
-	while (i < (shell->pipe_count))
-	{
-		close(shell->pipes[i][0]);
-		close(shell->pipes[i][1]);
-		i++;
-	}
+	close_pipes(shell);
 	wait_for_children(shell);
 	unlink_heredoc_fd(shell->node);
 	setup_signal_handlers();

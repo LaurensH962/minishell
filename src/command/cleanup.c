@@ -1,15 +1,14 @@
 #include "minishell.h"
 
-
 void	cleanup_redirect(t_redirect *redirect)
 {
-	t_redirect *tmp;
+	t_redirect	*tmp;
 
 	while (redirect)
 	{
 		tmp = redirect;
 		if (tmp->type == NODE_HEREDOC)
-		{	
+		{
 			if (tmp->fd_heredoc > 2)
 				close(tmp->fd_heredoc);
 		}
@@ -21,13 +20,13 @@ void	cleanup_redirect(t_redirect *redirect)
 
 void	cleanup_ast(t_ast **node)
 {
-	int i;
+	int	i;
 
 	if ((*node) == NULL)
 		return ;
-	cleanup_ast(&(*node)->left);             // Recursively clean up left child
-	cleanup_ast(&(*node)->right);           
-		// Recursively clean up right child
+	cleanup_ast(&(*node)->left); // Recursively clean up left child
+	cleanup_ast(&(*node)->right);
+	// Recursively clean up right child
 	cleanup_redirect((*node)->redirections); // Clean up redirections
 	free((*node)->cmd);                      // Free command string
 	free((*node)->cmd_path);                 // Free command path string
@@ -44,8 +43,9 @@ void	cleanup_ast(t_ast **node)
 
 void	cleanup_pipes_pids(t_shell *shell)
 {
-	int i = 0;
+	int	i;
 
+	i = 0;
 	if (shell->pipe_count)
 	{
 		while (i < shell->pipe_count)
@@ -58,7 +58,7 @@ void	cleanup_pipes_pids(t_shell *shell)
 
 void	cleanup_shell(t_shell *shell)
 {
-	int i;
+	int	i;
 
 	if (shell == NULL)
 		return ;

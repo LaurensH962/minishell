@@ -2,13 +2,13 @@
 
 static int	echo_n_check(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (str[i] == '-' && str[i + 1] && str[i + 1] == 'n')
 	{
 		i++;
-		while(str[i] && str[i] == 'n')
+		while (str[i] && str[i] == 'n')
 			i++;
 		if (str[i] && str[i] != 'n')
 			return (0);
@@ -18,10 +18,10 @@ static int	echo_n_check(char *str)
 	return (0);
 }
 
-int ft_echo(char **args)
+int	ft_echo(char **args)
 {
-	int i;
-	int newline;
+	int	i;
+	int	newline;
 
 	newline = 1;
 	i = 1;
@@ -43,9 +43,9 @@ int ft_echo(char **args)
 	return (0);
 }
 
-int ft_pwd(void)
+int	ft_pwd(void)
 {
-	char *cwd;
+	char	*cwd;
 
 	cwd = NULL;
 	cwd = getcwd(NULL, 0);

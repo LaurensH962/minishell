@@ -7,7 +7,7 @@
 	char	*program;
 
 	if (filename == NULL || err_msg == NULL)
-		return;
+		return ;
 	program = "minishell:";
 	len = 0;
 	while (*program)
@@ -26,11 +26,9 @@
 		buffer[len++] = *err_msg++;
 	//buffer[len++] = ' ';
 	buffer[len++] = '\n';
-	write(2, buffer, len);	
-
+	write(2, buffer, len);
 }*/
-
-void report_error(char *filename, char *err_msg)
+void	report_error(char *filename, char *err_msg)
 {
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	if (filename)
@@ -38,7 +36,7 @@ void report_error(char *filename, char *err_msg)
 	ft_putstr_fd(err_msg, STDERR_FILENO);
 }
 
-void cd_report_error(char *cmd, char *filename, char *err_msg)
+void	cd_report_error(char *cmd, char *filename, char *err_msg)
 {
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(cmd, STDERR_FILENO);

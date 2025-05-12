@@ -12,21 +12,19 @@ void	free_split(char **split)
 	free(split);
 }
 
-void free_array(char **array, int len)
+void	free_array(char **array, int len)
 {
-	int i;
+	int	i;
 
 	i = 0;
-    if (!array)
-        return ;
-    while(array[i] && (len == -1 || i < len))
+	if (!array)
+		return ;
+	while (array[i] && (len == -1 || i < len))
 		free(array[i++]);
-    free(array);
+	free(array);
 }
 
-
-
-void cleanup_all(t_shell *shell)
+void	cleanup_all(t_shell *shell)
 {
 	unlink_heredoc_fd(shell->node);
 	cleanup_pipes_pids(shell);

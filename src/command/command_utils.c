@@ -1,60 +1,60 @@
 #include "minishell.h"
 
-void	close_pipes(t_shell *shell)
+int	initialize_pid_array(t_shell *shell)
 {
-	int i;
+	shell->pid = ft_calloc(1, sizeof(pid_t) * (shell->pipe_count + 1));
+	if (!shell->pid)
+	{
+		perror("minishell: malloc");
+		shell->status_last_command = 1;
+		return (1);
+	}
+	shell->pid_index = 0;
+	return (0);
+}
+
+static int	malloc_pipe_fail(t_shell *shell, int i)
+{
+	perror("minishell: malloc");
+	while (--i >= 0)
+		free(shell->pipes[i]);
+	free(shell->pipes);
+	shell->pipes = NULL;
+	shell->status_last_command = 1;
+	return (1);
+}
+
+int	initialize_pipes(t_shell *shell)
+{
+	int	i;
 
 	i = 0;
-	while (i < (shell->pipe_count))
+	if (shell->pipe_count > 0)
 	{
-		close(shell->pipes[i][0]);
-		close(shell->pipes[i][1]);
-		i++;
+		shell->pipes = malloc(sizeof(int *) * shell->pipe_count);
+		if (!shell->pipes)
+		{
+			perror("minishell: malloc");
+			shell->status_last_command = 1;
+			return (1);
+		}
+		shell->pipe_index = 0;
+		shell->index = 0;
+		while (i < shell->pipe_count)
+		{
+			shell->pipes[i] = malloc(sizeof(int) * 2);
+			if (!shell->pipes[i])
+				return (malloc_pipe_fail(shell, i));
+			i++;
+		}
 	}
+	return (0);
 }
 
-static void     handle_redirections(t_ast *node, int in_fd, int out_fd, t_shell *shell)
+void	redir_close(int in_fd, int out_fd)
 {
-    int fd_read;
-    int fd_write;
-    t_redirect *redir;
-
-    redir = node->redirections;
-    redir_close(in_fd, out_fd);
-    while(redir)
-    {
-        if (redir->type == NODE_REDIRECT_IN)
-            handle_inputfile(&fd_read, redir, shell);
-        if (redir->type == NODE_REDIRECT_OUT)
-            handle_outputfile(&fd_write, redir, shell);
-        if (redir->type == NODE_APPEND)
-            handle_outputfile(&fd_write, redir, shell);
-        if (redir->type == NODE_HEREDOC)
-            handle_heredoc(&redir->fd_heredoc);
-        redir = redir->next;
-    }
-}
-
-void	child_process(t_shell *shell, t_ast *node, int in_fd, int out_fd)
-{
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
-	handle_redirections(node, in_fd, out_fd, shell);
-	close_pipes(shell);
-	if (node->cmd == NULL)
-	{
-		cleanup_all(shell);
-		exit(0);
-	}
-	if (check_if_builtin(node))
-	{
-		execute_builtin_exit(node, shell);
-		cleanup_all(shell);
-	}
-	check_command_access(node, shell);
-	unlink_heredoc_fd(shell->node);
-	execve(node->cmd_path, node->args, shell->export);
-	perror("minishell: execve");
-	cleanup_all(shell);
-	exit(1);
+	if (in_fd != STDIN_FILENO)
+		dup2(in_fd, STDIN_FILENO);
+	if (out_fd != STDOUT_FILENO)
+		dup2(out_fd, STDOUT_FILENO);
 }
