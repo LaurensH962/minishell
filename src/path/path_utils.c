@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	current_path(char *command)
+static int	current_path(char *command)
 {
 	int	i;
 
@@ -13,7 +13,7 @@ int	current_path(char *command)
 		return (0);
 }
 
-int	command_is_path(char *argv)
+static int	command_is_path(char *argv)
 {
 	int	i;
 
@@ -25,4 +25,61 @@ int	command_is_path(char *argv)
 		return (1);
 	else
 		return (0);
+}
+
+static int		check_cmd(t_ast *node)
+{
+	if (node == NULL)
+		return (0);
+	if (!node->cmd && node->type != NODE_PIPE)
+		return (0);
+	if (node->cmd)
+	{
+		if (node->cmd[0] == '\0')
+		{
+			node->cmd_path = NULL;
+			return (0);
+		}
+	}
+	return (1);
+}
+
+static int		set_cmd_path(t_ast *node, int path, t_shell *shell, int fail_flag)
+{
+	if (node->type == NODE_COMMAND && node->cmd != NULL && path)
+	{
+		node->cmd_path = ft_strdup(node->cmd);
+		if (!node->cmd_path)
+			return (perror_malloc_return());
+	}
+	if (node->type == NODE_COMMAND && node->cmd != NULL && !path)
+	{
+		node->cmd_path = get_command_path(node->cmd, shell->env, &fail_flag);
+		if (fail_flag == 1)
+			return (1);
+	}
+	return (0);
+}
+
+int	command_path(t_ast *node, t_shell *shell)
+{
+	int	fail_flag;
+	int	path;
+	int	i;
+
+	i = 0;
+	fail_flag = 0;
+	if (!check_cmd(node))
+		return (0);
+	if (command_path(node->right, shell))
+		return (1);
+	if (command_path(node->left, shell))
+		return (1);
+	if ((current_path(node->cmd) || command_is_path(node->cmd)))
+		path = 1;
+	else
+		path = 0;
+	if (set_cmd_path(node, path, shell, fail_flag))
+		return (1);
+	return (0);
 }
