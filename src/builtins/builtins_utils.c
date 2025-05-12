@@ -1,10 +1,10 @@
 #include "minishell.h"
 
-int is_number(const char *str)
+int	is_number(const char *str)
 {
 	if (*str == '-' || *str == '+')
 		str++;
-	while(*str)
+	while (*str)
 	{
 		if (!ft_isdigit(*str))
 			return (0);
@@ -13,7 +13,8 @@ int is_number(const char *str)
 	return (1);
 }
 
-void	print_export_if_equalsign(t_shell *shell, int *index_string, int *index_char)
+void	print_export_if_equalsign(t_shell *shell, int *index_string,
+		int *index_char)
 {
 	printf("=\"");
 	(*index_char)++;
@@ -29,6 +30,9 @@ void	print_export_if_equalsign(t_shell *shell, int *index_string, int *index_cha
 /*int		cd_minus(t_shell *shell, char *cmd)
 {
 	char	*oldpwd;
+	int		i;
+	char	*oldpwd;
+	int		malloc;
 
 	oldpwd = get_oldpwd(shell, cmd);
 	if(oldpwd)
@@ -48,12 +52,11 @@ void	print_export_if_equalsign(t_shell *shell, int *index_string, int *index_cha
 	}
 	return (0);
 }*/
-
 char	*get_oldpwd(t_shell *shell, char *cmd)
 {
 	int i;
-	char *oldpwd;
 	int malloc;
+	char *oldpwd;
 
 	i = 0;
 	malloc = 0;
@@ -74,21 +77,21 @@ char	*get_oldpwd(t_shell *shell, char *cmd)
 	}
 	if (!oldpwd && malloc == 0)
 		report_error(cmd, ": OLDPWD not set\n");
-	return(oldpwd);
+	return (oldpwd);
 }
 
-int free_return(char *string)
+int	free_return(char *string)
 {
 	free(string);
 	return (1);
 }
 
- char *pwd_not_set(char *value, int *malloced)
- {
+char	*pwd_not_set(char *value, int *malloced)
+{
 	value = malloc(sizeof(char) * 1);
-	if(!value)
+	if (!value)
 		return (perror_return());
 	*value = '\0';
 	*malloced = 1;
 	return (value);
- }
+}

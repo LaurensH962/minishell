@@ -194,7 +194,9 @@ int						set_command_path(t_ast *node, t_shell *shell);
 void   					execute_command(t_shell *shell, t_ast *node, int in_fd, int out_fd);
 char					*get_command_path(char *cmd, char **envp, int *fail_flag);
 void					child_process(t_shell *shell, t_ast *node, int in_fd, int out_fd);
-
+int						initialize_pipes(t_shell *shell);
+int						initialize_pid_array(t_shell *shell);
+void					close_pipes(t_shell *shell);
 // access
 
 int						check_file_access_write(char *filename, int i, t_shell *shell);
@@ -232,7 +234,8 @@ int						perror_cd_return(void);
 int 					perror_free_return(char *function_name, char *string, char *string2);
 int						perror_malloc_free_return(char *key, char *value);
 char 					*perror_return(void);
-int     set_home_oldpwd(t_shell *shell, char **home, char **old_pwd);
+int     				set_home_oldpwd(t_shell *shell, char **home, char **old_pwd);
+int    					cd_free_return(char *string, int malloc);
 
 // signals
 void					setup_signal_handlers(void);
@@ -264,7 +267,6 @@ void					free_tokens(t_shell *shell);
 //void					free_pipes(int **pipes, int count);
 void 					cleanup_all(t_shell *shell);
 void					cleanup_pipes_pids(t_shell *shell);
-void					close_pipes(t_shell *shell);
 int						cd_access(char *path);
 void 					cd_report_error(char *cmd, char *filename, char *err_msg);
 int						change_directory(char *path);

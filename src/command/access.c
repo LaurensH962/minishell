@@ -1,14 +1,14 @@
 #include "minishell.h"
 
-int is_directory(char *filename) 
+int	is_directory(char *filename)
 {
-    struct stat statbuf;
+	struct stat	statbuf;
 
-    if (stat(filename, &statbuf) != 0) 
-        return (0);
-    if (S_ISDIR(statbuf.st_mode)) 
-        return (1);
-    return 0;
+	if (stat(filename, &statbuf) != 0)
+		return (0);
+	if (S_ISDIR(statbuf.st_mode))
+		return (1);
+	return (0);
 }
 
 int	check_file_access_read(char *filename, int i, t_shell *shell)
@@ -58,7 +58,7 @@ int	check_file_access_write(char *filename, int i, t_shell *shell)
 	return (0);
 }
 
-int		cd_access(char *path)
+int	cd_access(char *path)
 {
 	if (access(path, F_OK) == -1)
 	{
@@ -84,19 +84,19 @@ void	check_command_access(t_ast *node, t_shell *shell)
 	{
 		report_error(node->cmd, ": command not found\n");
 		cleanup_all(shell);
-		exit (127);
+		exit(127);
 	}
 	if (access(node->cmd_path, F_OK) == -1)
 	{
 		report_error(node->cmd, ": No such file or directory\n");
 		cleanup_all(shell);
-		exit (127);
+		exit(127);
 	}
 	if (access(node->cmd_path, X_OK) == -1)
 	{
 		report_error(node->cmd, ": Permission denied\n");
 		cleanup_all(shell);
-		exit (126);
+		exit(126);
 	}
 	if (access(node->cmd_path, X_OK) == 0 && is_directory(node->cmd))
 	{

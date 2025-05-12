@@ -1,40 +1,40 @@
 #include "minishell.h"
 
-static void sort_strings(char **arr)
+static void	sort_strings(char **arr)
 {
-    int i;
-    int swapped;
-    char *temp;
+	int		i;
+	int		swapped;
+	char	*temp;
 
-    if (!arr)
-        return;
-    swapped = 1;
-    while (swapped)
-    {
-        swapped = 0;
-        i = 0;
-        while (arr[i] && arr[i + 1])
-        {
-            if (ft_strcmp(arr[i], arr[i + 1]) > 0)
-            {
-                temp = arr[i];
-                arr[i] = arr[i + 1];
-                arr[i + 1] = temp;
-                swapped = 1;
-            }
-            i++;
-        }
-    }
+	if (!arr)
+		return ;
+	swapped = 1;
+	while (swapped)
+	{
+		swapped = 0;
+		i = 0;
+		while (arr[i] && arr[i + 1])
+		{
+			if (ft_strcmp(arr[i], arr[i + 1]) > 0)
+			{
+				temp = arr[i];
+				arr[i] = arr[i + 1];
+				arr[i + 1] = temp;
+				swapped = 1;
+			}
+			i++;
+		}
+	}
 }
 
 static int	print_export(t_shell *shell)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = 0;
 	sort_strings(shell->export);
-	while(shell->export[i] != NULL)
+	while (shell->export[i] != NULL)
 	{
 		j = 0;
 		printf("declare -x ");
@@ -51,14 +51,14 @@ static int	print_export(t_shell *shell)
 
 static int	setenve_export(t_shell *shell, char *arg)
 {
-	char *key;
-	char *value;
-	char *equal;
+	char	*key;
+	char	*value;
+	char	*equal;
 
 	equal = ft_strchr(arg, '=');
 	if (equal) // VAR=VALUE case
 	{
-		key = ft_substr(arg, 0, (equal) - arg);
+		key = ft_substr(arg, 0, (equal)-arg);
 		value = ft_strdup(equal + 1);
 		if (!value || !key)
 			return (perror_malloc_return());
@@ -81,16 +81,16 @@ static int	update_export(t_shell *shell, char **args)
 {
 	int	i;
 	int	not_valid;
-	int error_malloc;
+	int	error_malloc;
 
 	i = 1;
 	error_malloc = 0;
 	not_valid = 0;
-	while(args[i])
+	while (args[i])
 	{
 		if (!is_valid_identifier(args[i]))
 		{
-			ft_putstr_fd("minishell: export: ",2);
+			ft_putstr_fd("minishell: export: ", 2);
 			ft_putstr_fd(args[i], 2);
 			ft_putstr_fd(": not a valid identifier\n", 2);
 			not_valid = 1;
@@ -105,7 +105,7 @@ static int	update_export(t_shell *shell, char **args)
 	return (not_valid || error_malloc);
 }
 
-int ft_export(t_shell *shell, char **args)
+int	ft_export(t_shell *shell, char **args)
 {
 	if (!args[1])
 		return (print_export(shell));
