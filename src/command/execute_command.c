@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static	redirect_in_out(int in, int out)
+static void	redirect_in_out(int in, int out)
 {
 	dup2(in, STDIN_FILENO);
 	dup2(out, STDOUT_FILENO);
