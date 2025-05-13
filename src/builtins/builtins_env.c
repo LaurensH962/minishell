@@ -28,7 +28,7 @@ static void	remove_variable(char ***env, const char *var)
 	while ((*env)[i] != NULL)
 	{
 		if (ft_strncmp((*env)[i], var, ft_strlen(var)) == 0
-			&& (*env)[i][ft_strlen(var)] == '=')
+			&&((*env)[i][ft_strlen(var)] == '=' || (*env)[i][ft_strlen(var)] == '\0'))
 		{
 			free((*env)[i]);
 			j = i;
@@ -44,8 +44,7 @@ static void	remove_variable(char ***env, const char *var)
 	}
 }
 
-int	ft_unset(t_shell *shell, char **vars) // needs arguments
-		//does not remove variable
+int	ft_unset(t_shell *shell, char **vars)
 {
 	int i;
 

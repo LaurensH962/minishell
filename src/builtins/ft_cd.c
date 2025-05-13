@@ -3,10 +3,8 @@
 static int	cd_to_home(t_shell *shell)
 {
 	char	*home;
-	int		i;
 	char	*old_pwd;
 
-	i = 0;
 	home = NULL;
 	old_pwd = NULL;
 	if (set_home_oldpwd(shell, &home, &old_pwd))

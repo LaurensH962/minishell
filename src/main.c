@@ -45,8 +45,6 @@ int	main(int argc, char **argv, char **envp)
 		} */
 		shell->pipe_count = 0;
 		line = readline("minishell: ");
-		if (!line)
-			return (21);
 		if (g_rl_interrupted == 2)
 		{
 			shell->status_last_command = 130;
