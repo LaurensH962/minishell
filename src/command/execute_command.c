@@ -23,18 +23,15 @@ static int	handle_builtin_one_command(t_shell *shell, t_ast *node, int in_fd,
 		{
 			shell->status_last_command = 1;
 			redirect_in_out(backup_stdin, backup_stdout);
-			// unlink_heredoc_fd(shell->node);
 			return (1);
 		}
 		shell->status_last_command = execute_builtin(node, shell, backup_stdin,
 				backup_stdout);
 		redirect_in_out(backup_stdin, backup_stdout);
-		// unlink_heredoc_fd(shell->node);
 		return (1);
 	}
 	close(backup_stdin); //not sure if needed
 	close(backup_stdout); //not sure if needed
-	// unlink_heredoc_fd(shell->node);
 	return (0);
 }
 

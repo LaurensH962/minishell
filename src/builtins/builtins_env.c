@@ -32,7 +32,7 @@ static void	remove_variable(char ***env, const char *var)
 		{
 			free((*env)[i]);
 			j = i;
-			while ((*env)[j + 1] != NULL) // Shift remaining variables left
+			while ((*env)[j + 1] != NULL)
 			{
 				(*env)[j] = (*env)[j + 1];
 				j++;
@@ -75,7 +75,7 @@ int	ft_env(t_shell *shell, t_ast *node)
 	}
 	while (shell->env[i] != NULL)
 	{
-		if (strchr(shell->env[i], '=') != NULL) // Only print variables with '='
+		if (strchr(shell->env[i], '=') != NULL)
 			printf("%s\n", shell->env[i]);
 		i++;
 	}

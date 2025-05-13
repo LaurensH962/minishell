@@ -13,8 +13,8 @@ void	cleanup_redirect(t_redirect *redirect)
 				close(tmp->fd_heredoc);
 		}
 		redirect = redirect->next;
-		free(tmp->file); // Free the file associated with the redirect
-		free(tmp);       // Free the redirect structure itself
+		free(tmp->file);
+		free(tmp);
 	}
 }
 
@@ -24,20 +24,19 @@ void	cleanup_ast(t_ast **node)
 
 	if ((*node) == NULL)
 		return ;
-	cleanup_ast(&(*node)->left); // Recursively clean up left child
+	cleanup_ast(&(*node)->left);
 	cleanup_ast(&(*node)->right);
-	// Recursively clean up right child
-	cleanup_redirect((*node)->redirections); // Clean up redirections
-	free((*node)->cmd);                      // Free command string
-	free((*node)->cmd_path);                 // Free command path string
+	cleanup_redirect((*node)->redirections);
+	free((*node)->cmd);
+	free((*node)->cmd_path);
 	if ((*node)->args)
 	{
 		i = 0;
-		while ((*node)->args[i]) // Free arguments if they exist
+		while ((*node)->args[i])
 			free((*node)->args[i++]);
-		free((*node)->args); // Free the argument array itself
+		free((*node)->args);
 	}
-	free((*node)); // Finally, free the node itself
+	free((*node));
 	(*node) = NULL;
 }
 
@@ -62,20 +61,19 @@ void	cleanup_shell(t_shell *shell)
 
 	if (shell == NULL)
 		return ;
-	// free_structs(shell);    // Clean up AST nodes
 	if (shell->env)
 	{
 		i = 0;
-		while (shell->env[i]) // Free environment variables
+		while (shell->env[i])
 			free(shell->env[i++]);
-		free(shell->env); // Free environment array
+		free(shell->env);
 	}
 	if (shell->export)
 	{
 		i = 0;
-		while (shell->export[i]) // Free environment variables
+		while (shell->export[i])
 			free(shell->export[i++]);
-		free(shell->export); // Free environment array
+		free(shell->export);
 	}
 	free(shell);
 }

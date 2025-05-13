@@ -29,31 +29,6 @@ void	print_export_if_equalsign(t_shell *shell, int *index_string,
 	}
 }
 
-/*int		cd_minus(t_shell *shell, char *cmd)
-{
-	char	*oldpwd;
-	int		i;
-	char	*oldpwd;
-	int		malloc;
-
-	oldpwd = get_oldpwd(shell, cmd);
-	if(oldpwd)
-	{
-		if (cd_access(oldpwd))
-		{
-			free(oldpwd);
-			return (1);
-		}
-		if (chdir(oldpwd) != 0)
-		{
-			free(oldpwd);
-			return(perror_cd_return());
-		}
-		printf("%s\n", oldpwd);
-		free(oldpwd);
-	}
-	return (0);
-}*/
 char	*get_oldpwd(t_shell *shell, char *cmd)
 {
 	int i;

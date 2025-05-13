@@ -69,7 +69,7 @@ static void	wait_for_children(t_shell *shell)
 		waitpid(shell->pid[i], &status, 0);
 		if (WIFEXITED(status))
 			shell->status_last_command = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status) /*&& check_if_builtin(node) == 0*/)
+		else if (WIFSIGNALED(status))
 		{
 			shell->status_last_command = 128 + WTERMSIG(status);
 			if (WTERMSIG(status) == SIGINT)
@@ -95,7 +95,7 @@ void	execute_pipeline(t_shell *shell)
 		return ;
 	in_fd = STDIN_FILENO;
 	out_fd = STDOUT_FILENO;
-	signal(SIGINT, SIG_IGN); // not sure if correctly placed
+	signal(SIGINT, SIG_IGN);
 	if (initialize_pipes(shell))
 		return ;
 	prescan_redirections(shell->node, shell);
