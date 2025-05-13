@@ -274,4 +274,10 @@ int 					cd_free(char *new_pwd, char *old_pwd);
 char					*pwd_not_set(char *value, int *malloced);
 int						free_return(char *string);
 
+//main
+int	new_readline(t_shell *shell, char **line);
+void set_values(int argc, char **argv);
+int	set_ast(t_shell *shell, char *line);
+int syntax_error_check(t_shell *shell, char *line);
+void	set_up_shell(t_shell **shell, char **envp);
 #endif
