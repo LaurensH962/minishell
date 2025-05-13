@@ -1,36 +1,5 @@
 #include "minishell.h"
 
-/*int		check_pwd_exits(t_shell *shell)
-{
-	int	i;
-
-	i = 0;
-	if(shell->env)
-	{
-		while(shell->env[i] != NULL)
-		{
-			if (ft_strncmp(shell->env[i], "PWD", 3) == 0)
-				return (1);
-		}
-	}
-	return (0);
-}
-
-int	check_oldpwd_exits(t_shell *shell)
-{
-	int	i;
-
-	i = 0;
-	if(shell->env)
-	{
-		while(shell->env[i] != NULL)
-		{
-			if (ft_strncmp(shell->env[i], "OLDPWD", 6) == 0)
-				return (1);
-		}
-	}
-	return (0);
-}*/
 int	change_directory(char *path)
 {
 	if (cd_access(path))
