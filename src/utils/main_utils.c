@@ -9,9 +9,16 @@ void	set_up_shell(t_shell **shell, char **envp)
 		exit(1);
 	}
 	if (copy_environ(envp, &(*shell)->env))
-		exit (1);
+	{
+		free(*shell);
+		exit(1);
+	}
 	if (copy_environ(envp, &(*shell)->export))
-		exit (1);
+	{
+		free_array((*shell)->env, -1);
+		free(*shell);
+		exit(1);
+	}
 }
 
 int syntax_error_check(t_shell *shell, char *line)
