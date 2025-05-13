@@ -2,7 +2,7 @@
 
 volatile sig_atomic_t g_rl_interrupted = 0;
 
-int	main(int argc, char **argv, char **envp)
+/*int	main(int argc, char **argv, char **envp)
 {
 	char	*line;
 	t_ast	*ast;
@@ -21,11 +21,9 @@ int	main(int argc, char **argv, char **envp)
 		exit (1);
 	if (copy_environ(envp, &shell->export))
 		exit (1);
-	/*if (copy_pwd(envp, &shell->pwd))
-		exit (1);*/
 	while (1)
 	{
-		/* if (isatty(STDIN_FILENO))
+		if (isatty(STDIN_FILENO))
 			printf("stdin is ok\n");
 		else
 			printf("stdin is closed or redirected!\n");
@@ -42,7 +40,7 @@ int	main(int argc, char **argv, char **envp)
 				break;
 			line = ft_strtrim(linetemp, "\n");
 			free(linetemp);
-		} */
+		} 
 		shell->pipe_count = 0;
 		line = readline("minishell: ");
 		if (g_rl_interrupted == 2)
@@ -86,4 +84,34 @@ int	main(int argc, char **argv, char **envp)
 	}
 	cleanup_shell(shell);
 	return (0);
+}*/
+
+int	main(int argc, char **argv, char **envp)
+{
+	char	*line;
+	t_shell *shell;
+
+	set_values(argc, argv);
+	setup_signal_handlers();
+	set_up_shell(&shell, envp);
+	while (1)
+	{
+		shell->pipe_count = 0;
+		if (!new_readline(shell, &line))
+			break ;
+		add_history(line);
+		shell->tokens = lexer(line, shell);
+		if (!syntax_error_check(shell, line))
+			continue ;
+		if (!set_ast(shell, line))
+			continue ;
+		if (!command_path(shell->node, shell))
+			execute_pipeline(shell);
+		cleanup_pipes_pids(shell);
+		cleanup_ast(&(shell->node));
+		free(line);
+	}
+	cleanup_shell(shell);
+	return (0);
 }
+
