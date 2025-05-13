@@ -18,6 +18,8 @@ void	print_export_if_equalsign(t_shell *shell, int *index_string,
 {
 	printf("=\"");
 	(*index_char)++;
+	if (shell->export[*index_string][*index_char] == '\0')
+		printf("\"\n");
 	while (shell->export[*index_string][*index_char])
 	{
 		printf("%c", shell->export[*index_string][*index_char]);

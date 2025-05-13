@@ -65,9 +65,7 @@ int	command_path(t_ast *node, t_shell *shell)
 {
 	int	fail_flag;
 	int	path;
-	int	i;
-
-	i = 0;
+	
 	fail_flag = 0;
 	if (!check_cmd(node))
 		return (0);
