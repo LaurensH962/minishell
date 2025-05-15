@@ -86,23 +86,22 @@ void	execute_pipeline(t_shell *shell)
 	int	in_fd;
 	int	out_fd;
 
-	if (scan_heredocs(shell->node, shell) == -1)
-	{
-		g_rl_interrupted = 0;
+	if (heredoc_interrupt(shell))
 		return ;
-	}
 	if (initialize_pid_array(shell))
 		return ;
 	in_fd = STDIN_FILENO;
 	out_fd = STDOUT_FILENO;
-	signal(SIGINT, SIG_IGN);
 	if (initialize_pipes(shell))
 		return ;
 	prescan_redirections(shell->node, shell);
 	if (!shell->node->cmd && shell->node->type == NODE_COMMAND)
 		return ;
 	else
+	{
+		signal(SIGINT, SIG_IGN);
 		execute_ast(shell, shell->node, in_fd, out_fd);
+	}
 	close_pipes(shell);
 	wait_for_children(shell);
 	unlink_heredoc_fd(shell->node);

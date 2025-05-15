@@ -48,10 +48,7 @@ void	child_process(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 		exit(0);
 	}
 	if (check_if_builtin(node))
-	{
 		execute_builtin_exit(node, shell);
-		cleanup_all(shell);
-	}
 	check_command_access(node, shell);
 	unlink_heredoc_fd(shell->node);
 	execve(node->cmd_path, node->args, shell->export);

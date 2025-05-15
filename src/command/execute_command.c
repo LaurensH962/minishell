@@ -8,7 +8,6 @@ static void	redirect_in_out(int in, int out)
 	close(out);
 }
 
-
 static int	handle_builtin_one_command(t_shell *shell, t_ast *node, int in_fd,
 		int out_fd)
 {
@@ -30,8 +29,8 @@ static int	handle_builtin_one_command(t_shell *shell, t_ast *node, int in_fd,
 		redirect_in_out(backup_stdin, backup_stdout);
 		return (1);
 	}
-	close(backup_stdin); //not sure if needed
-	close(backup_stdout); //not sure if needed
+	close(backup_stdin);
+	close(backup_stdout);
 	return (0);
 }
 
