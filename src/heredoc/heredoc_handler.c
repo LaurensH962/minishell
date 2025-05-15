@@ -1,5 +1,15 @@
 #include "minishell.h"
 
+int		heredoc_interrupt(t_shell *shell)
+{
+	if (scan_heredocs(shell->node, shell) == -1)
+	{
+		g_rl_interrupted = 0;
+		return (1);
+	}
+	return (0);
+}
+
 void	handle_heredoc(int *fd_read)
 {
 	if (*fd_read == -1)
