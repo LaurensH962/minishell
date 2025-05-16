@@ -56,9 +56,9 @@ static int	setenve_export(t_shell *shell, char *arg)
 	char	*equal;
 
 	equal = ft_strchr(arg, '=');
-	if (equal) // VAR=VALUE case
+	if (equal)
 	{
-		key = ft_substr(arg, 0, (equal)-arg);
+		key = ft_substr(arg, 0, (equal) - arg);
 		value = ft_strdup(equal + 1);
 		if (!value || !key)
 			return (perror_malloc_return());
