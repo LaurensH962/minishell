@@ -27,7 +27,7 @@ static int	command_is_path(char *argv)
 		return (0);
 }
 
-static int		check_cmd(t_ast *node)
+static int	check_cmd(t_ast *node)
 {
 	if (node == NULL)
 		return (0);
@@ -44,7 +44,7 @@ static int		check_cmd(t_ast *node)
 	return (1);
 }
 
-static int		set_cmd_path(t_ast *node, int path, t_shell *shell, int fail_flag)
+static int	set_cmd_path(t_ast *node, int path, t_shell *shell, int fail_flag)
 {
 	if (node->type == NODE_COMMAND && node->cmd != NULL && path)
 	{
@@ -65,7 +65,7 @@ int	command_path(t_ast *node, t_shell *shell)
 {
 	int	fail_flag;
 	int	path;
-	
+
 	fail_flag = 0;
 	if (!check_cmd(node))
 		return (0);

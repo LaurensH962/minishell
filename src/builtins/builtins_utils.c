@@ -31,9 +31,9 @@ void	print_export_if_equalsign(t_shell *shell, int *index_string,
 
 char	*get_oldpwd(t_shell *shell, char *cmd)
 {
-	int i;
-	int malloc;
-	char *oldpwd;
+	int		i;
+	int		malloc;
+	char	*oldpwd;
 
 	i = 0;
 	malloc = 0;

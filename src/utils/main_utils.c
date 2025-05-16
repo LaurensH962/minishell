@@ -21,15 +21,15 @@ void	set_up_shell(t_shell **shell, char **envp)
 	}
 }
 
-int syntax_error_check(t_shell *shell, char *line)
+int	syntax_error_check(t_shell *shell, char *line)
 {
-	char 	*syntax_error;
+	char	*syntax_error;
 
 	syntax_error = syntax_checker(shell->tokens);
 	if (syntax_error != NULL)
 	{
 		printf("%s\n", syntax_error);
-		free (syntax_error);
+		free(syntax_error);
 		free_structs(shell);
 		free(line);
 		shell->status_last_command = 2;
@@ -54,7 +54,7 @@ int	set_ast(t_shell *shell, char *line)
 	return (1);
 }
 
-void set_values(int argc, char **argv)
+void	set_values(int argc, char **argv)
 {
 	(void)argc;
 	(void)argv;
