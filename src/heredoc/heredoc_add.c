@@ -2,7 +2,7 @@
 
 static int	write_heredoc_lines(int fd, t_redirect *redir, t_shell *shell)
 {
-	char *line;
+	char	*line;
 
 	while (1)
 	{
@@ -25,8 +25,8 @@ static int	write_heredoc_lines(int fd, t_redirect *redir, t_shell *shell)
 
 int	fill_heredoc(t_redirect *redir, char *name, t_shell *shell)
 {
-	struct  sigaction old_sa;
-	int fd;
+	struct sigaction	old_sa;
+	int					fd;
 
 	init_heredoc_signals(&old_sa);
 	fd = open(name, O_CREAT | O_RDWR | O_EXCL, 0644);
@@ -49,8 +49,8 @@ int	fill_heredoc(t_redirect *redir, char *name, t_shell *shell)
 
 static int	create_heredoc(t_redirect *redir, t_shell *shell, unsigned long *i)
 {
-	char temp_name[25];
-	char *num_str;
+	char	temp_name[25];
+	char	*num_str;
 
 	(*i)++;
 	ft_strlcpy(temp_name, "tempfile_", sizeof(temp_name));
@@ -68,13 +68,12 @@ static int	create_heredoc(t_redirect *redir, t_shell *shell, unsigned long *i)
 
 int	scan_heredocs(t_ast *node, t_shell *shell)
 {
-	t_redirect *redir;
-	static unsigned long i;
+	t_redirect				*redir;
+	static unsigned long	i;
+
 	i = (unsigned long)&redir;
-
 	if (!node)
-		return 0;
-
+		return (0);
 	redir = node->redirections;
 	while (redir)
 	{
@@ -89,6 +88,5 @@ int	scan_heredocs(t_ast *node, t_shell *shell)
 		return (-1);
 	if (scan_heredocs(node->right, shell) == -1)
 		return (-1);
-
 	return (0);
 }

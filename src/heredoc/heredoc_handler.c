@@ -1,15 +1,5 @@
 #include "minishell.h"
 
-int		heredoc_interrupt(t_shell *shell)
-{
-	if (scan_heredocs(shell->node, shell) == -1)
-	{
-		g_rl_interrupted = 0;
-		return (1);
-	}
-	return (0);
-}
-
 void	handle_heredoc(int *fd_read)
 {
 	if (*fd_read == -1)
@@ -21,7 +11,7 @@ void	handle_heredoc(int *fd_read)
 	close(*fd_read);
 }
 
-int		handle_heredoc_builtin(int *fd_read)
+int	handle_heredoc_builtin(int *fd_read)
 {
 	if (*fd_read == -1)
 	{
@@ -43,16 +33,12 @@ void	handle_sigint_heredoc(int sig)
 
 int	heredoc_event_hook(void)
 {
-	/* if (g_rl_interrupted)
-	{
-		rl_done = 1;
-	} */
 	return (0);
 }
 
 void	unlink_heredoc_fd(t_ast *node)
 {
-	t_redirect *redir;
+	t_redirect	*redir;
 
 	redir = node->redirections;
 	while (redir)
@@ -66,10 +52,3 @@ void	unlink_heredoc_fd(t_ast *node)
 	if (node->right)
 		unlink_heredoc_fd(node->right);
 }
-
-/* int	sigint_handler_heredoc(int sig)
-{
-	(void)sig;
-	write(1, "\n", 1);
-	return(130);
-} */

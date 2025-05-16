@@ -152,7 +152,6 @@ t_token					*skip_invalid_node(t_token *token, t_token **tokens);
 char					**resize_args(char **args, int *args_capacity);
 
 void					free_structs(t_shell *shell);
-void					print_tokens(t_token *tokens);
 
 // utils
 int						is_delimiter(char c);
@@ -166,6 +165,7 @@ int						handle_heredoc_builtin(int *fd_read);
 void    				unlink_heredoc_fd(t_ast *node);
 void					handle_sigint_heredoc(int sig);
 int						heredoc_event_hook(void);
+int						heredoc_interrupt(t_shell *shell);
 
 // heredoc_add
 int						scan_heredocs(t_ast *node, t_shell *shell);
@@ -175,7 +175,6 @@ int						fill_heredoc(t_redirect *redir, char *name, t_shell *shell);
 char					*check_expand_heredoc(char *line, t_shell *shell);
 char					*expand_dollar(char *line, int *i, t_shell *shell);
 char					*ft_strjoin_free(char *a, char *b);
-char					*append_char(char *s, char c);
 
 // heredoc_signals
 void					init_heredoc_signals(struct sigaction *old_sa);
@@ -252,8 +251,6 @@ void					redir_close(int in_fd, int out_fd);
 
 
 // printing
-void					print_tokens(t_token *tokens);
-void					print_ast(t_ast *node, int level);
 void 					report_error(char *filename, char *err_msg);
 void					print_export_if_equalsign(t_shell *shell, int *index_string, int *index_char);
 
@@ -280,4 +277,5 @@ void set_values(int argc, char **argv);
 int	set_ast(t_shell *shell, char *line);
 int syntax_error_check(t_shell *shell, char *line);
 void	set_up_shell(t_shell **shell, char **envp);
+
 #endif

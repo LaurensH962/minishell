@@ -39,6 +39,7 @@ int syntax_error_check(t_shell *shell, char *line)
 }
 
 int	set_ast(t_shell *shell, char *line)
+
 {
 	t_ast	*ast;
 
