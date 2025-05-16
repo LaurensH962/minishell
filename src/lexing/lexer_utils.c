@@ -1,8 +1,9 @@
 #include "minishell.h"
 
+
 char	*get_env_value(char **env, const char *var_name)
 {
-	int		i;
+	int	i;
 	size_t	len;
 
 	if (!env || !var_name)
@@ -46,7 +47,7 @@ bool	lexer_skip_whitespaces(t_lexer *lexer, char quote_char)
 }
 
 int	inner_quotes_expand(char *quote_char, t_lexer *lexer, int *pos,
-	char **token_value)
+		char **token_value)
 {
 	if ((lexer->input[*pos] == '"' || lexer->input[*pos] == '\'')
 		&& (*quote_char == lexer->input[*pos] || *quote_char == 0))

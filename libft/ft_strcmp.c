@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ablodorn <ablodorn@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/07 13:55:17 by lhaas             #+#    #+#             */
-/*   Updated: 2025/04/16 14:00:29 by ablodorn         ###   ########.fr       */
+/*   Created: 2025/05/16 10:56:36 by lhaas             #+#    #+#             */
+/*   Updated: 2025/05/16 10:56:36 by lhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 int	ft_strcmp(const char *s1, const char *s2)
 {
 	if (!s1 || !s2)
-		return(1);
+		return (1);
 	while (*s1 && (*s1 == *s2))
 	{
 		s1++;
