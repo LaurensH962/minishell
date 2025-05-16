@@ -1,14 +1,16 @@
 #include "minishell.h"
 
-volatile sig_atomic_t g_rl_interrupted = 0;
+volatile sig_atomic_t	g_rl_interrupted = 0;
 
 /*int	main(int argc, char **argv, char **envp)
 {
 	char	*line;
 	t_ast	*ast;
-	t_shell *shell;
-	char 	*syntax_error;
-
+	t_shell	*shell;
+	char	*syntax_error;
+			char *linetemp;
+	char	*line;
+	t_shell	*shell;
 
 	(void)argc;
 	(void)argv;
@@ -34,13 +36,12 @@ volatile sig_atomic_t g_rl_interrupted = 0;
 		}
 		else
 		{
-			char *linetemp;
 			linetemp = get_next_line(fileno(stdin));
 			if (!linetemp)
-				break;
+				break ;
 			line = ft_strtrim(linetemp, "\n");
 			free(linetemp);
-		} 
+		}
 		shell->pipe_count = 0;
 		line = readline("minishell: ");
 		if (g_rl_interrupted == 2)
@@ -72,7 +73,7 @@ volatile sig_atomic_t g_rl_interrupted = 0;
 		{
 			free_structs(shell);
 			free(line);
-			continue;
+			continue ;
 		}
 		free_tokens(shell);
 		shell->node = ast;
@@ -85,12 +86,8 @@ volatile sig_atomic_t g_rl_interrupted = 0;
 	cleanup_shell(shell);
 	return (0);
 }*/
-
 int	main(int argc, char **argv, char **envp)
 {
-	char	*line;
-	t_shell *shell;
-
 	set_values(argc, argv);
 	setup_signal_handlers();
 	set_up_shell(&shell, envp);
@@ -114,4 +111,3 @@ int	main(int argc, char **argv, char **envp)
 	cleanup_shell(shell);
 	return (0);
 }
-

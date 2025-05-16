@@ -1,4 +1,3 @@
-
 #include "minishell.h"
 
 static void	prescan_redirections(t_ast *node, t_shell *shell);
