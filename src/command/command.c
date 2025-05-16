@@ -19,6 +19,14 @@ static void	prescan_redirections(t_ast *node, t_shell *shell)
 	redir = node->redirections;
 	while (redir)
 	{
+		if (redir->type == NODE_REDIRECT_IN)
+		{
+			if (check_file_access_read(redir->file, 3, shell))
+			{
+				shell->status_last_command = 1;
+				break ;
+			}
+		}
 		if (redir->type == NODE_REDIRECT_OUT || redir->type == NODE_APPEND)
 		{
 			if (redir->type == NODE_REDIRECT_OUT)
@@ -26,7 +34,10 @@ static void	prescan_redirections(t_ast *node, t_shell *shell)
 			else
 				flags = O_CREAT | O_WRONLY | O_APPEND;
 			if (check_file_access_write(redir->file, 3, shell))
+			{
+				shell->status_last_command = 1;
 				break ;
+			}
 			fd = open(redir->file, flags, 0644);
 			if (fd == -1)
 				break ;

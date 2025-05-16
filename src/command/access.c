@@ -15,7 +15,8 @@ int	check_file_access_read(char *filename, int i, t_shell *shell)
 {
 	if (access(filename, F_OK) == -1)
 	{
-		report_error(filename, ": No such file or directory\n");
+		if (i == 3)
+			report_error(filename, ": No such file or directory\n");
 		if (i == 0)
 		{
 			cleanup_all(shell);
@@ -26,7 +27,8 @@ int	check_file_access_read(char *filename, int i, t_shell *shell)
 	}
 	if (access(filename, R_OK) == -1)
 	{
-		report_error(filename, ": Permission denied\n");
+		if (i == 3)
+			report_error(filename, ": Permission denied\n");
 		if (i == 0)
 		{
 			cleanup_all(shell);
@@ -44,7 +46,7 @@ int	check_file_access_write(char *filename, int i, t_shell *shell)
 	{
 		if (access(filename, W_OK) == -1)
 		{
-			if (i == 0 || i == 1)
+			if (i == 3)
 				report_error(filename, ": Permission denied\n");
 			if (i == 0)
 			{

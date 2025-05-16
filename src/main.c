@@ -88,6 +88,9 @@ volatile sig_atomic_t	g_rl_interrupted = 0;
 }*/
 int	main(int argc, char **argv, char **envp)
 {
+	t_shell	*shell;
+	char	*line;
+	
 	set_values(argc, argv);
 	setup_signal_handlers();
 	set_up_shell(&shell, envp);
