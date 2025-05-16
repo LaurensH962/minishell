@@ -55,7 +55,7 @@ char	*expand_dollar(char *line, int *i, t_shell *shell)
 		env_value = get_env_value(shell->env, var_name);
 		if (!env_value)
 			env_value = "";
-		result = ft_strjoin(result, env_value);
+		result = ft_strjoin_free(result, env_value);
 		free(var_name);
 	}
 	return (result);
@@ -63,7 +63,7 @@ char	*expand_dollar(char *line, int *i, t_shell *shell)
 
 char	*check_expand_heredoc(char *line, t_shell *shell)
 {
-	int	i;
+	int		i;
 	char	*expanded;
 	char	*temp;
 	char	*expanded_part;

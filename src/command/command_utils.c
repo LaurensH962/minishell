@@ -54,7 +54,13 @@ int	initialize_pipes(t_shell *shell)
 void	redir_close(int in_fd, int out_fd)
 {
 	if (in_fd != STDIN_FILENO)
+	{
 		dup2(in_fd, STDIN_FILENO);
+		close(in_fd);
+	}
 	if (out_fd != STDOUT_FILENO)
+	{
 		dup2(out_fd, STDOUT_FILENO);
+		close(out_fd);
+	}
 }

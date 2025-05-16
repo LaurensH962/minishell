@@ -187,11 +187,11 @@ char							*check_expand_heredoc(char *line,
 char							*expand_dollar(char *line, int *i,
 									t_shell *shell);
 char							*ft_strjoin_free(char *a, char *b);
-char							*append_char(char *s, char c);
 
 // heredoc_signals
 void							init_heredoc_signals(struct sigaction *old_sa);
 void							reset_heredoc_signals(struct sigaction *old_sa);
+int								heredoc_interrupt(t_shell *shell);
 
 // commmand + pipes
 void							execute_pipeline(t_shell *shell);

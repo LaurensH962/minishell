@@ -29,7 +29,6 @@ int	syntax_error_check(t_shell *shell, char *line)
 	if (syntax_error != NULL)
 	{
 		printf("%s\n", syntax_error);
-		free(syntax_error);
 		free_structs(shell);
 		free(line);
 		shell->status_last_command = 2;
@@ -56,7 +55,11 @@ int	set_ast(t_shell *shell, char *line)
 
 void	set_values(int argc, char **argv)
 {
-	(void)argc;
+	if (argc > 1)
+	{
+		printf("minishell does not take arguments.\n");
+		exit(1);
+	}
 	(void)argv;
 	rl_catch_signals = 0;
 	g_rl_interrupted = 0;
@@ -64,7 +67,16 @@ void	set_values(int argc, char **argv)
 
 int	new_readline(t_shell *shell, char **line)
 {
-	*line = readline("minishell: ");
+	/* *line = readline("minishell: "); */
+	if (isatty(fileno(stdin)))
+		*line = readline("minishell: ");
+	else
+	{
+		char *line2;
+		line2 = get_next_line(fileno(stdin));
+		*line = ft_strtrim(line2, "\n");
+		free(line2);
+	}
 	if (g_rl_interrupted == 2)
 	{
 		shell->status_last_command = 130;

@@ -88,6 +88,10 @@ volatile sig_atomic_t	g_rl_interrupted = 0;
 }*/
 int	main(int argc, char **argv, char **envp)
 {
+	t_shell	*shell;
+	char	*line;
+	int		i;
+	
 	set_values(argc, argv);
 	setup_signal_handlers();
 	set_up_shell(&shell, envp);
@@ -102,12 +106,13 @@ int	main(int argc, char **argv, char **envp)
 			continue ;
 		if (!set_ast(shell, line))
 			continue ;
+		free(line);
 		if (!command_path(shell->node, shell))
 			execute_pipeline(shell);
 		cleanup_pipes_pids(shell);
 		cleanup_ast(&(shell->node));
-		free(line);
 	}
+	i = shell->status_last_command;
 	cleanup_shell(shell);
-	return (0);
+	return (i);
 }

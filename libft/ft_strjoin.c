@@ -12,6 +12,27 @@
 
 #include "libft.h"
 
+char	*ft_strjoin_helper(char const *s1, char const *s2)
+{
+	char *res;
+	
+	if (!s1)
+	{
+		res = ft_strdup(s2);
+		if (!res)
+			return (NULL);
+		return (res);
+	}
+	if (!s2)
+	{
+		res = ft_strdup(s1);
+		if (!res)
+			return (NULL);
+		return (res);
+	}
+	return (NULL);
+}
+
 char	*ft_strjoin(char const *s1, char const *s2)
 {
 	char	*str;
@@ -19,10 +40,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 	if (!s1 && !s2)
 		return (NULL);
-	if (!s1)
-		return (ft_strdup(s2));
-	if (!s2)
-		return (ft_strdup(s1));
+	if (!ft_strjoin_helper(s1, s2));
+		return (NULL);
 	len = ft_strlen(s1) + ft_strlen(s2) + 1;
 	str = (char *)malloc(sizeof(char) * len);
 	if (!str)

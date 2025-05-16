@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-char	*build_error_msg(const char *unexpected)
+/* char	*build_error_msg(const char *unexpected)
 {
 	char	*prefix;
 	char	*suffix;
@@ -15,7 +15,11 @@ char	*build_error_msg(const char *unexpected)
 	result = ft_strjoin(temp, suffix);
 	free(temp);
 	return (result);
-}
+} */
+
+//return (build_error_msg("|"));
+//return (build_error_msg("newline"));
+//return (build_error_msg(tokens->value));
 
 char	*syntax_checker(t_token *tokens)
 {
@@ -28,17 +32,17 @@ char	*syntax_checker(t_token *tokens)
 		{
 			if (!prev || tokens->next->type == TOKEN_EOF
 				|| tokens->next->type == TOKEN_PIPE)
-				return (build_error_msg("|"));
+				return ("syntax error");
 		}
 		else if (tokens->type == TOKEN_REDIRECT_OUT
 			|| tokens->type == TOKEN_REDIRECT_IN || tokens->type == TOKEN_APPEND
 			|| tokens->type == TOKEN_HEREDOC)
 		{
 			if (!tokens->next || tokens->next->type != TOKEN_WORD)
-				return (build_error_msg("newline"));
+				return ("syntax error");
 		}
 		else if (tokens->type == TOKEN_ERROR)
-			return (build_error_msg(tokens->value));
+			return ("syntax error");
 		prev = tokens;
 		tokens = tokens->next;
 	}

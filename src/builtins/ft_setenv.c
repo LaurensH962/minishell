@@ -22,6 +22,8 @@ static int	search_for_key(const char *key, char ***envp, char *new_entry,
 					free((*envp)[i]);
 					(*envp)[i] = new_entry;
 				}
+				else
+					free(new_entry);
 				return (1);
 			}
 			i++;
@@ -59,7 +61,7 @@ static int	add_new_entry(char ***envp, char *new_entry)
 	return (0);
 }
 
-static char	*test(const char *key, const char *value)
+static char	*join_key_value_helper(const char *key, const char *value)
 {
 	char	*equal_string;
 	char	*new_entry;
@@ -83,7 +85,7 @@ static char	*join_key_value(const char *key, const char *value, int equal)
 
 	if (*value != '\0')
 	{
-		new_entry = test(key, value);
+		new_entry = join_key_value_helper(key, value);
 		if (!new_entry)
 			return (NULL);
 		return (new_entry);
