@@ -8,7 +8,7 @@ int	check_redirections(t_shell *shell, t_redirect *redir)
 	if (redir->type == NODE_REDIRECT_IN)
 	{
 		if (check_file_access_read(redir->file, 3, shell))
-			return (set_status_last_command_return(shell));
+			return (set_status_last_command_return(shell, 2));
 	}
 	if (redir->type == NODE_REDIRECT_OUT || redir->type == NODE_APPEND)
 	{
@@ -17,7 +17,7 @@ int	check_redirections(t_shell *shell, t_redirect *redir)
 		else
 			flags = O_CREAT | O_WRONLY | O_APPEND;
 		if (check_file_access_write(redir->file, 3, shell))
-			return (set_status_last_command_return(shell));
+			return (set_status_last_command_return(shell, 2));
 		fd = open(redir->file, flags, 0644);
 		if (fd == -1)
 		{
@@ -32,15 +32,16 @@ int	check_redirections(t_shell *shell, t_redirect *redir)
 static int	prescan_redirections(t_ast *node, t_shell *shell)
 {
 	t_redirect	*redir;
+	int			result;
 
 	redir = node->redirections;
 	while (redir)
 	{
-		if (check_redirections(shell, redir))
-		{
-			shell->status_last_command = 1;
-			return (1);
-		}
+		result = check_redirections(shell, redir);
+		if (result == 1)
+			set_status_last_command_return(shell, 1);
+		if (result == 2)
+			break ;
 		redir = redir->next;
 	}
 	if (node->left)
@@ -112,7 +113,7 @@ void	execute_pipeline(t_shell *shell)
 	out_fd = STDOUT_FILENO;
 	if (initialize_pipes(shell))
 		return ;
-	if (prescan_redirections(shell->node, shell))
+	if (prescan_redirections(shell->node, shell) == 1)
 		return ;
 	if (!shell->node->cmd && shell->node->type == NODE_COMMAND)
 		return ;

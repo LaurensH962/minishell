@@ -134,6 +134,6 @@ int	main(int argc, char **argv, char **envp)
 	}
 	i = shell->status_last_command;
 	cleanup_shell(shell);
-	return (i);
+	return (0);
 }
 
