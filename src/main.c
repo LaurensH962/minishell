@@ -86,6 +86,14 @@ volatile sig_atomic_t	g_rl_interrupted = 0;
 	cleanup_shell(shell);
 	return (0);
 }*/
+
+/*static void	set_up(char **argv, int argc, char **envp, t_shell *shell)
+{
+	set_values(argc, argv);
+	setup_signal_handlers();
+	set_up_shell(&shell, envp);
+}*/
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_shell	*shell;
@@ -98,7 +106,6 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		shell->pipe_count = 0;
-		
 		if (!new_readline(shell, &line))
 			break ;
 		add_history(line);

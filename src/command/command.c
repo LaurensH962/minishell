@@ -1,14 +1,14 @@
 #include "minishell.h"
 
-int		check_redirections(t_shell *shell, t_redirect *redir)
+int	check_redirections(t_shell *shell, t_redirect *redir)
 {
-	int		fd;
-	int		flags;
+	int	fd;
+	int	flags;
 
 	if (redir->type == NODE_REDIRECT_IN)
 	{
 		if (check_file_access_read(redir->file, 3, shell))
-			return (0);
+			return (set_status_last_command_return(shell));
 	}
 	if (redir->type == NODE_REDIRECT_OUT || redir->type == NODE_APPEND)
 	{
@@ -17,34 +17,43 @@ int		check_redirections(t_shell *shell, t_redirect *redir)
 		else
 			flags = O_CREAT | O_WRONLY | O_APPEND;
 		if (check_file_access_write(redir->file, 3, shell))
-			return (0);
+			return (set_status_last_command_return(shell));
 		fd = open(redir->file, flags, 0644);
 		if (fd == -1)
-			return (0);
+		{
+			perror("minishell: open");
+			return (1);
+		}
 		close(fd);
 	}
-	redir = redir->next;
-	return (1);
+	return (0);
 }
 
-static void	prescan_redirections(t_ast *node, t_shell *shell)
+static int	prescan_redirections(t_ast *node, t_shell *shell)
 {
 	t_redirect	*redir;
 
 	redir = node->redirections;
 	while (redir)
 	{
-		if (!check_redirections(shell, redir))
+		if (check_redirections(shell, redir))
 		{
 			shell->status_last_command = 1;
-			break ;
+			return (1);
 		}
 		redir = redir->next;
 	}
 	if (node->left)
-		prescan_redirections(node->left, shell);
+	{
+		if (prescan_redirections(node->left, shell))
+			return (1);
+	}
 	if (node->right)
-		prescan_redirections(node->right, shell);
+	{
+		if (prescan_redirections(node->right, shell))
+			return (1);
+	}
+	return (0);
 }
 
 static void	execute_ast(t_shell *shell, t_ast *node, int in_fd, int out_fd)
@@ -103,7 +112,8 @@ void	execute_pipeline(t_shell *shell)
 	out_fd = STDOUT_FILENO;
 	if (initialize_pipes(shell))
 		return ;
-	prescan_redirections(shell->node, shell);
+	if (prescan_redirections(shell->node, shell))
+		return ;
 	if (!shell->node->cmd && shell->node->type == NODE_COMMAND)
 		return ;
 	else

@@ -249,6 +249,7 @@ char							*get_oldpwd(t_shell *shell, char *cmd);
 // int						cd_minus(t_shell *shell, char *cmd);
 int								is_number(const char *str);
 int								is_valid_identifier(const char *str);
+int								set_status_last_command_return(t_shell * shell);
 int								perror_malloc_return(void);
 int								perror_cd_return(void);
 int								perror_free_return(char *function_name,
