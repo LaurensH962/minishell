@@ -1,6 +1,16 @@
-#include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_setenv.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/19 16:15:30 by lhaas             #+#    #+#             */
+/*   Updated: 2025/05/19 16:15:34 by lhaas            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-// Updates enviroment variables or creates them if they do not already exist
+#include "minishell.h"
 
 static int	search_for_key(const char *key, char ***envp, char *new_entry,
 		int equal)

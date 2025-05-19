@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/19 16:18:34 by lhaas             #+#    #+#             */
+/*   Updated: 2025/05/19 16:18:34 by lhaas            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static t_token	*inner_loop(int *pos, char *quote_char, char **token_value,
@@ -49,7 +61,8 @@ t_token	*lexer_next_token(t_lexer *lexer, t_token *temp_token, char quote_char,
 		if (temp_token)
 			return (free(token_value), temp_token);
 		if (quote_char)
-			return (free(token_value), new_token(TOKEN_ERROR,"Unclosed quote"));
+			return (free(token_value), new_token(TOKEN_ERROR,
+					"Unclosed quote"));
 		if (token_value == NULL)
 			continue ;
 		temp_token = lexer_process_token_value(lexer, token_value);
@@ -65,7 +78,7 @@ static t_token	*lexer_process_tokens(t_lexer *lexer, t_token **tokens,
 
 	current_token = lexer_next_token(lexer, NULL, '\0', NULL);
 	if (!current_token || current_token->type == TOKEN_ERROR)
-			return (free_tokens(shell), NULL);
+		return (free_tokens(shell), NULL);
 	if (current_token->type == TOKEN_PIPE)
 		shell->pipe_count++;
 	while (current_token->type != TOKEN_EOF)

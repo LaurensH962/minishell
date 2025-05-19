@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_tokens_redirs.c                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/19 16:20:06 by lhaas             #+#    #+#             */
+/*   Updated: 2025/05/19 16:20:06 by lhaas            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 t_token	*get_next_token(t_token **tokens)
@@ -13,8 +25,8 @@ t_token	*get_next_token(t_token **tokens)
 
 char	**resize_args(char **args, int *args_capacity)
 {
-	int	old_capacity;
-	char **new_args;
+	int		old_capacity;
+	char	**new_args;
 
 	old_capacity = *args_capacity;
 	*args_capacity *= 2;

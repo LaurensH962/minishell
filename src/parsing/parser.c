@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/19 16:20:29 by lhaas             #+#    #+#             */
+/*   Updated: 2025/05/19 16:20:29 by lhaas            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	parse_command_helper(t_token **tokens, t_token *token,
@@ -12,7 +24,8 @@ static int	parse_command_helper(t_token **tokens, t_token *token,
 	return (0);
 }
 
-static t_ast	*init_node(t_ast *command_node, t_token **tokens, int args_capacity)
+static t_ast	*init_node(t_ast *command_node, t_token **tokens,
+		int args_capacity)
 {
 	command_node = ft_calloc(1, sizeof(t_ast));
 	if (!command_node)
@@ -26,7 +39,6 @@ static t_ast	*init_node(t_ast *command_node, t_token **tokens, int args_capacity
 	}
 	return (command_node);
 }
-
 
 t_ast	*parse_command(t_token **tokens, t_token *token, int arg_count,
 		int args_capacity)
