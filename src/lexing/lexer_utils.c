@@ -18,15 +18,10 @@ char	*get_env_value(char **env, const char *var_name)
 	return (NULL);
 }
 
-void	lexer_quotes(char *quote_char, t_lexer *lexer, int *pos,
-		char **token_value)
+void	lexer_quotes(char *quote_char, t_lexer *lexer, int *pos)
 {
 	if (*quote_char == lexer->input[*pos])
-	{
-		if (*token_value == NULL)
-			*token_value = ft_strdup("");
 		*quote_char = 0;
-	}
 	else if (*quote_char == 0)
 	{
 		*quote_char = lexer->input[*pos];
@@ -51,7 +46,7 @@ int	inner_quotes_expand(char *quote_char, t_lexer *lexer, int *pos,
 	if ((lexer->input[*pos] == '"' || lexer->input[*pos] == '\'')
 		&& (*quote_char == lexer->input[*pos] || *quote_char == 0))
 	{
-		lexer_quotes(quote_char, lexer, pos, token_value);
+		lexer_quotes(quote_char, lexer, pos);
 		return (-1);
 	}
 	else if (lexer->input[*pos] == '$' && *quote_char != '\''

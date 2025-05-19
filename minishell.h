@@ -143,7 +143,7 @@ int								inner_quotes_expand(char *quote_char,
 bool							lexer_skip_whitespaces(t_lexer *lexer,
 									char quote_char);
 void							lexer_quotes(char *quote_char, t_lexer *lexer,
-									int *pos, char **token_value);
+									int *pos);
 char							*get_env_value(char **env,
 									const char *var_name);
 
@@ -168,6 +168,7 @@ int								is_delimiter(char c);
 bool							is_redirect(t_token_type type);
 char							*ft_strjoin_minishell(char const *s1, char *s2,
 									t_lexer *lexer);
+char							*ft_strdup_protect(const char *s);
 
 // heredoc_handler
 void							handle_heredoc(int *fd_read);
@@ -274,8 +275,6 @@ int								handle_inputfile_builtin(int *fd_read,
 void							redir_close(int in_fd, int out_fd);
 
 // printing
-void							print_tokens(t_token *tokens);
-void							print_ast(t_ast *node, int level);
 void							report_error(char *filename, char *err_msg);
 void							print_export_if_equalsign(t_shell *shell,
 									int *index_string, int *index_char);

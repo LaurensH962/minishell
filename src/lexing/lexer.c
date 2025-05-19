@@ -43,14 +43,13 @@ t_token	*lexer_next_token(t_lexer *lexer, t_token *temp_token, char quote_char,
 			return (temp_token);
 		token_value = ft_calloc(1, ft_strlen(lexer->input) + 1);
 		if (!token_value)
-			return (new_token(TOKEN_ERROR, "Memory allocation error"));
+			return (free(temp_token), (t_token *)perror_return());
 		temp_token = inner_loop((int *)&lexer->pos, &quote_char, &token_value,
 				lexer);
 		if (temp_token)
 			return (free(token_value), temp_token);
 		if (quote_char)
-			return (free(token_value), new_token(TOKEN_ERROR,
-					"Unclosed quote"));
+			return (free(token_value), new_token(TOKEN_ERROR,"Unclosed quote"));
 		if (token_value == NULL)
 			continue ;
 		temp_token = lexer_process_token_value(lexer, token_value);
@@ -65,6 +64,8 @@ static t_token	*lexer_process_tokens(t_lexer *lexer, t_token **tokens,
 	t_token	*current_token;
 
 	current_token = lexer_next_token(lexer, NULL, '\0', NULL);
+	if (!current_token || current_token->type == TOKEN_ERROR)
+			return (free_tokens(shell), NULL);
 	if (current_token->type == TOKEN_PIPE)
 		shell->pipe_count++;
 	while (current_token->type != TOKEN_EOF)
@@ -78,10 +79,10 @@ static t_token	*lexer_process_tokens(t_lexer *lexer, t_token **tokens,
 		}
 		add_token(tokens, current_token);
 		current_token = lexer_next_token(lexer, NULL, '\0', NULL);
+		if (!current_token)
+			return (free_tokens(shell), NULL);
 		if (current_token->type == TOKEN_PIPE)
 			shell->pipe_count++;
-		if (!current_token)
-			return (NULL);
 	}
 	add_token(tokens, current_token);
 	return (*tokens);
@@ -103,6 +104,7 @@ t_token	*lexer(char *line, t_shell *shell)
 	t_token	*tokens;
 
 	tokens = NULL;
+	shell->tokens = tokens;
 	init_lexer(&tokens, &lexer, shell, line);
 	return (lexer_process_tokens(&lexer, &tokens, shell));
 }

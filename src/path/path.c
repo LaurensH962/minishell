@@ -45,14 +45,13 @@ static char	*find_command_path(char *cmd, char **paths, int *fail_flag)
 	char	*full_path;
 
 	i = 0;
-	while (paths[i])
+	while (paths && paths[i])
 	{
 		full_path = join_path(paths[i], cmd);
 		if (!full_path)
 		{
 			perror("minishell: Memory allocation failed");
-			if (*fail_flag)
-				*fail_flag = 1;
+			*fail_flag = 1;
 			return (NULL);
 		}
 		if (access(full_path, F_OK) != -1)

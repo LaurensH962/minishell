@@ -11,7 +11,7 @@ char	*handle_special_cases(const char *input, size_t *pos, t_lexer *lexer)
 		*pos = start + 1;
 		result = ft_itoa(lexer->shell->status_last_command);
 		if (!result)
-			return (NULL);
+			return (perror_return());
 		return (result);
 	}
 	if (input[start] == '\0' || ft_isspace(input[start]) || input[start] == '"'
@@ -20,7 +20,7 @@ char	*handle_special_cases(const char *input, size_t *pos, t_lexer *lexer)
 		(*pos)++;
 		result = ft_strdup("$");
 		if (!result)
-			return (NULL);
+			return (perror_return());
 		return (result);
 	}
 	return (NULL);
@@ -50,7 +50,7 @@ char	*lookup_and_expand(char *var_name, t_lexer *lexer)
 	{
 		result = ft_strdup(env_value);
 		if (!result)
-			return (NULL);
+			return (perror_return());
 		return (result);
 	}
 	return (NULL);
