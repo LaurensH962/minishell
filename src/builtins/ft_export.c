@@ -72,7 +72,7 @@ static int	setenve_export(t_shell *shell, char *arg)
 	else
 	{
 		if (ft_setenv(arg, "\0", &(shell->export), 0) != 0)
-			return (perror_malloc_return());
+			return (1);
 	}
 	return (0);
 }
