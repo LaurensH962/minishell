@@ -250,6 +250,7 @@ char							*get_oldpwd(t_shell *shell, char *cmd);
 // int						cd_minus(t_shell *shell, char *cmd);
 int								is_number(const char *str);
 int								is_valid_identifier(const char *str);
+int								set_status_last_command_return(t_shell * shell, int i);
 int								perror_malloc_return(void);
 int								perror_cd_return(void);
 int								perror_free_return(char *function_name,
@@ -272,7 +273,7 @@ int								handle_outputfile_builtin(int *fd_write,
 									t_redirect *redirections, t_shell *shell);
 int								handle_inputfile_builtin(int *fd_read,
 									t_redirect *redirections, t_shell *shell);
-void							redir_close(int in_fd, int out_fd);
+void							redirections(int in_fd, int out_fd);
 
 // printing
 void							report_error(char *filename, char *err_msg);
@@ -296,6 +297,7 @@ int								change_directory(char *path);
 int								cd_free(char *new_pwd, char *old_pwd);
 char							*pwd_not_set(char *value, int *malloced);
 int								free_return(char *string);
+void							close_pipes_cleanup(t_shell *shell);
 
 // main
 int								new_readline(t_shell *shell, char **line);

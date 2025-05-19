@@ -33,13 +33,13 @@ int	ft_echo(char **args)
 	}
 	while (args[i])
 	{
-		printf("%s", args[i]);
+		ft_printf("%s", args[i]);
 		if (args[i + 1])
-			printf(" ");
+			ft_printf(" ");
 		i++;
 	}
 	if (newline)
-		printf("\n");
+		ft_printf("\n");
 	return (0);
 }
 
@@ -51,7 +51,7 @@ int	ft_pwd(void)
 	cwd = getcwd(NULL, 0);
 	if (cwd != NULL)
 	{
-		printf("%s\n", cwd);
+		ft_printf("%s\n", cwd);
 		free(cwd);
 	}
 	else

@@ -50,8 +50,9 @@ static char	*find_command_path(char *cmd, char **paths, int *fail_flag)
 		full_path = join_path(paths[i], cmd);
 		if (!full_path)
 		{
-			perror("minishell: Memory allocation failed");
-			*fail_flag = 1;
+			perror("minishell: malloc");
+			if (*fail_flag)
+				*fail_flag = 1;
 			return (NULL);
 		}
 		if (access(full_path, F_OK) != -1)
@@ -74,7 +75,7 @@ char	*get_command_path(char *cmd, char **envp, int *fail_flag)
 	paths = ft_split(path_env, ':');
 	if (!paths)
 	{
-		perror("minishell: Memory allocation failed");
+		perror("minishell: malloc");
 		if (fail_flag)
 			*fail_flag = 1;
 		return (NULL);

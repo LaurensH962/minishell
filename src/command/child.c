@@ -21,7 +21,7 @@ static void	handle_redirections(t_ast *node, int in_fd, int out_fd,
 	t_redirect	*redir;
 
 	redir = node->redirections;
-	redir_close(in_fd, out_fd);
+	redirections(in_fd, out_fd);
 	while (redir)
 	{
 		if (redir->type == NODE_REDIRECT_IN)

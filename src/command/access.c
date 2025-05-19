@@ -18,10 +18,7 @@ int	check_file_access_read(char *filename, int i, t_shell *shell)
 		if (i == 3)
 			report_error(filename, ": No such file or directory\n");
 		if (i == 0)
-		{
-			cleanup_all(shell);
-			exit(1);
-		}
+			close_pipes_cleanup(shell);
 		else
 			return (1);
 	}
@@ -30,10 +27,7 @@ int	check_file_access_read(char *filename, int i, t_shell *shell)
 		if (i == 3)
 			report_error(filename, ": Permission denied\n");
 		if (i == 0)
-		{
-			cleanup_all(shell);
-			exit(1);
-		}
+			close_pipes_cleanup(shell);
 		else
 			return (1);
 	}
@@ -49,10 +43,7 @@ int	check_file_access_write(char *filename, int i, t_shell *shell)
 			if (i == 3)
 				report_error(filename, ": Permission denied\n");
 			if (i == 0)
-			{
-				cleanup_all(shell);
-				exit(1);
-			}
+				close_pipes_cleanup(shell);
 			else
 				return (1);
 		}
