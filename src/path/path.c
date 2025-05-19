@@ -45,7 +45,7 @@ static char	*find_command_path(char *cmd, char **paths, int *fail_flag)
 	char	*full_path;
 
 	i = 0;
-	while (paths[i])
+	while (paths && paths[i])
 	{
 		full_path = join_path(paths[i], cmd);
 		if (!full_path)

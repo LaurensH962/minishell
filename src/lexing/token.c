@@ -39,7 +39,8 @@ t_token	*new_token(t_token_type type, char *value)
 		token->value = ft_strdup(value);
 		if (!token->value)
 		{
-			perror("Failed to duplicate token vallue");
+			free (token);
+			perror("Failed to duplicate token value");
 			return (NULL);
 		}
 	}

@@ -49,3 +49,16 @@ void	free_structs(t_shell *shell)
 	if (shell->node)
 		cleanup_ast(&(shell->node));
 }
+
+char	*ft_strdup_protect(const char *s)
+{
+	char	*p;
+	size_t	len;
+
+	len = ft_strlen(s) + 1;
+	p = (char *)malloc(len);
+	if (p == NULL)
+		return (perror_return());
+	ft_memcpy(p, s, len);
+	return (p);
+}

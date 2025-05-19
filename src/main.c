@@ -122,10 +122,12 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 		add_history(line);
 		shell->tokens = lexer(line, shell);
+		if (shell->tokens == NULL)
+			break;
 		if (!syntax_error_check(shell, line))
-			continue ;
+			break; ;
 		if (!set_ast(shell, line))
-			continue ;
+			break ;
 		free(line);
 		if (!command_path(shell->node, shell))
 			execute_pipeline(shell);

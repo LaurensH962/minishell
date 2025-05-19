@@ -1,16 +1,8 @@
 #include "minishell.h"
 
-static t_ast	*init_command(t_ast *command_node, t_token **tokens)
-{
-	command_node->type = NODE_COMMAND;
-	command_node->cmd_path = NULL;
-	return (parse_redirection(tokens, command_node, NULL, NULL));
-}
-
 static int	parse_command_helper(t_token **tokens, t_token *token,
 		t_ast *command_node)
 {
-	// if (token->type == TOKEN_INVALID)
 	token = skip_invalid_node(token, tokens);
 	while (*tokens && is_redirect((*tokens)->type))
 		command_node = parse_redirection(tokens, command_node, NULL, NULL);
@@ -20,22 +12,38 @@ static int	parse_command_helper(t_token **tokens, t_token *token,
 	return (0);
 }
 
+static t_ast	*init_node(t_ast *command_node, t_token **tokens, int args_capacity)
+{
+	command_node = ft_calloc(1, sizeof(t_ast));
+	if (!command_node)
+		return ((t_ast *)perror_return());
+	command_node = parse_redirection(tokens, command_node, NULL, NULL);
+	command_node->args = ft_calloc(sizeof(char *), args_capacity);
+	if (!command_node->args)
+	{
+		free (command_node);
+		return ((t_ast *)perror_return());
+	}
+	return (command_node);
+}
+
+
 t_ast	*parse_command(t_token **tokens, t_token *token, int arg_count,
 		int args_capacity)
 {
 	t_ast	*command_node;
 
-	command_node = ft_calloc(1, sizeof(t_ast));
-	command_node = init_command(command_node, tokens);
-	if ((*tokens)->type == TOKEN_INVALID)
-		token = skip_invalid_node(token, tokens);
+	command_node = NULL;
+	command_node = init_node(command_node, tokens, args_capacity);
+	if (!command_node)
+		return (NULL);
+	token = skip_invalid_node(token, tokens);
 	if (*tokens == NULL || ((*tokens)->type != TOKEN_WORD
 			&& (*tokens)->type != TOKEN_INVALID) || !command_node)
 		return (command_node);
 	token = get_next_token(tokens);
-	command_node->cmd = ft_strdup(token->value);
-	command_node->args = ft_calloc(sizeof(char *), args_capacity);
-	command_node->args[arg_count++] = ft_strdup(token->value);
+	command_node->cmd = ft_strdup_protect(token->value);
+	command_node->args[arg_count++] = ft_strdup_protect(token->value);
 	while (*tokens)
 	{
 		if (parse_command_helper(tokens, token, command_node) == -1)
@@ -44,7 +52,7 @@ t_ast	*parse_command(t_token **tokens, t_token *token, int arg_count,
 			command_node->args = resize_args(command_node->args,
 					&args_capacity);
 		token = get_next_token(tokens);
-		command_node->args[arg_count++] = ft_strdup(token->value);
+		command_node->args[arg_count++] = ft_strdup_protect(token->value);
 	}
 	command_node->args[arg_count] = NULL;
 	return (command_node);

@@ -14,11 +14,15 @@ t_token	*get_next_token(t_token **tokens)
 char	**resize_args(char **args, int *args_capacity)
 {
 	int	old_capacity;
+	char **new_args;
 
 	old_capacity = *args_capacity;
 	*args_capacity *= 2;
-	return (ft_realloc(args, sizeof(char *) * old_capacity, sizeof(char *)
-			* (*args_capacity)));
+	new_args = ft_realloc(args, sizeof(char *) * old_capacity, sizeof(char *)
+			* (*args_capacity));
+	if (!new_args)
+		return (NULL);
+	return (new_args);
 }
 
 t_token	*skip_invalid_node(t_token *token, t_token **tokens)
@@ -56,7 +60,11 @@ t_ast	*parse_redirection(t_token **tokens, t_ast *command,
 		if (!filename_token || filename_token->type != TOKEN_WORD)
 			return (NULL);
 		redir = ft_calloc(1, sizeof(t_redirect));
-		redir->file = ft_strdup(filename_token->value);
+		if (!redir)
+			return (NULL);
+		redir->file = ft_strdup_protect(filename_token->value);
+		if (!redir->file)
+			return (free(redir), NULL);
 		redir->next = NULL;
 		fill_redir_type(redir, redirection_token);
 		while (*redir_ptr)

@@ -12,44 +12,32 @@
 
 #include "libft.h"
 
-char	*ft_strjoin_helper(char const *s1, char const *s2)
-{
-	char *res;
-	
-	if (!s1)
-	{
-		res = ft_strdup(s2);
-		if (!res)
-			return (NULL);
-		return (res);
-	}
-	if (!s2)
-	{
-		res = ft_strdup(s1);
-		if (!res)
-			return (NULL);
-		return (res);
-	}
-	return (NULL);
-}
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
 	char	*str;
-	size_t	len;
+	size_t	len1 = 0;
+	size_t	len2 = 0;
 
 	if (!s1 && !s2)
 		return (NULL);
-	if (!ft_strjoin_helper(s1, s2));
-		return (NULL);
-	len = ft_strlen(s1) + ft_strlen(s2) + 1;
-	str = (char *)malloc(sizeof(char) * len);
+	if (s1)
+		len1 = ft_strlen(s1);
+	if (s2)
+		len2 = ft_strlen(s2);
+
+	str = (char *)malloc(sizeof(char) * (len1 + len2 + 1));
 	if (!str)
 	{
 		perror("minishell: malloc");
 		return (NULL);
 	}
-	ft_strlcpy(str, s1, len);
-	ft_strlcat(str, s2, len);
+
+	str[0] = '\0';
+	if (s1)
+		ft_strlcpy(str, s1, len1 + 1);
+	if (s2)
+		ft_strlcat(str, s2, len1 + len2 + 1);
+
 	return (str);
 }
