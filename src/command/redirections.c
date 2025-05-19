@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirections.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/19 16:17:11 by lhaas             #+#    #+#             */
+/*   Updated: 2025/05/19 16:17:12 by lhaas            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	handle_inputfile(int *fd_read, t_redirect *redirections, t_shell *shell)
@@ -43,10 +55,7 @@ int	handle_inputfile_builtin(int *fd_read, t_redirect *redirections,
 		return (1);
 	*fd_read = open(redirections->file, O_RDONLY);
 	if (*fd_read == -1)
-	{
-		perror("minishell: open");
 		return (1);
-	}
 	dup2(*fd_read, STDIN_FILENO);
 	close(*fd_read);
 	return (0);
@@ -64,11 +73,7 @@ int	handle_outputfile_builtin(int *fd_write, t_redirect *redirections,
 		*fd_write = open(redirections->file, O_WRONLY | O_CREAT | O_TRUNC,
 				0644);
 	if (*fd_write == -1)
-	{
-		perror("minishell: open");
-		close(*fd_write);
 		return (1);
-	}
 	dup2(*fd_write, STDOUT_FILENO);
 	close(*fd_write);
 	return (0);

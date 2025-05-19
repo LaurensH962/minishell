@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main_utils.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/19 16:21:40 by lhaas             #+#    #+#             */
+/*   Updated: 2025/05/19 16:21:40 by lhaas            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	set_up_shell(t_shell **shell, char **envp)
@@ -67,16 +79,7 @@ void	set_values(int argc, char **argv)
 
 int	new_readline(t_shell *shell, char **line)
 {
-	/* *line = readline("minishell: "); */
-	if (isatty(fileno(stdin)))
-		*line = readline("minishell: ");
-	else
-	{
-		char *line2;
-		line2 = get_next_line(fileno(stdin));
-		*line = ft_strtrim(line2, "\n");
-		free(line2);
-	}
+	*line = readline("minishell: ");
 	if (g_rl_interrupted == 2)
 	{
 		shell->status_last_command = 130;

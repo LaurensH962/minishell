@@ -1,25 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   syntax_checker.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/19 16:20:54 by lhaas             #+#    #+#             */
+/*   Updated: 2025/05/19 16:20:54 by lhaas            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
-
-/* char	*build_error_msg(const char *unexpected)
-{
-	char	*prefix;
-	char	*suffix;
-	char	*temp;
-	char	*result;
-
-	prefix = "syntax error near unexpected token `";
-	suffix = "'";
-	temp = ft_strjoin(prefix, unexpected);
-	if (!temp)
-		return (NULL);
-	result = ft_strjoin(temp, suffix);
-	free(temp);
-	return (result);
-} */
-
-//return (build_error_msg("|"));
-//return (build_error_msg("newline"));
-//return (build_error_msg(tokens->value));
 
 char	*syntax_checker(t_token *tokens)
 {

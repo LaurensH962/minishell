@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtins_env.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/19 16:14:49 by lhaas             #+#    #+#             */
+/*   Updated: 2025/05/19 16:14:56 by lhaas            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	is_valid_identifier(const char *str)
@@ -16,7 +28,6 @@ int	is_valid_identifier(const char *str)
 	return (1);
 }
 
-// deletes enviroment variables from the environment array
 static void	remove_variable(char ***env, const char *var)
 {
 	int	i;
