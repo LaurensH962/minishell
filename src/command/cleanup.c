@@ -47,9 +47,12 @@ void	cleanup_pipes_pids(t_shell *shell)
 	i = 0;
 	if (shell->pipe_count)
 	{
-		while (i < shell->pipe_count)
-			free(shell->pipes[i++]);
-		free(shell->pipes);
+		if (shell->pipes)
+		{
+			while (i < shell->pipe_count)
+				free(shell->pipes[i++]);
+			free(shell->pipes);
+		}
 	}
 	if (shell->pid)
 		free(shell->pid);
