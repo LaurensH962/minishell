@@ -7,6 +7,7 @@ void	handle_inputfile(int *fd_read, t_redirect *redirections, t_shell *shell)
 	if (*fd_read == -1)
 	{
 		perror("minishell: open");
+		close_pipes(shell);
 		cleanup_all(shell);
 		exit(1);
 	}
@@ -27,6 +28,7 @@ void	handle_outputfile(int *fd_write, t_redirect *redirections,
 	if (*fd_write == -1)
 	{
 		perror("minishell: open");
+		close_pipes(shell);
 		cleanup_all(shell);
 		exit(1);
 	}
@@ -82,7 +84,7 @@ int	handle_redirections_builtin(t_ast *node, int in_fd, int out_fd,
 
 	result = 0;
 	redir = node->redirections;
-	redir_close(in_fd, out_fd);
+	redirections(in_fd, out_fd);
 	while (redir)
 	{
 		if (redir->type == NODE_REDIRECT_IN)

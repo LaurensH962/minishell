@@ -98,6 +98,7 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		shell->pipe_count = 0;
+		
 		if (!new_readline(shell, &line))
 			break ;
 		add_history(line);

@@ -271,7 +271,7 @@ int								handle_outputfile_builtin(int *fd_write,
 									t_redirect *redirections, t_shell *shell);
 int								handle_inputfile_builtin(int *fd_read,
 									t_redirect *redirections, t_shell *shell);
-void							redir_close(int in_fd, int out_fd);
+void							redirections(int in_fd, int out_fd);
 
 // printing
 void							print_tokens(t_token *tokens);
@@ -297,6 +297,7 @@ int								change_directory(char *path);
 int								cd_free(char *new_pwd, char *old_pwd);
 char							*pwd_not_set(char *value, int *malloced);
 int								free_return(char *string);
+void							close_pipes_cleanup(t_shell *shell);
 
 // main
 int								new_readline(t_shell *shell, char **line);

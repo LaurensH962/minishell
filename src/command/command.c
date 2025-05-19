@@ -1,51 +1,50 @@
 #include "minishell.h"
 
-static void	prescan_redirections(t_ast *node, t_shell *shell);
-
-static void	prescan_left_right(t_ast *node, t_shell *shell)
+int		check_redirections(t_shell *shell, t_redirect *redir)
 {
-	if (node->left)
-		prescan_redirections(node->left, shell);
-	if (node->right)
-		prescan_redirections(node->right, shell);
+	int		fd;
+	int		flags;
+
+	if (redir->type == NODE_REDIRECT_IN)
+	{
+		if (check_file_access_read(redir->file, 3, shell))
+			return (0);
+	}
+	if (redir->type == NODE_REDIRECT_OUT || redir->type == NODE_APPEND)
+	{
+		if (redir->type == NODE_REDIRECT_OUT)
+			flags = O_CREAT | O_WRONLY | O_TRUNC;
+		else
+			flags = O_CREAT | O_WRONLY | O_APPEND;
+		if (check_file_access_write(redir->file, 3, shell))
+			return (0);
+		fd = open(redir->file, flags, 0644);
+		if (fd == -1)
+			return (0);
+		close(fd);
+	}
+	redir = redir->next;
+	return (1);
 }
 
 static void	prescan_redirections(t_ast *node, t_shell *shell)
 {
 	t_redirect	*redir;
-	int			fd;
-	int			flags;
 
 	redir = node->redirections;
 	while (redir)
 	{
-		if (redir->type == NODE_REDIRECT_IN)
+		if (!check_redirections(shell, redir))
 		{
-			if (check_file_access_read(redir->file, 3, shell))
-			{
-				shell->status_last_command = 1;
-				break ;
-			}
-		}
-		if (redir->type == NODE_REDIRECT_OUT || redir->type == NODE_APPEND)
-		{
-			if (redir->type == NODE_REDIRECT_OUT)
-				flags = O_CREAT | O_WRONLY | O_TRUNC;
-			else
-				flags = O_CREAT | O_WRONLY | O_APPEND;
-			if (check_file_access_write(redir->file, 3, shell))
-			{
-				shell->status_last_command = 1;
-				break ;
-			}
-			fd = open(redir->file, flags, 0644);
-			if (fd == -1)
-				break ;
-			close(fd);
+			shell->status_last_command = 1;
+			break ;
 		}
 		redir = redir->next;
 	}
-	prescan_left_right(node, shell);
+	if (node->left)
+		prescan_redirections(node->left, shell);
+	if (node->right)
+		prescan_redirections(node->right, shell);
 }
 
 static void	execute_ast(t_shell *shell, t_ast *node, int in_fd, int out_fd)
