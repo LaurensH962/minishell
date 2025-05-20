@@ -170,16 +170,17 @@ t_token							*get_next_token(t_token **tokens);
 char							*syntax_checker(t_token *tokens);
 t_token							*skip_invalid_node(t_token *token,
 									t_token **tokens);
-char							**resize_args(char **args, int *args_capacity);
+char							**resize_a(char **args, int *args_capacity);
 
 void							free_structs(t_shell *shell);
-void							print_tokens(t_token *tokens);
-
+int								fill_command_node(t_ast **command_node,
+									t_token *token, int *arg_count);
+int								fill_args(t_ast **command_node, t_token *token,
+									int *arg_count);
 // utils
 int								is_delimiter(char c);
 bool							is_redirect(t_token_type type);
-char							*ft_strjoin_minishell(char const *s1, char *s2,
-									t_lexer *lexer);
+char							*ft_strjoin_minishell(char const *s1, char *s2);
 char							*ft_strdup_protect(const char *s);
 
 // heredoc_handler
@@ -262,7 +263,8 @@ char							*get_oldpwd(t_shell *shell, char *cmd);
 // int						cd_minus(t_shell *shell, char *cmd);
 int								is_number(const char *str);
 int								is_valid_identifier(const char *str);
-int								set_status_last_command_return(t_shell *shell, int i);
+int								set_status_last_command_return(t_shell *shell,
+									int i);
 int								perror_malloc_return(void);
 int								perror_cd_return(void);
 int								perror_free_return(char *function_name,

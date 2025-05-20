@@ -6,7 +6,7 @@
 /*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 16:17:05 by lhaas             #+#    #+#             */
-/*   Updated: 2025/05/19 16:17:06 by lhaas            ###   ########.fr       */
+/*   Updated: 2025/05/20 13:24:20 by lhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static void	create_child(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 	pid = fork();
 	if (pid == -1)
 	{
-		perror("minishell: pipe");
+		perror("minishell: fork");
 		shell->status_last_command = 1;
 		return ;
 	}

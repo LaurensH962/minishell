@@ -6,7 +6,7 @@
 /*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 16:15:19 by lhaas             #+#    #+#             */
-/*   Updated: 2025/05/19 16:15:20 by lhaas            ###   ########.fr       */
+/*   Updated: 2025/05/20 11:58:31 by lhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,13 @@ int	ft_echo(char **args)
 	}
 	while (args[i])
 	{
-		ft_printf("%s", args[i]);
+		printf("%s", args[i]);
 		if (args[i + 1])
-			ft_printf(" ");
+			printf(" ");
 		i++;
 	}
 	if (newline)
-		ft_printf("\n");
+		printf("\n");
 	return (0);
 }
 
@@ -63,7 +63,7 @@ int	ft_pwd(void)
 	cwd = getcwd(NULL, 0);
 	if (cwd != NULL)
 	{
-		ft_printf("%s\n", cwd);
+		printf("%s\n", cwd);
 		free(cwd);
 	}
 	else

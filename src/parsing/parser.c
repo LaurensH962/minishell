@@ -54,17 +54,17 @@ t_ast	*parse_command(t_token **tokens, t_token *token, int arg_count,
 			&& (*tokens)->type != TOKEN_INVALID) || !command_node)
 		return (command_node);
 	token = get_next_token(tokens);
-	command_node->cmd = ft_strdup_protect(token->value);
-	command_node->args[arg_count++] = ft_strdup_protect(token->value);
+	if (fill_command_node(&command_node, token, &arg_count))
+		return (NULL);
 	while (*tokens)
 	{
 		if (parse_command_helper(tokens, token, command_node) == -1)
 			break ;
 		if (arg_count >= args_capacity - 1)
-			command_node->args = resize_args(command_node->args,
-					&args_capacity);
+			command_node->args = resize_a(command_node->args, &args_capacity);
 		token = get_next_token(tokens);
-		command_node->args[arg_count++] = ft_strdup_protect(token->value);
+		if (fill_args(&command_node, token, &arg_count))
+			return (NULL);
 	}
 	command_node->args[arg_count] = NULL;
 	return (command_node);
