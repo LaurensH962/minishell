@@ -6,7 +6,7 @@
 /*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 16:16:07 by lhaas             #+#    #+#             */
-/*   Updated: 2025/05/19 16:16:08 by lhaas            ###   ########.fr       */
+/*   Updated: 2025/05/20 14:03:50 by lhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	cd_access(char *path)
 {
 	if (access(path, F_OK) == -1)
 	{
-		cd_report_error("cd: ", path, ":  No such file or directory\n");
+		cd_report_error("cd: ", path, ": No such file or directory\n");
 		return (1);
 	}
 	if (access(path, F_OK) == 0 && !is_directory(path))
