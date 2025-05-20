@@ -6,7 +6,7 @@
 /*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 16:16:13 by lhaas             #+#    #+#             */
-/*   Updated: 2025/05/19 16:16:14 by lhaas            ###   ########.fr       */
+/*   Updated: 2025/05/20 12:59:10 by lhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void	execute_builtin_exit(t_ast *node, t_shell *shell)
 		exit_value = ft_unset(shell, node->args);
 	else if (ft_strcmp(node->cmd, "env") == 0)
 		exit_value = ft_env(shell, node);
+	close_pipes(shell);
 	cleanup_all(shell);
 	exit(exit_value);
 }

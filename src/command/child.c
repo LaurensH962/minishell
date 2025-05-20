@@ -6,7 +6,7 @@
 /*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 16:16:16 by lhaas             #+#    #+#             */
-/*   Updated: 2025/05/19 16:16:17 by lhaas            ###   ########.fr       */
+/*   Updated: 2025/05/20 12:59:05 by lhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,9 @@ void	child_process(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	handle_redirections(node, in_fd, out_fd, shell);
-	close_pipes(shell);
 	if (node->cmd == NULL)
 	{
+		close_pipes(shell);
 		cleanup_all(shell);
 		exit(0);
 	}
@@ -63,6 +63,7 @@ void	child_process(t_shell *shell, t_ast *node, int in_fd, int out_fd)
 		execute_builtin_exit(node, shell);
 	check_command_access(node, shell);
 	unlink_heredoc_fd(shell->node);
+	close_pipes(shell);
 	execve(node->cmd_path, node->args, shell->export);
 	perror("minishell: execve");
 	cleanup_all(shell);

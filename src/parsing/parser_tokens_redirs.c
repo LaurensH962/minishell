@@ -23,7 +23,7 @@ t_token	*get_next_token(t_token **tokens)
 	return (current);
 }
 
-char	**resize_args(char **args, int *args_capacity)
+char	**resize_a(char **args, int *args_capacity)
 {
 	int		old_capacity;
 	char	**new_args;

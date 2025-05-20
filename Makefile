@@ -11,7 +11,7 @@
 #******************************************************************************#
 
 NAME := minishell
-CFLAGS := -Wall -Wextra -Werror
+CFLAGS := -Wall -Wextra -Werror -g
 LDFLAGS := -lreadline
 LIBFT := libft
 
@@ -30,7 +30,7 @@ SRCS := ./src/builtins/builtins_env.c ./src/builtins/builtins_utils.c ./src/buil
         ./src/lexing/lexer.c ./src/lexing/expansion_utils.c ./src/lexing/expansion.c ./src/lexing/token.c \
 		./src/lexing/lexer_utils.c \
         ./src/parsing/parser_tokens_redirs.c ./src/parsing/parser.c ./src/parsing/syntax_checker.c \
-        ./src/parsing/utils.c \
+        ./src/parsing/utils.c ./src/parsing/parser_fill.c\
         ./src/path/path_utils.c ./src/path/path.c \
         ./src/utils/main_utils.c ./src/utils/perror.c \
         ./src/input_handling.c ./src/main.c

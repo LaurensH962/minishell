@@ -17,7 +17,7 @@ static char	*find_expanded_value(t_lexer *lexer, char *token_value)
 	char	*expanded_value;
 
 	expanded_value = expand_variable(lexer->input, &(lexer->pos), lexer);
-	token_value = ft_strjoin_minishell(token_value, expanded_value, lexer);
+	token_value = ft_strjoin_minishell(token_value, expanded_value);
 	free(expanded_value);
 	return (token_value);
 }
@@ -55,7 +55,7 @@ t_token	*split_expanded_value(t_token *head, char *token_value, char *word)
 	{
 		new_word_token = new_token(TOKEN_WORD, word);
 		if (!new_word_token || !new_word_token->value)
-			return (new_token(TOKEN_ERROR, "Memory allocation error"));
+			return (NULL);
 		if (!head)
 		{
 			head = new_word_token;
@@ -84,7 +84,7 @@ char	*expand_variable(const char *input, size_t *pos, t_lexer *lexer)
 	if (!extract_var_name(input, &start, var_name))
 	{
 		(*pos)++;
-		return (ft_strdup("$"));
+		return (ft_strdup_protect("$"));
 	}
 	expanded_value = lookup_and_expand(var_name, lexer);
 	if (!expanded_value)

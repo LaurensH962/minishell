@@ -6,7 +6,7 @@
 /*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 16:17:37 by lhaas             #+#    #+#             */
-/*   Updated: 2025/05/19 16:17:38 by lhaas            ###   ########.fr       */
+/*   Updated: 2025/05/20 11:35:09 by lhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	fill_heredoc(t_redirect *redir, char *name, t_shell *shell)
 		shell->status_last_command = 130;
 		unlink(name);
 		close(fd);
-		return (-1);
+		return (-2);
 	}
 	close(fd);
 	fd = open(name, O_RDWR, 0640);
@@ -74,6 +74,11 @@ static int	create_heredoc(t_redirect *redir, t_shell *shell, unsigned long *i)
 	}
 	redir->fd_heredoc = fill_heredoc(redir, temp_name, shell);
 	if (redir->fd_heredoc == -1)
+	{
+		perror("error creating heredoc");
+		return (-1);
+	}
+	if (redir->fd_heredoc == -2)
 		return (-1);
 	return (0);
 }
