@@ -6,7 +6,7 @@
 /*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 16:17:07 by lhaas             #+#    #+#             */
-/*   Updated: 2025/05/19 16:17:09 by lhaas            ###   ########.fr       */
+/*   Updated: 2025/05/22 14:33:48 by lhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,4 +42,10 @@ void	cleanup_all(t_shell *shell)
 	cleanup_pipes_pids(shell);
 	cleanup_ast(&(shell->node));
 	cleanup_shell(shell);
+}
+
+void	close_and_clean(t_shell *shell)
+{
+	close_pipes(shell);
+	cleanup_all(shell);
 }

@@ -11,7 +11,7 @@
 #******************************************************************************#
 
 NAME := minishell
-CFLAGS := -Wall -Wextra -Werror -g
+CFLAGS := -Wall -Wextra -Werror
 LDFLAGS := -lreadline
 LIBFT := libft
 
@@ -21,6 +21,7 @@ LIBS := $(LIBFT)/libft.a
 SRCS := ./src/builtins/builtins_env.c ./src/builtins/builtins_utils.c ./src/builtins/env.c \
         ./src/builtins/ft_cd_utils.c ./src/builtins/ft_cd.c ./src/builtins/ft_echo_ft_pwd.c \
         ./src/builtins/ft_exit.c ./src/builtins/ft_export.c ./src/builtins/ft_setenv.c \
+        ./src/builtins/ft_exit_utils.c \
         ./src/command/access.c ./src/command/builtin_execution.c ./src/command/child.c \
         ./src/command/cleanup.c ./src/command/command_utils.c ./src/command/command.c \
         ./src/command/error.c ./src/command/execute_command.c ./src/command/free.c \
@@ -33,7 +34,7 @@ SRCS := ./src/builtins/builtins_env.c ./src/builtins/builtins_utils.c ./src/buil
         ./src/parsing/utils.c ./src/parsing/parser_fill.c\
         ./src/path/path_utils.c ./src/path/path.c \
         ./src/utils/main_utils.c ./src/utils/perror.c \
-        ./src/input_handling.c ./src/main.c
+        ./src/main/input_handling.c ./src/main/main.c
 OBJS := $(SRCS:.c=.o)
 
 all: $(NAME)
@@ -49,9 +50,11 @@ $(NAME): $(OBJS) $(LIBFT)/libft.a
 
 clean:
 	rm -rf $(OBJS)
+	make -C $(LIBFT) clean
 
 fclean: clean
 	rm -rf $(NAME)
+	make -C $(LIBFT) fclean
 
 re: fclean all
 

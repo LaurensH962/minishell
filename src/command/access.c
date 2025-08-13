@@ -6,7 +6,7 @@
 /*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 16:16:07 by lhaas             #+#    #+#             */
-/*   Updated: 2025/05/19 16:16:08 by lhaas            ###   ########.fr       */
+/*   Updated: 2025/05/22 14:33:43 by lhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	cd_access(char *path)
 {
 	if (access(path, F_OK) == -1)
 	{
-		cd_report_error("cd: ", path, ":  No such file or directory\n");
+		cd_report_error("cd: ", path, ": No such file or directory\n");
 		return (1);
 	}
 	if (access(path, F_OK) == 0 && !is_directory(path))
@@ -88,27 +88,25 @@ void	check_command_access(t_ast *node, t_shell *shell)
 	if (node->cmd_path == NULL)
 	{
 		report_error(node->cmd, ": command not found\n");
-		cleanup_all(shell);
+		close_and_clean(shell);
 		exit(127);
 	}
 	if (access(node->cmd_path, F_OK) == -1)
 	{
 		report_error(node->cmd, ": No such file or directory\n");
-		cleanup_all(shell);
+		close_and_clean(shell);
 		exit(127);
 	}
 	if (access(node->cmd_path, X_OK) == -1)
 	{
 		report_error(node->cmd, ": Permission denied\n");
-		cleanup_all(shell);
+		close_and_clean(shell);
 		exit(126);
 	}
 	if (access(node->cmd_path, X_OK) == 0 && is_directory(node->cmd))
 	{
 		report_error(node->cmd, ": Is a directory\n");
-		cleanup_all(shell);
+		close_and_clean(shell);
 		exit(126);
 	}
 }
-
-/*-fsanitize=address*/

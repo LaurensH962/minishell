@@ -6,7 +6,7 @@
 /*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 16:14:49 by lhaas             #+#    #+#             */
-/*   Updated: 2025/05/19 16:14:56 by lhaas            ###   ########.fr       */
+/*   Updated: 2025/05/22 11:19:10 by lhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ int	ft_env(t_shell *shell, t_ast *node)
 	}
 	while (shell->env[i] != NULL)
 	{
-		if (strchr(shell->env[i], '=') != NULL)
+		if (ft_strchr(shell->env[i], '=') != NULL)
 			printf("%s\n", shell->env[i]);
 		i++;
 	}

@@ -14,11 +14,6 @@
 
 void	handle_heredoc(int *fd_read)
 {
-	if (*fd_read == -1)
-	{
-		perror("minishell: heredoc");
-		exit(1);
-	}
 	dup2(*fd_read, STDIN_FILENO);
 	close(*fd_read);
 }
@@ -55,7 +50,7 @@ void	unlink_heredoc_fd(t_ast *node)
 	redir = node->redirections;
 	while (redir)
 	{
-		if (redir->type == NODE_HEREDOC)
+		if (redir->type == NODE_HEREDOC && node->redirections->fd_heredoc > 2)
 			close(node->redirections->fd_heredoc);
 		redir = redir->next;
 	}

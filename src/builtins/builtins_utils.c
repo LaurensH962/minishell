@@ -6,7 +6,7 @@
 /*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 16:15:05 by lhaas             #+#    #+#             */
-/*   Updated: 2025/05/19 16:15:06 by lhaas            ###   ########.fr       */
+/*   Updated: 2025/05/22 13:52:09 by lhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 int	is_number(const char *str)
 {
+	while (ft_isspace(*str))
+		str++;
 	if (*str == '-' || *str == '+')
 		str++;
 	while (*str)

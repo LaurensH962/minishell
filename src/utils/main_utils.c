@@ -23,12 +23,14 @@ void	set_up_shell(t_shell **shell, char **envp)
 	if (copy_environ(envp, &(*shell)->env))
 	{
 		free(*shell);
+		perror("minishell: malloc");
 		exit(1);
 	}
 	if (copy_environ(envp, &(*shell)->export))
 	{
 		free_array((*shell)->env, -1);
 		free(*shell);
+		perror("minishell: malloc");
 		exit(1);
 	}
 }

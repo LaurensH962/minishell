@@ -6,7 +6,7 @@
 /*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 16:15:17 by lhaas             #+#    #+#             */
-/*   Updated: 2025/05/19 16:15:17 by lhaas            ###   ########.fr       */
+/*   Updated: 2025/05/22 11:18:46 by lhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,9 @@ static char	*set_oldpwd(t_shell *shell)
 	oldpwd = NULL;
 	while (shell->env[i])
 	{
-		if (strncmp(shell->env[i], "PWD=", 4) == 0)
+		if (ft_strncmp(shell->env[i], "PWD=", 4) == 0)
 		{
-			oldpwd = strdup(shell->env[i] + 4);
+			oldpwd = ft_strdup(shell->env[i] + 4);
 			if (!oldpwd)
 				perror("minishell: malloc");
 			break ;

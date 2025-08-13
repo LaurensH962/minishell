@@ -115,9 +115,16 @@ t_token	*lexer(char *line, t_shell *shell)
 {
 	t_lexer	lexer;
 	t_token	*tokens;
+	t_token	*result;
 
 	tokens = NULL;
 	shell->tokens = tokens;
 	init_lexer(&tokens, &lexer, shell, line);
-	return (lexer_process_tokens(&lexer, &tokens, shell));
+	result = lexer_process_tokens(&lexer, &tokens, shell);
+	if (result == NULL)
+	{
+		free(line);
+		return (NULL);
+	}
+	return (result);
 }

@@ -25,7 +25,7 @@ int	is_delimiter(char c)
 	return (1);
 }
 
-char	*ft_strjoin_minishell(const char *s1, char *s2)
+char	*ft_strjoin_minishell(const char *s1, char *s2, char *input)
 {
 	char	*str;
 	size_t	len;
@@ -38,7 +38,7 @@ char	*ft_strjoin_minishell(const char *s1, char *s2)
 		return (NULL);
 	else if (!s2)
 		return (ft_strdup_protect(s1));
-	len = ft_strlen(s1) + ft_strlen(s2) + 1;
+	len = ft_strlen(input) + ft_strlen(s1) + ft_strlen(s2) + 1;
 	str = ft_calloc(1, sizeof(char) * len);
 	if (!str)
 		return (NULL);

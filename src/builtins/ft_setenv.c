@@ -6,7 +6,7 @@
 /*   By: lhaas <lhaas@student.hive.fi>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 16:15:30 by lhaas             #+#    #+#             */
-/*   Updated: 2025/05/19 16:15:34 by lhaas            ###   ########.fr       */
+/*   Updated: 2025/05/22 11:18:28 by lhaas            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static int	add_new_entry(char ***envp, char *new_entry)
 	i = 0;
 	while (*envp && (*envp)[i])
 	{
-		new_env[i] = strdup((*envp)[i]);
+		new_env[i] = ft_strdup((*envp)[i]);
 		if (!new_env[i])
 		{
 			free_array(new_env, i);

@@ -180,8 +180,12 @@ int								fill_args(t_ast **command_node, t_token *token,
 // utils
 int								is_delimiter(char c);
 bool							is_redirect(t_token_type type);
-char							*ft_strjoin_minishell(char const *s1, char *s2);
+char							*ft_strjoin_minishell(char const *s1, char *s2,
+									char *input);
 char							*ft_strdup_protect(const char *s);
+int								ft_skip_space(int *i, const char *nptr);
+bool							ft_atoi_safe(const char *nptr, long long *out);
+void							exit_close_pipes(t_shell *shell);
 
 // heredoc_handler
 void							handle_heredoc(int *fd_read);
@@ -312,6 +316,7 @@ int								cd_free(char *new_pwd, char *old_pwd);
 char							*pwd_not_set(char *value, int *malloced);
 int								free_return(char *string);
 void							close_pipes_cleanup(t_shell *shell);
+void							close_and_clean(t_shell *shell);
 
 // main
 int								new_readline(t_shell *shell, char **line);
